@@ -14,11 +14,11 @@ public class User {
     private int totalScore;
     private int currentScore;
     private int highestStreak;
-    private File savedUsers = new File("/assets/users.txt");
+    private static final File USER_FILE = new File("src/assets/users.txt");
 
     // Constructors
     /**
-     * Default User with a random name. Will not be saved automatically.
+     * Default User with a random name, no password.
      */
     User() {
         userName = randomName();
@@ -29,8 +29,7 @@ public class User {
     }
 
     /**
-     * Create a user with a specified name and password. Will be saved for
-     * recall later.
+     * Create a user with a specified name and password.
      * @param name String for username
      * @param password String for password
      */
@@ -66,7 +65,7 @@ public class User {
      */
     private void saveUser(User user) throws IOException {
         // TODO Make this a secure file
-        if(savedUsers.createNewFile())
+        if(USER_FILE.createNewFile())
             System.out.println("New users.txt created");
         else
             System.out.println("users.txt already exists");
@@ -82,6 +81,13 @@ public class User {
      * @return User Return the last saved copy of the User
      */
     public User getUser(String userName, String userPassword) {
+        if (!USER_FILE.exists()) {
+            System.out.println("User File does not exist");
+            // TODO make sure a new file and user are created
+            return null;
+        }
+
+
         // TODO retrieve user and scores
         User temp = new User(userName, userPassword); // This needs to be actually retrieving
 
