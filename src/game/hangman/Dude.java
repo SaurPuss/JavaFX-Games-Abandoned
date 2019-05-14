@@ -16,7 +16,7 @@ import javafx.util.Duration;
  * comes with the visual part of this game.
  */
 class Dude extends Pane {
-    // TODO Can I make fewer of these fuckers?
+    // TODO Can I make fewer of these fuckers? Lawd
     private Pane dude;
     private Pane arms;
     private Pane legs;
@@ -28,6 +28,9 @@ class Dude extends Pane {
     private Line leftLeg;
     private Line rightLeg;
 
+    /**
+     * Constructor, you know the dealio.
+     */
     Dude() {
         dude = new Pane();
         arms = new Pane();
@@ -62,29 +65,36 @@ class Dude extends Pane {
      */
     void addToDude(int n) {
         switch(n) {
-            case 1: if (!dude.getChildren().contains(noose)) {
+            case 1:
+                if (!dude.getChildren().contains(noose))
                     drawNoose();
-                    System.out.println("Noose"); } break;
-            case 2: if (!dude.getChildren().contains(head)) {
+                break;
+            case 2:
+                if (!dude.getChildren().contains(head))
                     drawHead();
-                    System.out.println("Head"); } break;
-            case 3: if (!dude.getChildren().contains(body)) {
+                break;
+            case 3:
+                if (!dude.getChildren().contains(body))
                     drawBody();
-                    System.out.println("Body"); } break;
-            case 4: if (!arms.getChildren().contains(leftArm)) {
+                break;
+            case 4:
+                if (!arms.getChildren().contains(leftArm))
                     drawLeftArm();
-                    System.out.println("Left Arm"); } break;
-            case 5: if (!arms.getChildren().contains(rightArm)) {
+                break;
+            case 5:
+                if (!arms.getChildren().contains(rightArm))
                     drawRightArm();
-                    System.out.println("Right Arm"); } break;
-            case 6: if (!legs.getChildren().contains(leftLeg)) {
+                break;
+            case 6:
+                if (!legs.getChildren().contains(leftLeg))
                     drawLeftLeg();
-                    System.out.println("Left Leg"); } break;
-            case 7: if (!legs.getChildren().contains(rightLeg)) {
+                break;
+            case 7:
+                if (!legs.getChildren().contains(rightLeg))
                     drawRightLeg();
-                    System.out.println("Right Leg"); }
-                    swingAnimation();
-                    System.out.println("End Game"); break;
+                swingAnimation();
+                System.out.println("End Game");
+                break;
             default:
                 undrawDude();
                 System.out.println("Undraw Dude");
@@ -164,11 +174,6 @@ class Dude extends Pane {
         ptNoose.setDuration(Duration.millis(5000));
         ptNoose.playFrom(Duration.millis(2500)); // start in the middle of the nooseArc
     }
-
-    private void stopAnimation() {
-        dude.getChildren().clear();
-    }
-
 
     /**
      * Create the static background visuals
