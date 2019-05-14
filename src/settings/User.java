@@ -110,7 +110,6 @@ public class User {
                 "Tit", "Cat", "Dog", "Ferret", "Panther",
                 "Tiger", "Raven", "Crow", "Dinosaur", "French Fry"
         };
-
         int random = r.nextInt(animals.length);
 
         return s + animals[random];

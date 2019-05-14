@@ -60,7 +60,7 @@ class Dude extends Pane {
     /**
      * Add body parts based on the mistake counter received from the Word.
      * Ignore body parts if they are already added to the Pane.
-     * // TODO Maybe change parts to static so there can only be 1?
+     * // TODO Maybe change dude parts to static so there can only be 1?
      * @param n Wrong guess counter
      */
     void addToDude(int n) {

@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
  * You chose to play Hangman
  */
 public class Hangman extends Game {
+    // TODO add score functionality. Each letter counts as a (-)point. Restart before finish = lose.
     private Word word;
     private Dude dude;
     private Fields fields;
@@ -17,9 +18,6 @@ public class Hangman extends Game {
      * Time to construct a new Game of Hangman /o/
      */
     public Hangman() {
-
-        //TODO make sure the fields etc reset when a new game is initialized
-
         // Basic set up for containers
         VBox container = new VBox();
         container.setAlignment(Pos.CENTER);
