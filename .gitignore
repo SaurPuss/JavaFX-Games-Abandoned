@@ -4,8 +4,13 @@
 # Log file
 *.log
 
-# BlueJ files
-*.ctxt
+# OSX
+.DS_Store
+
+# Intellij IDEA
+.idea
+*.iml
+/out/
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
