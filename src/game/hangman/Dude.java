@@ -16,12 +16,17 @@ import javafx.util.Duration;
  * comes with the visual part of this game.
  */
 class Dude extends Pane {
+    // TODO Can I make fewer of these fuckers?
     private Pane dude;
     private Pane arms;
     private Pane legs;
     private Line noose;
     private Circle head;
     private Line body;
+    private Line leftArm;
+    private Line rightArm;
+    private Line leftLeg;
+    private Line rightLeg;
 
     Dude() {
         dude = new Pane();
@@ -49,16 +54,40 @@ class Dude extends Pane {
         getChildren().addAll(buildGallows());
     }
 
+    /**
+     * Add body parts based on the mistake counter received from the Word.
+     * Ignore body parts if they are already added to the Pane.
+     * // TODO Maybe change parts to static so there can only be 1?
+     * @param n Wrong guess counter
+     */
     void addToDude(int n) {
         switch(n) {
-            case 1: drawNoose(); break;
-            case 2: drawHead(); break;
-            case 3: drawBody(); break;
-            case 4: drawLeftArm(); break;
-            case 5: drawRightArm(); break;
-            case 6: drawLeftLeg(); break;
-            case 7: drawRightLeg(); swingAnimation(); break;
-            default: undrawDude();
+            case 1: if (!dude.getChildren().contains(noose)) {
+                    drawNoose();
+                    System.out.println("Noose"); } break;
+            case 2: if (!dude.getChildren().contains(head)) {
+                    drawHead();
+                    System.out.println("Head"); } break;
+            case 3: if (!dude.getChildren().contains(body)) {
+                    drawBody();
+                    System.out.println("Body"); } break;
+            case 4: if (!arms.getChildren().contains(leftArm)) {
+                    drawLeftArm();
+                    System.out.println("Left Arm"); } break;
+            case 5: if (!arms.getChildren().contains(rightArm)) {
+                    drawRightArm();
+                    System.out.println("Right Arm"); } break;
+            case 6: if (!legs.getChildren().contains(leftLeg)) {
+                    drawLeftLeg();
+                    System.out.println("Left Leg"); } break;
+            case 7: if (!legs.getChildren().contains(rightLeg)) {
+                    drawRightLeg();
+                    System.out.println("Right Leg"); }
+                    swingAnimation();
+                    System.out.println("End Game"); break;
+            default:
+                undrawDude();
+                System.out.println("Undraw Dude");
         }
     }
 
@@ -182,19 +211,19 @@ class Dude extends Pane {
 
         dude.getChildren().add(body); }
     private void drawLeftArm() {
-        Line leftArm = new Line(230, 180, 160, 150);
+        leftArm = new Line(230, 180, 160, 150);
 
         arms.getChildren().add(leftArm); }
     private void drawRightArm() {
-        Line rightArm = new Line(230, 180, 300, 150);
+        rightArm = new Line(230, 180, 300, 150);
 
         arms.getChildren().add(rightArm); }
     private void drawLeftLeg() {
-        Line leftLeg = new Line(230, 255, 180, 355);
+        leftLeg = new Line(230, 255, 180, 355);
 
         legs.getChildren().add(leftLeg); }
     private void drawRightLeg() {
-        Line rightLeg = new Line(230, 255, 280, 355);
+        rightLeg = new Line(230, 255, 280, 355);
 
         legs.getChildren().add(rightLeg); }
     private void undrawDude() {
