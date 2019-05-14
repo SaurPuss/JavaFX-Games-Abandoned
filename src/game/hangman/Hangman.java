@@ -10,7 +10,6 @@ import javafx.scene.layout.VBox;
  */
 public class Hangman extends Game {
     private Word word;
-    private VBox container;
     private Dude dude;
     private Fields fields;
 
@@ -22,7 +21,7 @@ public class Hangman extends Game {
         //TODO make sure the fields etc reset when a new game is initialized
 
         // Basic set up for containers
-        container = new VBox();
+        VBox container = new VBox();
         container.setAlignment(Pos.CENTER);
 
         // Give it something to make it functional

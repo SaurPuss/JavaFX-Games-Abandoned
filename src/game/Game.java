@@ -8,5 +8,5 @@ import javafx.scene.layout.Pane;
 public abstract class Game extends Pane {
     protected Game() {}
 
-    public void restartGame() throws IllegalAccessException, InstantiationException {}
+    public void restartGame() {}
 }
