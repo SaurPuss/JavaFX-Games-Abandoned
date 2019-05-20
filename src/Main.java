@@ -18,6 +18,9 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import settings.User;
+
+import java.io.IOException;
 
 /**
  * Let's get this bitch started! /o/
@@ -30,7 +33,7 @@ public class Main extends Application {
 
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IOException {
         gamePane = new HBox();
         gamePane.setAlignment(Pos.CENTER);
 
@@ -46,6 +49,8 @@ public class Main extends Application {
 
         scene = new Scene(pane, 500, 800);
 
+//        User.saveUser(new User("Test User", "password"));
+
         primaryStage.setTitle("Let's Play a Game");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -59,6 +64,16 @@ public class Main extends Application {
      * game started, never to be seen again (in this session).
      */
     private void splashStart() {
+        // Create new base user
+        User newUser = new User();
+
+        // Give the option to load existing User
+
+
+        // Start a Game
+
+
+        // Go to Scores and Settings for an exisitng user
 
     }
 

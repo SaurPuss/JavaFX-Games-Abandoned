@@ -16,6 +16,7 @@ import javafx.util.Duration;
  * comes with the visual part of this game.
  */
 class Dude extends Pane {
+    // Data fields
     // TODO Can I make fewer of these fuckers? Lawd
     private Pane dude;
     private Pane arms;
@@ -28,8 +29,9 @@ class Dude extends Pane {
     private Line leftLeg;
     private Line rightLeg;
 
+    // Constructor
     /**
-     * Constructor, you know the dealio.
+     * Dude constructor, you know the dealio.
      */
     Dude() {
         dude = new Pane();
@@ -42,6 +44,7 @@ class Dude extends Pane {
     }
 
 
+    // Methods
     /**
      * Refresh this object with a clear pane.
      * Making a Dude dude = new Dude(); doesn't seem to do the trick :(
@@ -201,35 +204,27 @@ class Dude extends Pane {
      */
     private void drawNoose() {
         noose = new Line(230, 30, 230, 85);
-
-        dude.getChildren().addAll(noose);
-    }
+        dude.getChildren().addAll(noose); }
     private void drawHead() {
         double radius = 30;
         head = new Circle(noose.getEndX(), noose.getEndY() + radius, radius);
         head.setFill(Color.TRANSPARENT);
         head.setStroke(Color.BLACK);
-
         dude.getChildren().add(head); }
     private void drawBody() {
         body = new Line(230, 145, 230, 255);
-
         dude.getChildren().add(body); }
     private void drawLeftArm() {
         leftArm = new Line(230, 180, 160, 150);
-
         arms.getChildren().add(leftArm); }
     private void drawRightArm() {
         rightArm = new Line(230, 180, 300, 150);
-
         arms.getChildren().add(rightArm); }
     private void drawLeftLeg() {
         leftLeg = new Line(230, 255, 180, 355);
-
         legs.getChildren().add(leftLeg); }
     private void drawRightLeg() {
         rightLeg = new Line(230, 255, 280, 355);
-
         legs.getChildren().add(rightLeg); }
     private void undrawDude() {
         arms.getChildren().removeAll();
