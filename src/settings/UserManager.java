@@ -1,12 +1,10 @@
 package settings;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.Serializable;
+import java.io.*;
 
 public class UserManager  implements Serializable {
     private static String filePath = "src/assets/users.csv";
+    private BufferedReader reader;
 
     /**
      *
@@ -16,17 +14,24 @@ public class UserManager  implements Serializable {
         // Do stuff
         FileWriter fileWriter;
         try {
-            fileWriter = new FileWriter(filePath);
+            File check = new File(filePath);
+            fileWriter = new FileWriter(filePath, true);
+
+            // Add a header if this is a new file
+            if (!check.exists()) {
+                fileWriter.append("Username,Password,TotalScore,CurrentStreak,HighestStreak\n");
+            }
 
             fileWriter.append(user.getUserName());
             fileWriter.append(',');
             fileWriter.append(user.getUserPassword());
             fileWriter.append(',');
+            fileWriter.append(String.valueOf(user.getTotalScore()));
+            fileWriter.append(',');
             fileWriter.append(String.valueOf(user.getCurrentScore()));
             fileWriter.append(',');
             fileWriter.append(String.valueOf(user.getHighestStreak()));
-            fileWriter.append(',');
-            fileWriter.append(String.valueOf(user.getTotalScore()));
+
             fileWriter.append("\n");
 
             System.out.println("User has been saved");
@@ -42,9 +47,7 @@ public class UserManager  implements Serializable {
      * @param userName
      * @return
      */
-    private static boolean findUser(String userName) {
-        BufferedReader reader;
-
+    private boolean findUser(String userName) {
         try {
             String line;
             reader = new BufferedReader(new FileReader(filePath));
@@ -54,11 +57,14 @@ public class UserManager  implements Serializable {
                 String[] fields = line.split(",");
 
                 if (fields.length > 0) {
-                    if (userName.equals(fields[1])) {
+                    // Yaya, lowercase all of that shit
+                    if (userName.toLowerCase().equals(fields[1].toLowerCase())) {
                         return true;
                     }
                 }
             }
+
+            reader.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,14 +72,20 @@ public class UserManager  implements Serializable {
         return false;
     }
 
+    /**
+     *
+     * @param userName
+     * @param userPassword
+     * @return if match return user, else return default
+     */
     public User retrieveUser(String userName, String userPassword) {
+        // Default user
         User user = new User();
-        BufferedReader reader;
 
         // Check if user exists
         if (!findUser(userName)) {
             System.out.println("This user does not exist, please make a new one");
-            return user; // returns a default user
+            return user;
         } else {
             // retrieve user
             try {
@@ -85,20 +97,21 @@ public class UserManager  implements Serializable {
                     String[] fields = line.split(",");
 
                     if (fields.length > 0) {
-                        // TODO make password check method
+                        // TODO make password check method instead of userPassword.equals(fields[2]))
                         if ((userName.equals(fields[1])) && (userPassword.equals(fields[2]))) {
                             user.setUserName(fields[1]);
                             user.setUserPassword(fields[2]);
+                            user.setTotalScore(Integer.valueOf(fields[3]));
                             user.setCurrentScore(0);
-                            user.setHighestStreak(Integer.valueOf(fields[4]));
-                            user.setTotalScore(Integer.valueOf(fields[5]));
+                            user.setHighestStreak(Integer.valueOf(fields[5]));
                         } else {
                             // TODO Make this a real thing
-                            System.out.println("Password does not match");
-                            return null;
+                            System.out.println("Password does not match, try again");
                         }
                     }
                 }
+
+                reader.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
