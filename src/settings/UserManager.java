@@ -4,14 +4,12 @@ import java.io.*;
 
 public class UserManager  implements Serializable {
     private static String filePath = "src/assets/users.csv";
-    private BufferedReader reader;
 
     /**
      *
      * @param user
      */
     public static void saveNewUser(User user) {
-        // Do stuff
         FileWriter fileWriter;
         try {
             File check = new File(filePath);
@@ -43,11 +41,22 @@ public class UserManager  implements Serializable {
     }
 
     /**
+     * Convenience method that invokes the other saveNewUser method
+     * @param username
+     * @param password
+     */
+    public static void saveNewUser(String username, String password) {
+        User user = new User(username, password);
+        saveNewUser(user);
+    }
+
+    /**
      *
      * @param userName
      * @return
      */
-    private boolean findUser(String userName) {
+    public static boolean findUser(String userName) {
+        BufferedReader reader;
         try {
             String line;
             reader = new BufferedReader(new FileReader(filePath));
@@ -78,7 +87,7 @@ public class UserManager  implements Serializable {
      * @param userPassword
      * @return if match return user, else return default
      */
-    public User retrieveUser(String userName, String userPassword) {
+    public static User retrieveUser(String userName, String userPassword) {
         // Default user
         User user = new User();
 
@@ -87,6 +96,7 @@ public class UserManager  implements Serializable {
             System.out.println("This user does not exist, please make a new one");
             return user;
         } else {
+            BufferedReader reader;
             // retrieve user
             try {
                 String line;

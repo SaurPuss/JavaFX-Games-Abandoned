@@ -53,6 +53,7 @@ public class Hangman extends Game {
         getChildren().addAll(container);
     }
 
+    // TODO move to default interface with the buttons
     private void guessLetterInput() {
         if (!fields.tfGuess.getText().equals("")) {
             if (fields.tfGuess.getText().charAt(0) == ' ')

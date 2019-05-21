@@ -14,13 +14,15 @@ import game.hangman.Hangman;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import settings.User;
 
 import java.io.IOException;
+
+import settings.GUI.LoginFields;
+import settings.User;
+import settings.UserManager;
 
 /**
  * Let's get this bitch started! /o/
@@ -34,22 +36,21 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+        // Set up basic panes
         gamePane = new HBox();
         gamePane.setAlignment(Pos.CENTER);
 
+        // This is temporary
         startGame(0);
 
         gamePane.getChildren().addAll(game);
         pane.setCenter(gamePane);
 
-        /*// test reset button
-        Button btnReset = new Button("reset");
-        btnReset.setOnAction(e -> restartGame(0));
-        pane.setBottom(btnReset);*/
+        User user = new User();
+        UserManager.saveNewUser(user);
 
-        scene = new Scene(pane, 500, 800);
-
-//        User.saveUser(new User("Test User", "password"));
+//        scene = new Scene(pane, 500, 800);
+        splashStart();
 
         primaryStage.setTitle("Let's Play a Game");
         primaryStage.setScene(scene);
@@ -64,16 +65,27 @@ public class Main extends Application {
      * game started, never to be seen again (in this session).
      */
     private void splashStart() {
+        HBox startPane = new HBox();
+        LoginFields fields = new LoginFields();
+
+        startPane.getChildren().add(fields);
+
+
+
         // Create new base user
-        User newUser = new User();
 
         // Give the option to load existing User
 
 
         // Start a Game
+        startGame(0);
 
 
         // Go to Scores and Settings for an exisitng user
+
+
+        // Add stuff to scene
+        scene = new Scene(startPane, 500, 800);
 
     }
 
