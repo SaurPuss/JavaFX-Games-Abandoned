@@ -19,8 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import settings.score.Scoreboard;
-import settings.GUI.LoginFields;
-import settings.user.Login;
+import settings.user.LoginPane;
 import settings.user.User;
 import settings.user.UserManager;
 
@@ -28,42 +27,63 @@ import settings.user.UserManager;
  * Let's get this bitch started! /o/
  */
 public class Main extends Application {
-    private User user;
-    private Scoreboard scoreboard;
-
+    // This is the main Pane
     private static BorderPane pane = new BorderPane();
+    private static Scoreboard scoreboard = new Scoreboard();
+
     private Scene scene;
     private Game game;
     private HBox gamePane;
 
 
+    /**
+     * Start the application with javafx.
+     * @param primaryStage default argument
+     */
     @Override
     public void start(Stage primaryStage) {
-        // Attempt to retrieve a saved or default User
-        user = UserManager.getCurrentUser();
-
-        // Check if user is saved in database
-        if (UserManager.findUser(user.getUserName())) {
-            System.out.println("Someone with this username exists.");
+        // Check if there is a current user that's also saved to the database
+        if (UserManager.matchCurrentUser()) {
+            UserManager.user = UserManager.getCurrentUser();
+            System.out.println("Someone with this username is saved in the global database, woo!");
 
             // Password auto login?
-            if (user.isRememberPassword()) {
+            if (!UserManager.user.isRememberPassword()) {
+                System.out.println("User Password required.");
+                pane.setCenter(new LoginPane(UserManager.user));
+
+//                    LoginPane.loginScreen();
+
+
+
+            } else { // Auto login, update scoreboard and go to game selection screen
+
                 // Fill Scores and UserSettings for this user profile
-                scoreboard.updateUserScoreboard(user);
+                scoreboard.updateUserScoreboard(UserManager.user);
 
                 // Continue to Game selection screen
                 game = GameSelection.startGame(0);
 
-            } else {
-                System.out.println("Please provide the matching password");
-                Login.loginScreen();
             }
-        } else {
-            // prompt for login or sign up
-            Login.signUpScreen();
 
         }
+        // Sometimes the current user is a default profile
+        else if (User.isDefaultUser(UserManager.getCurrentUser())) {
+            System.out.println("Default User, choose login/signup or continue as is");
+            UserManager.user = UserManager.getCurrentUser();
 
+
+
+        }
+        // Otherwise there is nothing and you should start fresh
+        else {
+            UserManager.user = new User();
+            System.out.println("No current user found, starting with a default profile.");
+//                LoginPane.signUpScreen();
+        }
+
+
+        // TODO At the top of the pane display current username, a button for scores and a button for settings
 
 
 
@@ -95,17 +115,16 @@ public class Main extends Application {
         primaryStage.setResizable(false); // No resize for you!
     }
 
-
     /**
      * Populate the initial pane with starter text and buttons. Only used to get the
      * game started, never to be seen again (in this session).
      */
     private void splashStart() {
         HBox startPane = new HBox();
-        LoginFields fields = new LoginFields();
+//        LoginPane fields = new LoginPane();
 
         startPane.setAlignment(Pos.CENTER);
-        startPane.getChildren().add(fields);
+//        startPane.getChildren().add(fields);
 
         // Create new base user
 

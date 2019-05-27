@@ -1,4 +1,4 @@
-package settings.GUI;
+package settings.user;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -8,21 +8,41 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import settings.user.User;
-import settings.user.UserManager;
+import settings.GUI.UserLoginButtons;
 
-public class LoginFields extends VBox implements Loginterface {
+public class LoginPane extends VBox implements UserLoginButtons {
     private TextField tfUserName = new TextField();
     private TextField tfUserPassword = new TextField();
     private CheckBox cbRememberUser = new CheckBox();
 
-    public LoginFields() {
-        // TODO Once you can remember a user pre-fill the text field and prompt for password
-        User user = new User();
-
-        // A little bit of styling
+    private LoginPane(){
         this.setAlignment(Pos.CENTER);
         this.setSpacing(5);
+
+        cbRememberUser.setSelected(false);
+    }
+
+    public LoginPane(User user) {
+        this.setAlignment(Pos.CENTER);
+        this.setSpacing(5);
+
+        tfUserName.setText(user.getUserName());
+        cbRememberUser.setSelected(user.isRememberUser());
+
+
+
+
+
+
+        //Upon login save remember user bool
+
+
+    }
+
+/*
+    public LoginPane(User user) {
+        // A little bit of styling
+
 
         // Introduction or something
         VBox splashPane = new VBox(10);
@@ -65,24 +85,26 @@ public class LoginFields extends VBox implements Loginterface {
 
         // TODO learn more about this::blabla
         // example from https://code.makery.ch/blog/javafx-8-event-handling-examples
-        // btnSignUp.setOnAction(this::signUp);
+        // btnSignUp.setOnAction(this::signUpButton);
 
         // TODO Do this for the hangman fields <3
-        // Get default methods from Loginterface
+        // Get default methods from UserLoginButtons
         btnLogin.setOnAction(e -> {
             if (cbRememberUser.isSelected()) {
                 UserManager.saveCurrentUser(new User(tfUserName.getText(), tfUserPassword.getText()));
-                login(tfUserName.getText(), tfUserPassword.getText());
+                loginButton(tfUserName.getText(), tfUserPassword.getText());
+                // continue to next screen
             } else {
-                login(tfUserName.getText(), tfUserPassword.getText());
-                UserManager.deleteCurrentUser(); // Make sure the current user is set to random default
+                loginButton(tfUserName.getText(), tfUserPassword.getText());
+                UserManager.deleteCurrentUser(); // Make sure the current user is saved to random default
                 // continue to next screen
             }
 
         });
-        btnSignUp.setOnAction(e -> signUp(tfUserName.getText(), tfUserPassword.getText()));
+        btnSignUp.setOnAction(e -> signUpButton(tfUserName.getText(), tfUserPassword.getText()));
 
         getChildren().addAll(splashPane, lblUserName, tfUserName, lblUserPassword, tfUserPassword,
                 rememberPane, buttons, continuePane);
     }
+*/
 }

@@ -1,38 +1,66 @@
 package settings.GUI;
 
-import settings.user.User;
+import javafx.scene.control.Button;
 import settings.user.UserManager;
 
-public interface Loginterface {
+public interface UserLoginButtons {
+
+    /**
+     * Default login button, does a clicky-click to try and log in
+     * with given credentials.
+     * @param username
+     * @param password
+     * @return
+     */
+    default Button loginButton(String username, String password) {
+        Button btnLogin = new Button("Log In");
+
+
+        btnLogin.setOnAction(e -> {
+            // TODO Create login action event
+            System.out.println("This is where the magic happens. For log ins anyway.");
+
+            // Set user
+            UserManager.user = UserManager.getUserProfile(username, password);
+
+        });
+
+
+        return btnLogin;
+    }
+
+
+
+
     /**
      * Default functionality for a login Button
      * @param username User to retrieve
      * @param password Validation for correct user
      */
-    default User login(String username, String password) {
-        User user = new User();
+    /*default boolean loginButton(String username, String password) {
         // Check if User exists and get user information
-        if (UserManager.findUser(username)) {
+        if (UserManager.getUserProfile(username)) {
             // assuming the password is correct
-            user = UserManager.retrieveUser(username, password);
 
+            return true;
+
+        } else {
+            System.out.println("Username does not exist.");
+            return false;
         }
-
-        // continue to following screen
-
-
-        return user;
-    }
+    }*/
 
     /**
      * Default functionality for a sign up button
      * @param username name to check against & create
      * @param password Set password
      */
-    default void signUp(String username, String password) {
+    default void signUpButton(String username, String password) {
         if ((username == null) || (username.equals(""))) {
             System.out.println("Please choose a username");
-        } else if (UserManager.findUser(username)) {
+        } else if (username.length() < 6) {
+            System.out.println("Username is too short, please try again.");
+        } else if (UserManager.findUserName(username)) {
             System.out.println("Username already exists, pls make a new profile or try login");
         } else if ((password == null) || (password.equals(""))) {
             // do a thing for minimum password length etc

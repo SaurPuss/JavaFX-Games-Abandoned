@@ -13,6 +13,7 @@ public class User {
     private String userPassword;
     private UserScore userScore;
     private boolean rememberPassword;
+    private boolean rememberUser;
     private UserSettings userSettings;
     private static final String FILE = "src/assets/users.txt";
 
@@ -25,6 +26,7 @@ public class User {
         userPassword = null;
         userScore = new UserScore();
         rememberPassword = false;
+        rememberUser = false;
     }
 
     /**
@@ -37,11 +39,33 @@ public class User {
         this.userPassword = password;
         userScore = new UserScore();
         rememberPassword = false;
+        rememberUser = false;
+    }
+
+    /**
+     * TODO is this real?
+     * Create a fake user for errors?????
+     * @return
+     */
+    User(boolean bool) {
+        if (!bool) {
+            this.userName = null;
+            this.userPassword = "PASSWORD DOES NOT MATCH";
+            userScore = null;
+            rememberPassword = false;
+            rememberUser = false;
+        } else {
+            System.out.println("This should not be possible, terminating program.");
+            System.exit(100);
+        }
     }
 
     /* Getters and Setters */
     public String getUserName() { return userName; }
-    void setUserName(String userName) { this.userName = userName; }
+    void setUserName(String userName) {
+        if ((userName.length() >= 6) && (!UserManager.findUserName(userName)))
+            this.userName = userName;
+    }
 
     // TODO figure this out - getUserPassword() obfuscate
     String getUserPassword() {
@@ -53,6 +77,27 @@ public class User {
     void setUserPassword(String userPassword) { this.userPassword = userPassword; }
     public boolean isRememberPassword() { return rememberPassword; }
     void setRememberPassword(boolean rememberPassword) { this.rememberPassword = rememberPassword; }
+    public boolean isRememberUser() { return rememberUser; }
+    public void setRememberUser(boolean rememberUser) { this.rememberUser = rememberUser; }
+
+
+    /**
+     * Check if current User profile is a default
+     * @return boolean default username
+     */
+    private boolean isDefaultUser() {
+        return this.userName.contains("Anonymous ");
+    }
+
+    /**
+     * Static method to check if user is default
+     * @param user User object to check for defaultness
+     * @return boolean default username
+     */
+    public static boolean isDefaultUser(User user) {
+        return user.isDefaultUser();
+    }
+
 
     /**
      * Choose a random username.

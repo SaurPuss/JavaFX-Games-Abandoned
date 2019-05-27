@@ -43,7 +43,7 @@ public class UserScore {
 
 
     /**
-     * Run through the scores
+     * Run through the scores and add or subtract the totals.
      * @param gameScore update all scores with the new numbers gotten from the Game
      */
     public void updateScores(int gameScore) {
