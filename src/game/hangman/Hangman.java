@@ -9,7 +9,7 @@ import javafx.scene.layout.VBox;
  * You chose to play Hangman
  */
 public class Hangman extends Game {
-    // TODO add settings.score functionality. Each letter counts as a (-)point. Restart before finish = lose.
+    // TODO add settings.user.score functionality. Each letter counts as a (-)point. Restart before finish = lose.
     private Word word;
     private Dude dude;
     private Fields fields;

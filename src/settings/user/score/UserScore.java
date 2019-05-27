@@ -1,4 +1,4 @@
-package settings.score;
+package settings.user.score;
 
 /**
  * User saves scores in here

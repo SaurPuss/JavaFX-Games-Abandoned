@@ -1,4 +1,4 @@
-package settings.score;
+package settings.user.score;
 
 import javafx.scene.layout.BorderPane;
 import settings.user.User;

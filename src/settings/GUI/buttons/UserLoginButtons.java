@@ -1,4 +1,4 @@
-package settings.GUI;
+package settings.GUI.buttons;
 
 import javafx.scene.control.Button;
 import settings.user.UserManager;
