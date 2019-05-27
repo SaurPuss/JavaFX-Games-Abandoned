@@ -27,6 +27,7 @@ public class User {
         userScore = new UserScore();
         rememberPassword = false;
         rememberUser = false;
+        userSettings = new UserSettings();
     }
 
     /**

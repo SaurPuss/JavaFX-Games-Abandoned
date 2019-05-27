@@ -1,9 +1,10 @@
-package game;
+package settings.GUI.panes;
 
+import game.Game;
 import game.hangman.Hangman;
 import javafx.scene.layout.VBox;
 
-public class GameSelection extends VBox {
+public class GameSelectionPane extends VBox {
 
 
 

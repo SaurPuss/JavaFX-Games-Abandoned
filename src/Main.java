@@ -10,7 +10,7 @@
 
 // You know what this is, why are you reading this comment?
 import game.Game;
-import game.GameSelection;
+import settings.GUI.panes.GameSelectionPane;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,6 +18,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+import settings.GUI.panes.MotherPane;
 import settings.GUI.panes.TopBarPane;
 import settings.user.score.Scoreboard;
 import settings.GUI.panes.LoginPane;
@@ -29,10 +30,8 @@ import settings.user.UserManager;
  */
 public class Main extends Application {
     // This is the main Pane
-    private static BorderPane pane = new BorderPane();
     private static Scoreboard scoreboard = new Scoreboard();
 
-    private Scene scene;
     private Game game;
     private HBox gamePane;
 
@@ -43,7 +42,7 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
-        scene = new Scene(pane, 500, 800);
+
 
 
         // Check if there is a current user that's also saved to the database
@@ -54,20 +53,20 @@ public class Main extends Application {
             // Password auto login?
             if (!UserManager.user.isRememberPassword()) {
                 System.out.println("User Password required.");
-                pane.setCenter(new LoginPane(UserManager.user));
+                MotherPane.pane.setCenter(new LoginPane(UserManager.user));
 
 
 
             } else { // Auto login, update scoreboard and go to game selection screen
 
-                pane.setTop(new TopBarPane());
-                pane.setCenter(new GameSelection());
+                MotherPane.pane.setTop(new TopBarPane());
+                MotherPane.pane.setCenter(new GameSelectionPane());
 
                 // Fill Scores and UserSettings for this user profile
                 scoreboard.updateUserScoreboard(UserManager.user);
 
                 // Continue to Game selection screen
-                game = GameSelection.startGame(0);
+                game = GameSelectionPane.startGame(0);
 
             }
 
@@ -94,7 +93,6 @@ public class Main extends Application {
 
 
 
-
         // Set up basic panes
         gamePane = new HBox();
         gamePane.setAlignment(Pos.CENTER);
@@ -104,7 +102,7 @@ public class Main extends Application {
 //        startGame(0);
 
         gamePane.getChildren().addAll(game);
-        pane.setCenter(gamePane);
+        MotherPane.pane.setCenter(gamePane);
 
 
 
@@ -112,8 +110,8 @@ public class Main extends Application {
 
 //        scene = new Scene(pane, 500, 800);
 
-
         // Put it all together in a neat little package
+        Scene scene = new Scene(MotherPane.pane, 500, 800);
         primaryStage.setTitle("Let's Play a Game");
         primaryStage.setScene(scene);
         primaryStage.show();

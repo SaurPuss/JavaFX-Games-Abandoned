@@ -1,5 +1,7 @@
 package settings.GUI.buttons;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import settings.user.UserManager;
 
@@ -15,19 +17,19 @@ public interface UserLoginButtons {
     default Button loginButton(String username, String password) {
         Button btnLogin = new Button("Log In");
 
-
+        // Attach event to the button
         btnLogin.setOnAction(e -> {
-            // TODO Create login action event
-            System.out.println("This is where the magic happens. For log ins anyway.");
-
-            // Set user
+            // Set user as user
             UserManager.user = UserManager.getUserProfile(username, password);
+
+            // Continue to Game SelectionPane
 
         });
 
-
         return btnLogin;
     }
+
+
 
 
 
@@ -55,7 +57,7 @@ public interface UserLoginButtons {
      * @param username name to check against & create
      * @param password Set password
      */
-    default void signUpButton(String username, String password) {
+    default Button signUpButton(String username, String password) {
         if ((username == null) || (username.equals(""))) {
             System.out.println("Please choose a username");
         } else if (username.length() < 6) {
@@ -74,5 +76,7 @@ public interface UserLoginButtons {
             // Invoke
             UserManager.saveNewUser(username,password);
         }
+
+        return new Button();
     }
 }

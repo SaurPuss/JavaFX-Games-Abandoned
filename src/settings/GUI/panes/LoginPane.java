@@ -1,13 +1,8 @@
 package settings.GUI.panes;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import settings.GUI.buttons.UserLoginButtons;
 import settings.user.User;
 
@@ -16,11 +11,17 @@ public class LoginPane extends VBox implements UserLoginButtons {
     private TextField tfUserPassword = new TextField();
     private CheckBox cbRememberUser = new CheckBox();
 
-    private LoginPane(){
+    private LoginPane() {
         this.setAlignment(Pos.CENTER);
         this.setSpacing(5);
 
         cbRememberUser.setSelected(false);
+
+
+        getChildren().addAll(tfUserName, tfUserPassword, cbRememberUser,
+                loginButton(tfUserName.getText(), tfUserPassword.getText()),
+                signUpButton(tfUserName.getText(), tfUserPassword.getText())
+        );
     }
 
     public LoginPane(User user) {
@@ -29,6 +30,7 @@ public class LoginPane extends VBox implements UserLoginButtons {
 
         tfUserName.setText(user.getUserName());
         cbRememberUser.setSelected(user.isRememberUser());
+
 
 
 
