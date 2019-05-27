@@ -1,4 +1,4 @@
-package settings.user;
+package settings.GUI.panes;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -9,6 +9,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import settings.GUI.buttons.UserLoginButtons;
+import settings.user.User;
 
 public class LoginPane extends VBox implements UserLoginButtons {
     private TextField tfUserName = new TextField();
