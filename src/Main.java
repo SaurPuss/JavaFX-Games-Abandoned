@@ -18,8 +18,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-import settings.score.Scoreboard;
-import settings.user.LoginPane;
+import settings.GUI.panes.TopBarPane;
+import settings.user.score.Scoreboard;
+import settings.GUI.panes.LoginPane;
 import settings.user.User;
 import settings.user.UserManager;
 
@@ -42,6 +43,9 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
+        scene = new Scene(pane, 500, 800);
+
+
         // Check if there is a current user that's also saved to the database
         if (UserManager.matchCurrentUser()) {
             UserManager.user = UserManager.getCurrentUser();
@@ -52,11 +56,12 @@ public class Main extends Application {
                 System.out.println("User Password required.");
                 pane.setCenter(new LoginPane(UserManager.user));
 
-//                    LoginPane.loginScreen();
-
 
 
             } else { // Auto login, update scoreboard and go to game selection screen
+
+                pane.setTop(new TopBarPane());
+                pane.setCenter(new GameSelection());
 
                 // Fill Scores and UserSettings for this user profile
                 scoreboard.updateUserScoreboard(UserManager.user);
@@ -84,6 +89,7 @@ public class Main extends Application {
 
 
         // TODO At the top of the pane display current username, a button for scores and a button for settings
+
 
 
 
@@ -138,7 +144,7 @@ public class Main extends Application {
 
 
         // Add stuff to scene
-        scene = new Scene(startPane, 500, 800);
+
 
     }
 

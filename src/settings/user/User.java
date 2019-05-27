@@ -1,6 +1,6 @@
 package settings.user;
 
-import settings.score.UserScore;
+import settings.user.score.UserScore;
 
 import java.util.Random;
 
