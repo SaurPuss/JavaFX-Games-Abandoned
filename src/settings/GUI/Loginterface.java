@@ -1,7 +1,7 @@
 package settings.GUI;
 
-import settings.User;
-import settings.UserManager;
+import settings.user.User;
+import settings.user.UserManager;
 
 public interface Loginterface {
     /**
@@ -9,28 +9,42 @@ public interface Loginterface {
      * @param username User to retrieve
      * @param password Validation for correct user
      */
-    default void login(String username, String password) {
+    default User login(String username, String password) {
         User user = new User();
         // Check if User exists and get user information
         if (UserManager.findUser(username)) {
+            // assuming the password is correct
             user = UserManager.retrieveUser(username, password);
+
         }
 
-        // Set this user to active and let them play a game?
+        // continue to following screen
+
+
+        return user;
     }
 
     /**
      * Default functionality for a sign up button
-     * @param username User to check against & create
+     * @param username name to check against & create
      * @param password Set password
      */
     default void signUp(String username, String password) {
-        if (!UserManager.findUser(username)) {
-            // Save new user
-            UserManager.saveNewUser(username,password);
+        if ((username == null) || (username.equals(""))) {
+            System.out.println("Please choose a username");
+        } else if (UserManager.findUser(username)) {
+            System.out.println("Username already exists, pls make a new profile or try login");
+        } else if ((password == null) || (password.equals(""))) {
+            // do a thing for minimum password length etc
+            System.out.println("Please enter a password");
+        } else if (password.length() < 6) {
+            System.out.println("Please make sure your password is at least 6 characters long");
+        } else if (username.contains("Anonymous ")) {
+            // default users should basically not exist
+            System.out.println("Can't save a default user, please enter a password or new username");
         } else {
-            // TODO create a new user
-            System.out.println("this method needs to try to create a new user with a different name instead");
+            // Invoke
+            UserManager.saveNewUser(username,password);
         }
     }
 }

@@ -1,28 +1,28 @@
-package settings;
+package settings.user;
 
 /**
  * This is a Singleton class, enjoy.
  * Generic settings go here
  */
-public class Settings {
+public class UserSettings {
     // Make sure there is only ever one instance
-    private static Settings single_instance = null;
+    private static UserSettings single_instance = null;
 
     /**
      * Private constructor, if you don't understand what's happening
      * please take a class or use the Google machine.
      */
-    private Settings() {
+    private UserSettings() {
         // Get the config.yml in here
     }
 
     /**
-     * Static method to create instance of Settings class
+     * Static method to create instance of UserSettings class
      */
-    public static Settings getSettings() {
+    public static UserSettings getSettings() {
         // To ensure only one instance is created
         if (single_instance == null) {
-            single_instance = new Settings();
+            single_instance = new UserSettings();
         }
 
         return single_instance;

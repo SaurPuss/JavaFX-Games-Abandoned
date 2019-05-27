@@ -54490,7 +54490,7 @@ scorch
 scorched
 scorcher
 scorching
-score
+settings.score
 scoreboard
 scorekeeper
 scoreless

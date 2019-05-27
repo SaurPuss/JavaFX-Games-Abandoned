@@ -1,8 +1,8 @@
-package settings;
+package settings.user;
 
-import java.io.*;
+import settings.score.UserScore;
+
 import java.util.Random;
-import java.util.Scanner;
 
 /**
  * User specific settings and saved info go here
@@ -11,38 +11,36 @@ public class User {
     /* Data fields */
     private String userName;
     private String userPassword;
-    private int totalScore;
-    private int currentScore;
-    private int highestStreak;
+    private UserScore userScore;
+    private boolean rememberPassword;
+    private UserSettings userSettings;
     private static final String FILE = "src/assets/users.txt";
 
     /* Constructors */
     /**
-     * Default User with a random name, no password.
+     * Create a default User with a random name, no password.
      */
     public User() {
         userName = randomName();
         userPassword = null;
-        totalScore = 0;
-        currentScore = 0;
-        highestStreak = 0;
+        userScore = new UserScore();
+        rememberPassword = false;
     }
 
     /**
-     * Create a user with a specified name and password.
+     * Create a User object with a specified name and password.
      * @param name String for username
      * @param password String for password
      */
     public User(String name, String password) {
         this.userName = name;
         this.userPassword = password;
-        totalScore = 0;
-        currentScore = 0;
-        highestStreak = 0;
+        userScore = new UserScore();
+        rememberPassword = false;
     }
 
     /* Getters and Setters */
-    String getUserName() { return userName; }
+    public String getUserName() { return userName; }
     void setUserName(String userName) { this.userName = userName; }
 
     // TODO figure this out - getUserPassword() obfuscate
@@ -51,13 +49,10 @@ public class User {
         return userPassword;
     }
 
+    public UserScore getUserScore() { return userScore; }
     void setUserPassword(String userPassword) { this.userPassword = userPassword; }
-    int getTotalScore() { return totalScore; }
-    void setTotalScore(int totalScore) { this.totalScore = totalScore; }
-    int getCurrentScore() { return currentScore; }
-    void setCurrentScore(int currentScore) { this.currentScore = currentScore; }
-    int getHighestStreak() { return highestStreak; }
-    void setHighestStreak(int highestStreak) { this.highestStreak = highestStreak; }
+    public boolean isRememberPassword() { return rememberPassword; }
+    void setRememberPassword(boolean rememberPassword) { this.rememberPassword = rememberPassword; }
 
     /**
      * Choose a random username.
@@ -83,8 +78,8 @@ public class User {
      * @return String Name, Total Score, Current Score, Highest Streak
      */
     public String toString() {
-        return "Name: " + this.userName + "\nTotal Score: " + this.totalScore +
-        "\nCurrent Score: " + this.currentScore + "\nHighest Score Streak: " +
-        this.highestStreak;
+        return "Name: " + this.userName + "\nTotal Score: " + this.userScore.getTotalScore() +
+        "\nCurrent Score: " + this.userScore.getCurrentScore() + "\nHighest Score Streak: " +
+        this.userScore.getHighestStreak();
     }
 }
