@@ -49,7 +49,11 @@ public class Main extends Application {
 
         // Check if user is default profile
         if (User.isDefaultUser()) {
-            System.out.println("Default User, choose login/signup or continue as is");
+            System.out.println("Default User detected");
+
+            // Do stuff
+
+
         } // Check if there is a current user that's also saved to the database
         else if (UserManager.matchCurrentUser()) {
             System.out.println("Someone with this username is saved in the global database, woo!");

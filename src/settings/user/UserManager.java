@@ -6,7 +6,7 @@ import java.io.*;
 
 // TODO password hashing and encryption
 public class UserManager implements Serializable {
-    private static final long serialVersionUID = 365729905314659904L; // TODO look more into auto generating CORRECT serialVersionUID
+    private static final long serialVersionUID = Session.SERIAL_VERSION_UID;
 
     private static String allUsersFilePath = "src/assets/users.csv";
 

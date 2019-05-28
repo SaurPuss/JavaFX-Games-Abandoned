@@ -12,6 +12,8 @@ public class Session {
     public static BorderPane pane = new BorderPane();
     public static User user = new User();
     public static Scene scene = new Scene(pane, 500, 800);
+
+    public static final long SERIAL_VERSION_UID = 1L; // Current version, update as needed
     public static final String CURRENT_USER_FILE = "src/assets/currentUser.dat";
 
     /**

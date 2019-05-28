@@ -10,8 +10,7 @@ import java.util.Random;
  * User specific settings and saved info go here
  */
 public class User implements Serializable {
-    private static final long serialVersionUID = 365729905314659904L;
-
+    private static final long serialVersionUID = Session.SERIAL_VERSION_UID;
     /* Data fields */
     private String userName;
     private String userPassword;
