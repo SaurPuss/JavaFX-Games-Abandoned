@@ -1,21 +1,24 @@
 package settings.user;
 
+import settings.Session;
 import settings.user.score.UserScore;
 
+import java.io.*;
 import java.util.Random;
 
 /**
  * User specific settings and saved info go here
  */
-public class User {
+public class User implements Serializable {
+    private static final long serialVersionUID = 365729905314659904L;
+
     /* Data fields */
     private String userName;
     private String userPassword;
     private UserScore userScore;
     private boolean rememberPassword;
     private boolean rememberUser;
-    private UserSettings userSettings;
-    private static final String FILE = "src/assets/users.txt";
+//    private UserSettings userSettings;
 
     /* Constructors */
     /**
@@ -27,7 +30,7 @@ public class User {
         userScore = new UserScore();
         rememberPassword = false;
         rememberUser = false;
-        userSettings = new UserSettings();
+//        userSettings = new UserSettings();
     }
 
     /**
@@ -46,7 +49,6 @@ public class User {
     /**
      * TODO is this real?
      * Create a fake user for errors?????
-     * @return
      */
     User(boolean bool) {
         if (!bool) {
@@ -62,7 +64,7 @@ public class User {
     }
 
     /* Getters and Setters */
-    public String getUserName() { return userName; }
+    public String getUserName() { return this.userName; }
     void setUserName(String userName) {
         if ((userName.length() >= 6) && (!UserManager.findUserName(userName)))
             this.userName = userName;
@@ -81,23 +83,14 @@ public class User {
     public boolean isRememberUser() { return rememberUser; }
     public void setRememberUser(boolean rememberUser) { this.rememberUser = rememberUser; }
 
-
     /**
-     * Check if current User profile is a default
+     * Static method to check if Session User is default
      * @return boolean default username
      */
-    private boolean isDefaultUser() {
-        return this.userName.contains("Anonymous ");
+    public static boolean isDefaultUser() throws NullPointerException {
+        return Session.user.getUserName().contains("Anonymous ");
     }
 
-    /**
-     * Static method to check if user is default
-     * @param user User object to check for defaultness
-     * @return boolean default username
-     */
-    public static boolean isDefaultUser(User user) {
-        return user.isDefaultUser();
-    }
 
 
     /**
@@ -123,9 +116,22 @@ public class User {
      * Override toString to give a basic output with User info. Excluding the password.
      * @return String Name, Total Score, Current Score, Highest Streak
      */
-    public String toString() {
+    public String toString() throws NullPointerException {
         return "Name: " + this.userName + "\nTotal Score: " + this.userScore.getTotalScore() +
         "\nCurrent Score: " + this.userScore.getCurrentScore() + "\nHighest Score Streak: " +
         this.userScore.getHighestStreak();
+    }
+
+    /**
+     * Implement Serializable Interface methods
+     */
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+    }
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+    }
+    private void readObjectNoData() throws ObjectStreamException {
+        System.out.println("no Object data");
     }
 }

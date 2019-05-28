@@ -2,11 +2,12 @@ package settings.GUI.panes;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import settings.GUI.buttons.UserLoginButtons;
+import settings.GUI.buttons.LoginSignUpButtons;
 import settings.user.User;
 
-public class LoginPane extends VBox implements UserLoginButtons {
+public class LoginPane extends VBox implements LoginSignUpButtons {
     private TextField tfUserName = new TextField();
     private TextField tfUserPassword = new TextField();
     private CheckBox cbRememberUser = new CheckBox();
@@ -15,13 +16,19 @@ public class LoginPane extends VBox implements UserLoginButtons {
         this.setAlignment(Pos.CENTER);
         this.setSpacing(5);
 
+        Label lblUserName = new Label("Username: ", tfUserName);
+        Label lblUserPassword = new Label("Password: ", tfUserPassword);
+
+
+
         cbRememberUser.setSelected(false);
 
-
-        getChildren().addAll(tfUserName, tfUserPassword, cbRememberUser,
+        HBox buttons = new HBox(5);
+        buttons.getChildren().addAll(
                 loginButton(tfUserName.getText(), tfUserPassword.getText()),
-                signUpButton(tfUserName.getText(), tfUserPassword.getText())
-        );
+                signUpButton(tfUserName.getText(), tfUserPassword.getText()));
+
+        getChildren().addAll(tfUserName, tfUserPassword, cbRememberUser, buttons);
     }
 
     public LoginPane(User user) {
@@ -91,7 +98,7 @@ public class LoginPane extends VBox implements UserLoginButtons {
         // btnSignUp.setOnAction(this::signUpButton);
 
         // TODO Do this for the hangman fields <3
-        // Get default methods from UserLoginButtons
+        // Get default methods from LoginSignUpButtons
         btnLogin.setOnAction(e -> {
             if (cbRememberUser.isSelected()) {
                 UserManager.saveCurrentUser(new User(tfUserName.getText(), tfUserPassword.getText()));

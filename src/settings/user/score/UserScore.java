@@ -1,9 +1,12 @@
 package settings.user.score;
 
+import java.io.*;
+
 /**
  * User saves scores in here
  */
-public class UserScore {
+public class UserScore implements Serializable {
+    private static final long serialVersionUID = 365729905314659904L;
     // Data fields
     private int totalScore;
     private int currentScore;
@@ -53,4 +56,16 @@ public class UserScore {
     }
 
 
+    /**
+     * Implement Serializable Interface methods
+     */
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+    }
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+    }
+    private void readObjectNoData() throws ObjectStreamException {
+        System.out.println("no Object data");
+    }
 }

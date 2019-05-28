@@ -23,7 +23,7 @@ public class Scoreboard extends BorderPane {
 
     public Scoreboard(User user) {
         globalScores = retrieveTopScores();
-        userScore = user.getUserScore();
+//        userScore = user.getUserScore();
 
         // Top 10 for each game
         hangmanScores = retrieveHangmanScores();
@@ -34,8 +34,8 @@ public class Scoreboard extends BorderPane {
 
     private HashMap<String, Integer> retrieveTopScores() {
         HashMap<String, Integer> temp = new HashMap<>();
-        System.out.println("Get top 10 global scores from a csv");
-        System.out.println("First line in csv with string \"GLOBAL SCORES\"");
+//        System.out.println("Get top 10 global scores from a csv");
+//        System.out.println("First line in csv with string \"GLOBAL SCORES\"");
 
 
 
@@ -43,23 +43,23 @@ public class Scoreboard extends BorderPane {
     }
 
     private void updateScoreboard() {
-        System.out.println("Print the scores to the Scoreboard");
+//        System.out.println("Print the scores to the Scoreboard");
         retrieveTopScores();
 
     }
 
     private void saveScores() {
-        System.out.println("Save the scores to the global scores csv");
+//        System.out.println("Save the scores to the global scores csv");
 //        saveUserScores();
     }
 
 
 
     public void updateUserScoreboard(User user) {
-        System.out.println("Import user specific scores, saved in the user scores csv");
-        System.out.println("retrieve them from the line with the username as a key");
+//        System.out.println("Import user specific scores, saved in the user scores csv");
+//        System.out.println("retrieve them from the line with the username as a key");
 
-        System.out.println("Adjust global scores if necessary?");
+//        System.out.println("Adjust global scores if necessary?");
     }
 
 
@@ -67,21 +67,21 @@ public class Scoreboard extends BorderPane {
 
         switch(n) {
             default:
-                System.out.println("Print the scores for the corresponding Game");
+//                System.out.println("Print the scores for the corresponding Game");
         }
     }
 
     private void printGlobalScores() {
         globalScores = retrieveTopScores();
 
-        System.out.println("Print the stuff into the pane from the top 10 global scores");
+//        System.out.println("Print the stuff into the pane from the top 10 global scores");
     }
 
 
 
     private HashMap<String, Integer> retrieveHangmanScores() {
-        System.out.println("Get the top 10 from hangman");
-        System.out.println("From the csv with global scores, use \"GAME HANGMAN\" as a key");
+//        System.out.println("Get the top 10 from hangman");
+//        System.out.println("From the csv with global scores, use \"GAME HANGMAN\" as a key");
 
         return new HashMap<>();
     }

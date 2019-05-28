@@ -14,16 +14,17 @@ import settings.GUI.panes.GameSelectionPane;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-import settings.GUI.panes.MotherPane;
 import settings.GUI.panes.TopBarPane;
+import settings.Session;
 import settings.user.score.Scoreboard;
 import settings.GUI.panes.LoginPane;
 import settings.user.User;
 import settings.user.UserManager;
+
+import java.io.File;
 
 /**
  * Let's get this bitch started! /o/
@@ -42,49 +43,40 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
+        // Make sure all things are working on launch
+        Session.initSession();
+        Session.printCurrentUser();
 
-
-
-        // Check if there is a current user that's also saved to the database
-        if (UserManager.matchCurrentUser()) {
-            UserManager.user = UserManager.getCurrentUser();
+        // Check if user is default profile
+        if (User.isDefaultUser()) {
+            System.out.println("Default User, choose login/signup or continue as is");
+        } // Check if there is a current user that's also saved to the database
+        else if (UserManager.matchCurrentUser()) {
             System.out.println("Someone with this username is saved in the global database, woo!");
 
             // Password auto login?
-            if (!UserManager.user.isRememberPassword()) {
+            if (!Session.user.isRememberPassword()) {
                 System.out.println("User Password required.");
-                MotherPane.pane.setCenter(new LoginPane(UserManager.user));
-
-
-
+                Session.pane.setCenter(new LoginPane(Session.user));
             } else { // Auto login, update scoreboard and go to game selection screen
 
-                MotherPane.pane.setTop(new TopBarPane());
-                MotherPane.pane.setCenter(new GameSelectionPane());
+                Session.pane.setTop(new TopBarPane());
+                Session.pane.setCenter(new GameSelectionPane());
 
                 // Fill Scores and UserSettings for this user profile
-                scoreboard.updateUserScoreboard(UserManager.user);
+                scoreboard.updateUserScoreboard(Session.user);
 
                 // Continue to Game selection screen
                 game = GameSelectionPane.startGame(0);
-
             }
-
         }
-        // Sometimes the current user is a default profile
-        else if (User.isDefaultUser(UserManager.getCurrentUser())) {
-            System.out.println("Default User, choose login/signup or continue as is");
-            UserManager.user = UserManager.getCurrentUser();
-
-
-
-        }
-        // Otherwise there is nothing and you should start fresh
+        // If all else fails
         else {
-            UserManager.user = new User();
-            System.out.println("No current user found, starting with a default profile.");
+            Session.user = new User();
+            System.out.println("No current user found, something went super bad. Creating new user.");
 //                LoginPane.signUpScreen();
         }
+
 
 
         // TODO At the top of the pane display current username, a button for scores and a button for settings
@@ -101,19 +93,13 @@ public class Main extends Application {
         // This is temporary
 //        startGame(0);
 
-        gamePane.getChildren().addAll(game);
-        MotherPane.pane.setCenter(gamePane);
+//        gamePane.getChildren().addAll(game);
+//        Session.pane.setCenter(gamePane);
 
-
-
-
-
-//        scene = new Scene(pane, 500, 800);
 
         // Put it all together in a neat little package
-        Scene scene = new Scene(MotherPane.pane, 500, 800);
         primaryStage.setTitle("Let's Play a Game");
-        primaryStage.setScene(scene);
+        primaryStage.setScene(Session.scene);
         primaryStage.show();
 
         primaryStage.setResizable(false); // No resize for you!

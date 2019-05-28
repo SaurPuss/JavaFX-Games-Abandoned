@@ -3,9 +3,11 @@ package settings.GUI.buttons;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import settings.GUI.panes.GameSelectionPane;
+import settings.Session;
 import settings.user.UserManager;
 
-public interface UserLoginButtons {
+public interface LoginSignUpButtons {
 
     /**
      * Default login button, does a clicky-click to try and log in
@@ -20,9 +22,10 @@ public interface UserLoginButtons {
         // Attach event to the button
         btnLogin.setOnAction(e -> {
             // Set user as user
-            UserManager.user = UserManager.getUserProfile(username, password);
+            Session.user = UserManager.getUserProfile(username, password);
 
             // Continue to Game SelectionPane
+            Session.pane.setCenter(new GameSelectionPane());
 
         });
 

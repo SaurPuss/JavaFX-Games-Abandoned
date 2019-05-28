@@ -1,13 +1,14 @@
 package settings.user;
 
+import settings.Session;
+
 import java.io.*;
 
 // TODO password hashing and encryption
 public class UserManager implements Serializable {
-    private static String currentUserFile = "src/assets/currentUser.dat";
-    private static String allUsersFilePath = "src/assets/users.csv";
+    private static final long serialVersionUID = 365729905314659904L; // TODO look more into auto generating CORRECT serialVersionUID
 
-    public static User user = getCurrentUser();
+    private static String allUsersFilePath = "src/assets/users.csv";
 
 
     /**
@@ -119,9 +120,9 @@ public class UserManager implements Serializable {
                     if ((userName.equals(fields[1])) && (userPassword.equals(fields[2]))) {
                         user.setUserName(fields[1]);
                         user.setUserPassword(fields[2]);
-                        user.getUserScore().setSavedTotalScore(Integer.valueOf(fields[3]));
-                        user.getUserScore().resetCurrentScore();
-                        user.getUserScore().setSavedHighestStreak(Integer.valueOf(fields[5]));
+//                        user.getUserScore().setSavedTotalScore(Integer.valueOf(fields[3]));
+//                        user.getUserScore().resetCurrentScore();
+//                        user.getUserScore().setSavedHighestStreak(Integer.valueOf(fields[5]));
                         user.setRememberPassword(Boolean.valueOf(fields[6]));
                     } else {
                         System.out.println("Somehow this password does not match, wtf");
@@ -143,33 +144,27 @@ public class UserManager implements Serializable {
      * @return Existing or Default User object
      */
     public static User getCurrentUser() {
-        User user = new User();
-
         try {
-            FileInputStream f = new FileInputStream(currentUserFile);
+            FileInputStream f = new FileInputStream(Session.CURRENT_USER_FILE);
             ObjectInputStream o = new ObjectInputStream(f);
 
-            System.out.println("Existing current user found.");
-            user = (User) o.readObject();
+            Session.user = (User) o.readObject();
 
             o.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("currentUser.dat does not exist. Creating new file with default user.");
-            saveCurrentUser(user);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return user;
+        return Session.user;
     }
 
     /**
      * Save user to currentUser.dat
      * @param user User to be saved
      */
-    static void saveCurrentUser(User user) {
+    public static void saveCurrentUser(User user) {
         try {
-            FileOutputStream f = new FileOutputStream(currentUserFile, false);
+            FileOutputStream f = new FileOutputStream(Session.CURRENT_USER_FILE, false);
             ObjectOutputStream o = new ObjectOutputStream(f);
 
             o.writeObject(user);
@@ -217,13 +212,13 @@ public class UserManager implements Serializable {
             fileWriter.append(',');
             fileWriter.append(user.getUserPassword());
             fileWriter.append(',');
-            fileWriter.append(String.valueOf(user.getUserScore().getTotalScore()));
+            /*fileWriter.append(String.valueOf(user.getUserScore().getTotalScore()));
             fileWriter.append(',');
             fileWriter.append(String.valueOf(user.getUserScore().getCurrentScore()));
             fileWriter.append(',');
             fileWriter.append(String.valueOf(user.getUserScore().getHighestStreak()));
             fileWriter.append(',');
-            fileWriter.append(String.valueOf(user.isRememberPassword()));
+            */fileWriter.append(String.valueOf(user.isRememberPassword()));
             fileWriter.append("\n");
 
             System.out.println("User has been saved");
@@ -300,4 +295,9 @@ public class UserManager implements Serializable {
             e.printStackTrace();
         }
     }*/
+
+
+    private void writeObject(ObjectOutputStream out) throws IOException {}
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {}
+    private void readObjectNoData() throws ObjectStreamException {}
 }
