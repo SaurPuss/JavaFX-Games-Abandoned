@@ -13,7 +13,6 @@ import game.Game;
 import settings.GUI.panes.GameSelectionPane;
 import javafx.application.Application;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
@@ -24,10 +23,10 @@ import settings.GUI.panes.LoginPane;
 import settings.user.User;
 import settings.user.UserManager;
 
-import java.io.File;
-
 /**
- * Let's get this bitch started! /o/
+ * Welcome to a set of games made in javafx to entertain you for a hot minute.
+ * @author SaurPuss
+ * @version 0.1
  */
 public class Main extends Application {
     // This is the main Pane
@@ -49,18 +48,18 @@ public class Main extends Application {
 
         // Check if user is default profile
         if (User.isDefaultUser()) {
-            System.out.println("Default User detected");
+            System.out.println("MAIN: Default User detected");
 
-            // Do stuff
+            Session.pane.setCenter(new LoginPane());
 
 
         } // Check if there is a current user that's also saved to the database
         else if (UserManager.matchCurrentUser()) {
-            System.out.println("Someone with this username is saved in the global database, woo!");
+            System.out.println("MAIN: Someone with this username is saved in the global database, woo!");
 
             // Password auto login?
             if (!Session.user.isRememberPassword()) {
-                System.out.println("User Password required.");
+                System.out.println("MAIN: User Password required.");
                 Session.pane.setCenter(new LoginPane(Session.user));
             } else { // Auto login, update scoreboard and go to game selection screen
 
@@ -77,7 +76,7 @@ public class Main extends Application {
         // If all else fails
         else {
             Session.user = new User();
-            System.out.println("No current user found, something went super bad. Creating new user.");
+            System.out.println("MAIN: No current user found, something went super bad. Creating new user.");
 //                LoginPane.signUpScreen();
         }
 

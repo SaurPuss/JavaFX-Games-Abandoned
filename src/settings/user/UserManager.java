@@ -8,9 +8,6 @@ import java.io.*;
 public class UserManager implements Serializable {
     private static final long serialVersionUID = Session.SERIAL_VERSION_UID;
 
-    private static String allUsersFilePath = "src/assets/users.csv";
-
-
     /**
      * Match current User to database.
      * @return Saved user in currentUser.dat matches one of the users in users.csv
@@ -29,13 +26,13 @@ public class UserManager implements Serializable {
         if (findUserName(userName)) { // verify userName
             // TODO hash password input
             if (userPassword.equals(getUserPassword(userName))) { // verify userPassword
-                System.out.println("Successfully retrieved user from database");
+                System.out.println("USER MANAGER: Successfully retrieved user from database");
                 return retrieveUser(userName, userPassword);
             }
-            System.out.println("Password didn't match the username");
+            System.out.println("USER MANAGER: Password didn't match the username");
         }
 
-        System.out.println("Username doesn't exist in the database");
+        System.out.println("USER MANAGER: Username doesn't exist in the database");
         return new User(false); // Bad default
     }
 
@@ -47,7 +44,7 @@ public class UserManager implements Serializable {
     public static boolean findUserName(String userName) {
         try {
             String line;
-            BufferedReader reader = new BufferedReader(new FileReader(allUsersFilePath));
+            BufferedReader reader = new BufferedReader(new FileReader(Session.ALL_USER_FILE));
             reader.readLine();
 
             while ((line = reader.readLine()) != null) {
@@ -76,7 +73,7 @@ public class UserManager implements Serializable {
         // TODO Make this return the hashed password and make a (de)hashing method
         try {
             String line;
-            BufferedReader reader = new BufferedReader(new FileReader(allUsersFilePath));
+            BufferedReader reader = new BufferedReader(new FileReader(Session.ALL_USER_FILE));
             reader.readLine();
 
             while ((line = reader.readLine()) != null) {
@@ -109,7 +106,7 @@ public class UserManager implements Serializable {
         User user = new User();
         try {
             String line;
-            BufferedReader reader = new BufferedReader(new FileReader(allUsersFilePath));
+            BufferedReader reader = new BufferedReader(new FileReader(Session.ALL_USER_FILE));
             reader.readLine();
 
             while ((line = reader.readLine()) != null) {
@@ -120,9 +117,9 @@ public class UserManager implements Serializable {
                     if ((userName.equals(fields[1])) && (userPassword.equals(fields[2]))) {
                         user.setUserName(fields[1]);
                         user.setUserPassword(fields[2]);
-//                        user.getUserScore().setSavedTotalScore(Integer.valueOf(fields[3]));
-//                        user.getUserScore().resetCurrentScore();
-//                        user.getUserScore().setSavedHighestStreak(Integer.valueOf(fields[5]));
+                        user.getUserScore().setSavedTotalScore(Integer.valueOf(fields[3]));
+                        user.getUserScore().resetCurrentScore();
+                        user.getUserScore().setSavedHighestStreak(Integer.valueOf(fields[5]));
                         user.setRememberPassword(Boolean.valueOf(fields[6]));
                     } else {
                         System.out.println("Somehow this password does not match, wtf");
@@ -199,8 +196,8 @@ public class UserManager implements Serializable {
     private static void saveNewUser(User user) {
         FileWriter fileWriter;
         try {
-            File check = new File(allUsersFilePath);
-            fileWriter = new FileWriter(allUsersFilePath, true);
+            File check = new File(Session.ALL_USER_FILE);
+            fileWriter = new FileWriter(Session.ALL_USER_FILE, true);
 
             // Add a header if this is a new file
             if (!check.exists()) {
@@ -212,16 +209,16 @@ public class UserManager implements Serializable {
             fileWriter.append(',');
             fileWriter.append(user.getUserPassword());
             fileWriter.append(',');
-            /*fileWriter.append(String.valueOf(user.getUserScore().getTotalScore()));
+            fileWriter.append(String.valueOf(user.getUserScore().getTotalScore()));
             fileWriter.append(',');
             fileWriter.append(String.valueOf(user.getUserScore().getCurrentScore()));
             fileWriter.append(',');
             fileWriter.append(String.valueOf(user.getUserScore().getHighestStreak()));
             fileWriter.append(',');
-            */fileWriter.append(String.valueOf(user.isRememberPassword()));
+            fileWriter.append(String.valueOf(user.isRememberPassword()));
             fileWriter.append("\n");
 
-            System.out.println("User has been saved");
+            System.out.println("USER MANAGER: User has been saved");
             fileWriter.flush();
             fileWriter.close();
         } catch (Exception e) {
@@ -297,7 +294,13 @@ public class UserManager implements Serializable {
     }*/
 
 
-    private void writeObject(ObjectOutputStream out) throws IOException {}
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {}
-    private void readObjectNoData() throws ObjectStreamException {}
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+    }
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+    }
+    private void readObjectNoData() throws ObjectStreamException {
+        System.out.println("USER MANAGER: no object data");
+    }
 }

@@ -1,12 +1,14 @@
 package settings.user.score;
 
+import settings.Session;
+
 import java.io.*;
 
 /**
  * User saves scores in here
  */
 public class UserScore implements Serializable {
-    private static final long serialVersionUID = 365729905314659904L;
+    private static final long serialVersionUID = Session.SERIAL_VERSION_UID;
     // Data fields
     private int totalScore;
     private int currentScore;
@@ -66,6 +68,6 @@ public class UserScore implements Serializable {
         in.defaultReadObject();
     }
     private void readObjectNoData() throws ObjectStreamException {
-        System.out.println("no Object data");
+        System.out.println("USER SCORE: no Object data");
     }
 }

@@ -13,8 +13,9 @@ public class Session {
     public static User user = new User();
     public static Scene scene = new Scene(pane, 500, 800);
 
-    public static final long SERIAL_VERSION_UID = 1L; // Current version, update as needed
+    public static final long SERIAL_VERSION_UID = 2L; // Current version, update when file composition changes
     public static final String CURRENT_USER_FILE = "src/assets/currentUser.dat";
+    public static final String ALL_USER_FILE = "src/assets/users.csv";
 
     /**
      * Making sure all assets are in order and loaded up on start.
@@ -31,9 +32,13 @@ public class Session {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         // Get user from currentUser.dat
         user = UserManager.getCurrentUser();
+
+        // Do stuff with the local database which holds multiple user objects
+
+
+        // Do scoreboard stuff
     }
 
     public static void printCurrentUser() {

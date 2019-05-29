@@ -17,7 +17,16 @@ public class User implements Serializable {
     private UserScore userScore;
     private boolean rememberPassword;
     private boolean rememberUser;
-//    private UserSettings userSettings;
+    //    private UserSettings userSettings;
+
+    private static String[] anonymousName = {
+            "Anonymous Badger", "Anonymous Llama", "Anonymous Gopher",
+            "Anonymous Giraffe", "Anonymous Dolphin", "Anonymous Horse",
+            "Anonymous Zebra", "Anonymous Lion", "Anonymous Bear",
+            "Anonymous Koala", "Anonymous Tit", "Anonymous Cat",
+            "Anonymous Dog", "Anonymous Ferret", "Anonymous Panther",
+            "Anonymous Tiger", "Anonymous Raven", "Anonymous Crow",
+            "Anonymous Dinosaur", "Anonymous Potato"};
 
     /* Constructors */
     /**
@@ -57,7 +66,7 @@ public class User implements Serializable {
             rememberPassword = false;
             rememberUser = false;
         } else {
-            System.out.println("This should not be possible, terminating program.");
+            System.out.println("USER: This should not be possible, terminating program.");
             System.exit(100);
         }
     }
@@ -94,21 +103,27 @@ public class User implements Serializable {
 
     /**
      * Choose a random username.
-     * @return String Combination of "Anonymous" and a random animal.
+     * @return random word from anonymousName String array.
      */
     private String randomName() {
-        String s = "Anonymous ";
         Random r = new Random();
+        int random = r.nextInt(anonymousName.length);
 
-        String[] animals = {
-                "Badger", "Llama", "Gopher", "Giraffe", "Dolphin",
-                "Horse", "Zebra", "Lion", "Bear", "Koala",
-                "Tit", "Cat", "Dog", "Ferret", "Panther",
-                "Tiger", "Raven", "Crow", "Dinosaur", "Potato"
-        };
-        int random = r.nextInt(animals.length);
+        return anonymousName[random];
+    }
 
-        return s + animals[random];
+    /**
+     * Check if a name matches any entries in the anonymousName String array.
+     * @param userName String to match with the array
+     * @return boolean is a match or not
+     */
+    public static boolean isRandomName(String userName) {
+        for (String s : anonymousName) {
+            if (s.toLowerCase().equals(userName.toLowerCase()))
+                return true;
+        }
+
+        return false;
     }
 
     /**
@@ -131,6 +146,6 @@ public class User implements Serializable {
         in.defaultReadObject();
     }
     private void readObjectNoData() throws ObjectStreamException {
-        System.out.println("no Object data");
+        System.out.println("USER: no Object data");
     }
 }

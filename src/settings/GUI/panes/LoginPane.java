@@ -1,39 +1,73 @@
 package settings.GUI.panes;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import settings.GUI.buttons.LoginSignUpButtons;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import settings.GUI.buttons.LoginButton;
+import settings.GUI.buttons.SignUpButton;
+import settings.Session;
 import settings.user.User;
 
-public class LoginPane extends VBox implements LoginSignUpButtons {
-    private TextField tfUserName = new TextField();
-    private TextField tfUserPassword = new TextField();
-    private CheckBox cbRememberUser = new CheckBox();
+public class LoginPane extends VBox implements LoginButton, SignUpButton {
+    private Text welcome;
+    private static Text chooseAction = new Text("Unless you want to remain anonymous " +
+            "you should log in or sign up.");
 
-    private LoginPane() {
-        this.setAlignment(Pos.CENTER);
-        this.setSpacing(5);
+    private static TextField tfUserName = new TextField();
+    private static TextField tfUserPassword = new TextField();
+    private static CheckBox cbRememberUser = new CheckBox();
 
-        Label lblUserName = new Label("Username: ", tfUserName);
-        Label lblUserPassword = new Label("Password: ", tfUserPassword);
+    private static Label lblUserName = new Label("Username: ", tfUserName);
+    private static Label lblUserPassword = new Label("Password: ", tfUserPassword);
+    private static Label lblRemember = new Label(" Remember me", cbRememberUser);
 
+    private static HBox fieldsWrapper = new HBox();
+    private static HBox buttons = new HBox(5);
 
+    static { // Set this up for all LoginPane() objects
+        chooseAction.setWrappingWidth(250);
+        chooseAction.setTextAlignment(TextAlignment.CENTER);
+        lblUserName.setContentDisplay(ContentDisplay.RIGHT);
+        lblUserPassword.setContentDisplay(ContentDisplay.RIGHT);
+        lblRemember.setContentDisplay(ContentDisplay.LEFT);
+
+        VBox fields = new VBox(5);
+        fields.setPadding(new Insets(20, 0, 10, 0));
+        fields.getChildren().addAll(tfUserName, lblUserName,
+                tfUserPassword, lblUserPassword,
+                cbRememberUser, lblRemember);
+
+        fieldsWrapper.setAlignment(Pos.CENTER);
+        fieldsWrapper.getChildren().add(fields);
+
+        buttons.setAlignment(Pos.CENTER);
+
+    }
+    public LoginPane() {
+        welcome = new Text("Welcome " + Session.user.getUserName());
+        welcome.setFont(Font.font(18));
 
         cbRememberUser.setSelected(false);
 
-        HBox buttons = new HBox(5);
         buttons.getChildren().addAll(
-                loginButton(tfUserName.getText(), tfUserPassword.getText()),
-                signUpButton(tfUserName.getText(), tfUserPassword.getText()));
+                login(tfUserName.getText(), tfUserPassword.getText()),
+                signUp(tfUserName.getText(), tfUserPassword.getText()));
 
-        getChildren().addAll(tfUserName, tfUserPassword, cbRememberUser, buttons);
+        setSpacing(5);
+        setAlignment(Pos.CENTER);
+        getChildren().addAll(welcome, chooseAction, fieldsWrapper, buttons);
     }
 
     public LoginPane(User user) {
-        this.setAlignment(Pos.CENTER);
-        this.setSpacing(5);
+        welcome = new Text("Welcome " + user.getUserName());
+        welcome.setFont(Font.font(16));
+//        this.setAlignment(Pos.CENTER);
+//        this.setSpacing(5);
 
         tfUserName.setText(user.getUserName());
         cbRememberUser.setSelected(user.isRememberUser());
@@ -98,14 +132,14 @@ public class LoginPane extends VBox implements LoginSignUpButtons {
         // btnSignUp.setOnAction(this::signUpButton);
 
         // TODO Do this for the hangman fields <3
-        // Get default methods from LoginSignUpButtons
+        // Get default methods from LoginButton
         btnLogin.setOnAction(e -> {
             if (cbRememberUser.isSelected()) {
                 UserManager.saveCurrentUser(new User(tfUserName.getText(), tfUserPassword.getText()));
-                loginButton(tfUserName.getText(), tfUserPassword.getText());
+                login(tfUserName.getText(), tfUserPassword.getText());
                 // continue to next screen
             } else {
-                loginButton(tfUserName.getText(), tfUserPassword.getText());
+                login(tfUserName.getText(), tfUserPassword.getText());
                 UserManager.deleteCurrentUser(); // Make sure the current user is saved to random default
                 // continue to next screen
             }
