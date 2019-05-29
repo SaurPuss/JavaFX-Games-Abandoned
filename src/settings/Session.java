@@ -6,6 +6,7 @@ import settings.user.User;
 import settings.user.UserManager;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class Session {
@@ -22,18 +23,33 @@ public class Session {
      */
     public static void initSession() {
         // Check and if necessary create currentUser.dat
-        File file = new File(CURRENT_USER_FILE);
+        File currentUserFile = new File(CURRENT_USER_FILE);
         try {
             // try to create new currentUser.dat
-            file.createNewFile();
+            currentUserFile.createNewFile();
             // Save a default user to the new file
-            if (file.length() == 0)
+            if (currentUserFile.length() == 0)
                 UserManager.saveCurrentUser(new User());
         } catch (IOException e) {
             e.printStackTrace();
         }
         // Get user from currentUser.dat
         user = UserManager.getCurrentUser();
+
+        // Check and if necessary create users.csv
+        File allUsersFile = new File(ALL_USER_FILE);
+        try {
+            // try to create users.csv
+            allUsersFile.createNewFile();
+            if (allUsersFile.length() == 0) {
+                // add header to the file
+                FileWriter fileWriter = new FileWriter(Session.ALL_USER_FILE, true);
+                fileWriter.append("Username,Password,TotalScore,CurrentStreak,HighestStreak,RememberPassword,RememberUser\n");
+                fileWriter.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // Do stuff with the local database which holds multiple user objects
 

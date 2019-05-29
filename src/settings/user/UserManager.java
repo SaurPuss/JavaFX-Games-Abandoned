@@ -199,11 +199,6 @@ public class UserManager implements Serializable {
             File check = new File(Session.ALL_USER_FILE);
             fileWriter = new FileWriter(Session.ALL_USER_FILE, true);
 
-            // Add a header if this is a new file
-            if (!check.exists()) {
-                fileWriter.append("Username,Password,TotalScore,CurrentStreak,HighestStreak\n");
-            }
-
             // Add the user information to the file
             fileWriter.append(user.getUserName());
             fileWriter.append(',');
