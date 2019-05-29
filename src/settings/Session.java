@@ -28,8 +28,10 @@ public class Session {
             // try to create new currentUser.dat
             currentUserFile.createNewFile();
             // Save a default user to the new file
-            if (currentUserFile.length() == 0)
+            if (currentUserFile.length() == 0) {
+                System.out.println("SESSION: Creating new currentUser.dat");
                 UserManager.saveCurrentUser(new User());
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,6 +45,7 @@ public class Session {
             allUsersFile.createNewFile();
             if (allUsersFile.length() == 0) {
                 // add header to the file
+                System.out.println("SESSION: Creating new users.csv");
                 FileWriter fileWriter = new FileWriter(Session.ALL_USER_FILE, true);
                 fileWriter.append("Username,Password,TotalScore,CurrentStreak,HighestStreak,RememberPassword,RememberUser\n");
                 fileWriter.close();

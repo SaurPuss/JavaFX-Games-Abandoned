@@ -28,6 +28,7 @@ import settings.user.UserManager;
  * @author SaurPuss
  * @version 0.1
  */
+// TODO make real and functional Javadoc
 public class Main extends Application {
     // This is the main Pane
     private static Scoreboard scoreboard = new Scoreboard();
@@ -55,7 +56,7 @@ public class Main extends Application {
 
         } // Check if there is a current user that's also saved to the database
         else if (UserManager.matchCurrentUser()) {
-            System.out.println("MAIN: Someone with this username is saved in the global database, woo!");
+            System.out.println("MAIN: User exists.");
 
             // Password auto login?
             if (!Session.user.isRememberPassword()) {
@@ -72,12 +73,10 @@ public class Main extends Application {
                 // Continue to Game selection screen
                 game = GameSelectionPane.startGame(0);
             }
-        }
-        // If all else fails
-        else {
-            Session.user = new User();
-            System.out.println("MAIN: No current user found, something went super bad. Creating new user.");
-//                LoginPane.signUpScreen();
+        } else {
+            // fallback just in case
+            System.out.println("MAIN: Starting with a blank slate: new LoginPane()");
+            Session.pane.setCenter(new LoginPane());
         }
 
 
@@ -92,7 +91,7 @@ public class Main extends Application {
         gamePane = new HBox();
         gamePane.setAlignment(Pos.CENTER);
 
-        splashStart();
+//        splashStart();
         // This is temporary
 //        startGame(0);
 

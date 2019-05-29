@@ -17,20 +17,19 @@ public interface LoginButton {
     /**
      * Default login button, does a clicky-click to try and log in
      * with given credentials.
-     * @param username required username credential
-     * @param password required password credential
      * @return functional login button that will throw errors in LoginPane()
      */
-    default Button login(String username, String password) {
+    default Button login() {
         Button btnLogin = new Button("Log In");
 
         // Attach event to the button
         btnLogin.setOnAction(e -> {
             // Check if user exists in the database
-            if (UserManager.findUserName(username)) {
+            if (UserManager.findUserName(LoginPane.tfUserName.getText())) {
                 // Set user as user
                 // TODO do user stuff
-                Session.user = UserManager.getUserProfile(username, password);
+                Session.user = UserManager.getUserProfile(LoginPane.tfUserName.getText(),
+                        LoginPane.tfUserPassword.getText());
 
 
 

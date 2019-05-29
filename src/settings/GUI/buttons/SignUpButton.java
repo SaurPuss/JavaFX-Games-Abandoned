@@ -14,7 +14,7 @@ public interface SignUpButton {
         Button btnSignUp = new Button("Sign Up");
 
         btnSignUp.setOnAction(e -> {
-            // TODO Add password confirm field
+            // TODO Add password confirm field & errors
             signUpAction(LoginPane.tfUserName.getText(), LoginPane.tfUserPassword.getText());
         });
 
@@ -50,11 +50,6 @@ public interface SignUpButton {
         else {
             // TODO update saveNewUser method & also the updateExistingUser method
             UserManager.saveNewUser(username, password);
-            System.out.println("SIGN UP BUTTON: saving user");
-            // Set user as Session user
-
-            // If remember me is clicked set user to currentUser.dat
-
             // Continue to game selection pane
         }
     }

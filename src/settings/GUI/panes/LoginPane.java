@@ -18,8 +18,8 @@ import settings.user.User;
 public class LoginPane extends VBox implements LoginButton, SignUpButton {
     private static Text welcome;
     private static Text chooseAction = new Text(
-            "Unless you want to remain anonymous " +
-            "you should log in or sign up.");
+            "Unless you want to remain anonymous" +
+            "\nyou should log in or sign up.");
     private static Text errUser = new Text("");
     private static Text errPassword = new Text("");
     public static TextField tfUserName = new TextField();
@@ -28,13 +28,12 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
     private static Text tUserName = new Text("Username:  ");
     private static Text tUserPassword = new Text("Password:  ");
     private static Text tRemember = new Text(" Remember me");
-    private static CheckBox cbRememberUser = new CheckBox();
+    public static CheckBox cbRememberUser = new CheckBox();
 
     private static GridPane fields = new GridPane();
     private static HBox buttons = new HBox(5);
 
     static { // Set this up for all LoginPane() objects
-        chooseAction.setWrappingWidth(250);
         chooseAction.setTextAlignment(TextAlignment.CENTER);
 
         fields.add(tUserName, 0, 0, 2, 1);
@@ -58,9 +57,7 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
         welcome.setFont(Font.font(18));
         cbRememberUser.setSelected(false);
 
-        buttons.getChildren().addAll(
-                login(tfUserName.getText(), tfUserPassword.getText()),
-                signUp());
+        buttons.getChildren().addAll(login(), signUp());
 
         setSpacing(5);
         setAlignment(Pos.CENTER);
@@ -77,9 +74,7 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
         cbRememberUser.setSelected(user.isRememberUser());
         tfUserName.setText(user.getUserName());
 
-        buttons.getChildren().addAll(
-                login(tfUserName.getText(), tfUserPassword.getText()),
-                signUp());
+        buttons.getChildren().addAll(login(), signUp());
 
         setSpacing(5);
         setAlignment(Pos.CENTER);
