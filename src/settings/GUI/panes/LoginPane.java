@@ -22,8 +22,9 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
             "you should log in or sign up.");
     private static Text errUser = new Text("");
     private static Text errPassword = new Text("");
-    private static TextField tfUserName = new TextField();
-    private static TextField tfUserPassword = new TextField();
+    public static TextField tfUserName = new TextField();
+    // TODO obfuscate password input field
+    public static TextField tfUserPassword = new TextField();
     private static Text tUserName = new Text("Username:  ");
     private static Text tUserPassword = new Text("Password:  ");
     private static Text tRemember = new Text(" Remember me");
@@ -59,7 +60,7 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
 
         buttons.getChildren().addAll(
                 login(tfUserName.getText(), tfUserPassword.getText()),
-                signUp(tfUserName.getText(), tfUserPassword.getText()));
+                signUp());
 
         setSpacing(5);
         setAlignment(Pos.CENTER);
@@ -78,7 +79,7 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
 
         buttons.getChildren().addAll(
                 login(tfUserName.getText(), tfUserPassword.getText()),
-                signUp(tfUserName.getText(), tfUserPassword.getText()));
+                signUp());
 
         setSpacing(5);
         setAlignment(Pos.CENTER);
@@ -87,9 +88,9 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
 
     /**
      * Add error message to sign up fields for better UX
-     * @param err integer for switch case
+     * @param err string for switch case
      */
-    public static void loginError(int err) {
+    public static void loginError(String err) {
         // Clear error messages from GridPane in case of multiple invocations
         fields.getChildren().removeAll(errUser, errPassword);
 
@@ -99,10 +100,33 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
         errPassword.setFont(Font.font(10));
 
         switch(err) {
-            case 1: fields.add(errUser, 0, 1, 3, 1);
-                errUser.setText("* Username does not exist."); break;
-            case 2: fields.add(errPassword, 0, 3, 3, 1);
-                errPassword.setText("* Password does not match."); break;
+            // Login mismatch
+            case "UserDoesNotExist": fields.add(errUser, 0, 1, 3, 1);
+                errUser.setText("* Username does not exist.");
+                System.out.println("LOGIN PANE: User does not exist in database"); break;
+            case "PasswordNoMatch": fields.add(errPassword, 0, 3, 3, 1);
+                errPassword.setText("* Password does not match.");
+                System.out.println("LOGIN PANE: Password does not match username."); break;
+            // Username errors
+            case "UsernameEmpty": fields.add(errUser, 0, 1, 3, 1);
+                errUser.setText("* Username is missing.");
+                System.out.println("LOGIN PANE: Username Textfield is empty."); break;
+            case "DefaultUsername": fields.add(errUser, 0, 1, 3, 1);
+                errUser.setText("* You're using a default Username. \nPlease choose something else.");
+                System.out.println("LOGIN PANE: Username is default."); break;
+            case "UsernameTooShort": fields.add(errUser, 0, 1, 3, 1);
+                errUser.setText("* A Username must have more than 6 characters. \nPlease choose something else.");
+                System.out.println("LOGIN PANE: Username is too short."); break;
+            case "UsernameAlreadyExists": fields.add(errUser, 0, 1, 3, 1);
+                errUser.setText("* This username is already taken. \nPlease choose something else.");
+                System.out.println("LOGIN PANE: Username already exists."); break;
+            // Password errors
+            case "PasswordEmpty": fields.add(errPassword, 0, 3, 3, 1);
+                errPassword.setText("* Please create a password.");
+                System.out.println("LOGIN PANE: Password Textfield is empty."); break;
+            case "PasswordTooShort": fields.add(errPassword, 0, 3, 3, 1);
+                errPassword.setText("* A Password must have more than 6 characters. \nPlease choose something else.");
+                System.out.println("LOGIN PANE: Password is too short."); break;
             default: fields.add(errPassword, 0, 3, 3, 1);
                 errPassword.setText("* Username or Password can't be found.");
         }

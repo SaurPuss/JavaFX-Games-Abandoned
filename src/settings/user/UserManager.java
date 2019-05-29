@@ -17,6 +17,7 @@ public class UserManager implements Serializable {
     }
 
     /**
+     * // TODO this one assumes you have the password, which is not necessarily useful when trying to log in
      * Attempt to retrieve a saved User from users.csv
      * @param userName User input to verify
      * @param userPassword User input to verify
@@ -52,6 +53,7 @@ public class UserManager implements Serializable {
 
                 if (fields.length > 0) {
                     if (userName.toLowerCase().equals(fields[1].toLowerCase())) {
+                        System.out.println("USER MANAGER: Found user in database");
                         return true;
                     }
                 }

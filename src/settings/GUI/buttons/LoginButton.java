@@ -17,9 +17,9 @@ public interface LoginButton {
     /**
      * Default login button, does a clicky-click to try and log in
      * with given credentials.
-     * @param username
-     * @param password
-     * @return
+     * @param username required username credential
+     * @param password required password credential
+     * @return functional login button that will throw errors in LoginPane()
      */
     default Button login(String username, String password) {
         Button btnLogin = new Button("Log In");
@@ -29,9 +29,10 @@ public interface LoginButton {
             // Check if user exists in the database
             if (UserManager.findUserName(username)) {
                 // Set user as user
+                // TODO do user stuff
                 Session.user = UserManager.getUserProfile(username, password);
 
-                // If password doesn't match?
+
 
 
                 // Continue to game selection screen
@@ -39,8 +40,7 @@ public interface LoginButton {
 
 
             } else {
-                LoginPane.loginError(1);
-                System.out.println("LOGIN BUTTON: User does not exist in database");
+                LoginPane.loginError("UserDoesNotExist");
             }
 
         });
