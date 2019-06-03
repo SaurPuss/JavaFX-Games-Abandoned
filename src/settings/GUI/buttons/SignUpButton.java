@@ -1,7 +1,9 @@
 package settings.GUI.buttons;
 
 import javafx.scene.control.Button;
+import settings.GUI.panes.GameSelectionPane;
 import settings.GUI.panes.LoginPane;
+import settings.Session;
 import settings.user.User;
 import settings.user.UserManager;
 
@@ -48,9 +50,10 @@ public interface SignUpButton {
         }
         // Invoke
         else {
-            // TODO update saveNewUser method & also the updateExistingUser method
+            // Save new user to database & set Session.user & currentUser.dat
             UserManager.saveNewUser(username, password);
             // Continue to game selection pane
+            Session.pane.setCenter(new GameSelectionPane());
         }
     }
 }

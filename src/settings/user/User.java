@@ -54,23 +54,6 @@ public class User implements Serializable {
         rememberUser = false;
     }
 
-    /**
-     * TODO is this real?
-     * Create a fake user for errors?????
-     */
-    User(boolean bool) {
-        if (!bool) {
-            this.userName = null;
-            this.userPassword = "PASSWORD DOES NOT MATCH";
-            userScore = null;
-            rememberPassword = false;
-            rememberUser = false;
-        } else {
-            System.out.println("USER: This should not be possible, terminating program.");
-            System.exit(100);
-        }
-    }
-
     /* Getters and Setters */
     public String getUserName() { return this.userName; }
     void setUserName(String userName) {

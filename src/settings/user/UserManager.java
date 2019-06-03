@@ -41,13 +41,13 @@ public class UserManager implements Serializable {
                 System.out.println("USER MANAGER: Successfully retrieved user from database");
                 return retrieveUser(userName, userPassword);
             } else {
-                System.out.println("USER MANAGER: retrieval failed, returning bad default user.");
-                return new User(false);
+                System.out.println("USER MANAGER: Password mismatch, retrieval failed, returning default user.");
+                return new User();
             }
         }
 
-        System.out.println("USER MANAGER: Username doesn't exist in the database");
-        return new User(false); // Bad default
+        System.out.println("USER MANAGER: Username doesn't exist in the database. Returning default user");
+        return new User(); // Bad default
     }
 
     /**
@@ -190,9 +190,10 @@ public class UserManager implements Serializable {
     }
 
     /**
-     * Set currentUser.dat to default user, wiping any existing record.
+     * Set currentUser.dat to random default user, wiping any existing record.
      */
-    static void resetCurrentUser() {
+    private static void resetCurrentUser() {
+        System.out.println("USER MANAGER: Setting random default user to currentUser.dat");
         saveCurrentUser(new User());
     }
 
@@ -212,6 +213,9 @@ public class UserManager implements Serializable {
         if (LoginPane.cbRememberUser.isSelected()) {
             UserManager.saveCurrentUser(user);
             System.out.println("USER MANAGER: Saving new user to currentUser.dat");
+        } else {
+            System.out.println("USER MANAGER: Not saving new user to currentUser.dat");
+            UserManager.resetCurrentUser();
         }
     }
 

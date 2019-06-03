@@ -1,10 +1,8 @@
 package settings.GUI.buttons;
 
 import javafx.scene.control.Button;
-import settings.GUI.panes.GameSelectionPane;
 import settings.GUI.panes.LoginPane;
 import settings.Session;
-import settings.user.User;
 import settings.user.UserManager;
 
 public interface LoginButton {
@@ -32,10 +30,10 @@ public interface LoginButton {
                         LoginPane.tfUserPassword.getText());
 
 
-
-
+                // TODO if password doesn't match allow for retry
+                // TODO how many retries?
                 // Continue to game selection screen
-                Session.pane.setCenter(new GameSelectionPane());
+//                    Session.pane.setCenter(new GameSelectionPane());
 
 
             } else {
