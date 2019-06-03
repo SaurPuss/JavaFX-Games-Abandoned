@@ -46,12 +46,12 @@ public class User implements Serializable {
      * @param name String for username
      * @param password String for password
      */
-    public User(String name, String password) {
+    public User(String name, String password, boolean rememberUser) {
         this.userName = name;
         this.userPassword = password;
         userScore = new UserScore();
         rememberPassword = false;
-        rememberUser = false;
+        this.rememberUser = rememberUser;
     }
 
     /* Getters and Setters */

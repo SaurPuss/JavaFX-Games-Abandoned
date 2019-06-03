@@ -7,6 +7,8 @@ import settings.Session;
 import settings.user.User;
 import settings.user.UserManager;
 
+import static settings.GUI.panes.LoginPane.cbRememberUser;
+
 public interface SignUpButton {
     /**
      * Default Sign Up Button that fetches information from
@@ -55,7 +57,10 @@ public interface SignUpButton {
         // Invoke
         else {
             // Save new user to database & set Session.user & currentUser.dat
-            UserManager.saveNewUser(username, password);
+            UserManager.saveNewUser(username, password, cbRememberUser.isSelected());
+
+            // Get user info
+            Session.user = UserManager.getUserProfile(username, password);
             // Continue to game selection pane
             Session.pane.setCenter(new GameSelectionPane());
         }

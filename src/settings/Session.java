@@ -55,6 +55,11 @@ public class Session {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // If last user didn't want to remember, reset the Session user
+        if (!user.isRememberUser()) {
+            user = new User();
+        }
         // Do scoreboard stuff
     }
 

@@ -41,6 +41,10 @@ public class HangmanWord {
         return gameWord;
     }
 
+    public Integer gameWordLength() {
+        return gameWord.size();
+    }
+
     String getGameWordString() {
         if (gameWord.size() == 0)
             setWord();

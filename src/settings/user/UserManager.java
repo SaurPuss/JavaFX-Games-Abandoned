@@ -1,9 +1,12 @@
 package settings.user;
 
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
 import settings.GUI.panes.LoginPane;
 import settings.Session;
 
 import java.io.*;
+import java.util.List;
 
 // TODO password hashing and encryption
 public class UserManager implements Serializable {
@@ -95,10 +98,8 @@ public class UserManager implements Serializable {
 
             while ((line = reader.readLine()) != null) {
                 String[] fields = line.split(",");
-
-
                 if (fields.length > 0) {
-                    if (userName.equals(fields[0])) {
+                    if (userName.toLowerCase().equals(fields[0].toLowerCase())) {
                         return fields[1];
                     }
                 }
@@ -132,7 +133,7 @@ public class UserManager implements Serializable {
 
                 if (fields.length > 0) {
                     // Can't hurt to double check username and password before filling object
-                    if ((userName.equals(fields[0])) && (userPassword.equals(fields[1]))) {
+                    if ((userName.toLowerCase().equals(fields[0].toLowerCase())) && (userPassword.equals(fields[1]))) {
                         user.setUserName(fields[0]);
                         user.setUserPassword(fields[1]);
                         user.getUserScore().setSavedTotalScore(Integer.valueOf(fields[2]));
@@ -202,8 +203,8 @@ public class UserManager implements Serializable {
      * @param username Making a new user with this username
      * @param password Adding a password to be saved too
      */
-    public static void saveNewUser(String username, String password) {
-        User user = new User(username, password);
+    public static void saveNewUser(String username, String password, boolean rememberUser) {
+        User user = new User(username, password, rememberUser);
         System.out.println("USER MANAGER: Saving new user to users.csv.");
         saveNewUser(user);
 
@@ -247,6 +248,35 @@ public class UserManager implements Serializable {
             System.out.println("USER MANAGER: User has been saved successfully in users.csv");
             fileWriter.flush();
             fileWriter.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // TODO make this a working thing
+    public void updateSavedUser(User user) {
+        try {
+            File inputFile = new File(Session.ALL_USER_FILE);
+
+            // Read existing file
+            CSVReader reader = new CSVReader(new FileReader(inputFile));
+            List<String[]> csvBody = reader.readAll();
+            // get CSV row column and replace with by using row and column
+            for (int i = 0; i < csvBody.size(); i++) {
+                String[] strArray = csvBody.get(i);
+                for (int j = 0; j < strArray.length; j++) {
+                    if (strArray[j].equalsIgnoreCase("Update_date")) { //String to be replaced
+                        csvBody.get(i)[j] = "Updated_date"; //Target replacement
+                    }
+                }
+            }
+            reader.close();
+
+            // Write to CSV file which is open
+            CSVWriter writer = new CSVWriter(new FileWriter(inputFile));
+            writer.writeAll(csvBody);
+            writer.flush();
+            writer.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

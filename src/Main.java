@@ -62,6 +62,8 @@ public class Main extends Application {
             if (!Session.user.isRememberPassword()) {
                 System.out.println("MAIN: User Password required.");
                 Session.pane.setCenter(new LoginPane(Session.user));
+
+
             } else { // Auto login, update scoreboard and go to game selection screen
 
                 Session.pane.setTop(new TopBarPane());
@@ -69,9 +71,6 @@ public class Main extends Application {
 
                 // Fill Scores and UserSettings for this user profile
                 scoreboard.updateUserScoreboard(Session.user);
-
-                // Continue to Game selection screen
-                game = GameSelectionPane.startGame(0);
             }
         } else {
             // fallback just in case

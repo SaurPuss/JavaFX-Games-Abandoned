@@ -3,6 +3,7 @@ package settings.GUI.buttons;
 import javafx.scene.control.Button;
 import settings.GUI.panes.GameSelectionPane;
 import settings.GUI.panes.LoginPane;
+import settings.GUI.panes.TopBarPane;
 import settings.Session;
 import settings.user.UserManager;
 
@@ -22,25 +23,34 @@ public interface LoginButton {
         Button btnLogin = new Button("Log In");
 
         // Attach event to the button
-        btnLogin.setOnAction(e -> {
-            // Check if user exists in the database
-            if (UserManager.findUserName(LoginPane.tfUserName.getText())) {
-                // Check password match
-                if (UserManager.matchPassword(LoginPane.tfUserName.getText(), LoginPane.tfUserPassword.getText())) {
-                    // Set user as user
-                    Session.user = UserManager.getUserProfile(LoginPane.tfUserName.getText(),
-                            LoginPane.tfUserPassword.getText());
-                    // Continue to game selection screen
-                    Session.pane.setCenter(new GameSelectionPane());
-                } else {
-                    // TODO how many password attempts?
-                    LoginPane.loginError("PasswordNoMatch");
-                }
-            } else {
-                LoginPane.loginError("UserDoesNotExist");
-            }
-        });
+        btnLogin.setOnAction(e -> loginAction(
+                LoginPane.tfUserName.getText(),
+                LoginPane.tfUserPassword.getText(),
+                LoginPane.cbRememberUser.isSelected()));
 
         return btnLogin;
+    }
+
+    default void loginAction(String username, String password, boolean rememberUser) {
+        // Check if user exists in the database
+        if (UserManager.findUserName(username)) {
+            // Check password match
+            if (UserManager.matchPassword(username, password)) {
+                // Set user as user
+                Session.user = UserManager.getUserProfile(username, password);
+
+                Session.user.setRememberUser(rememberUser);
+                UserManager.saveExistingUser(UserManager.getUserProfile(username, password));
+                // Continue to game selection screen
+                Session.pane.setTop(new TopBarPane());
+                Session.pane.setCenter(new GameSelectionPane());
+            } else {
+                // TODO how many password attempts?
+                LoginPane.loginError("PasswordNoMatch");
+            }
+        } else {
+            LoginPane.loginError("UserDoesNotExist");
+        }
+
     }
 }

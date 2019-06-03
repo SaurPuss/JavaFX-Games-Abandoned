@@ -22,6 +22,11 @@ public class HangmanDiagram extends Pane {
     private Line leftLeg;
     private Line rightLeg;
 
+    /*static {
+        getChildren().clear();
+        setMinWidth(400);
+        getChildren().addAll(buildGallows());
+    }*/
     // Constructor
     /**
      * Dude constructor, you know the dealio.
@@ -41,17 +46,14 @@ public class HangmanDiagram extends Pane {
     /**
      * Refresh this object with a clear pane.
      * Making a Dude diagram = new Dude(); doesn't seem to do the trick :(
-     */
-    void newHangmanDiagram() {
-        getChildren().clear();
+     *//*
+    public static void newHangmanDiagram() {
         diagram = new Pane();
         arms = new Pane();
         legs = new Pane();
-        setMinWidth(400);
 
         diagram.getChildren().addAll(arms, legs);
-        getChildren().addAll(buildGallows());
-    }
+    }*/
 
     /**
      * Add body parts based on the mistake counter received from the Word.

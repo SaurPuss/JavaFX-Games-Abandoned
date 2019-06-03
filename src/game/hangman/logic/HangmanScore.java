@@ -1,4 +1,5 @@
 package game.hangman.logic;
 
-public class HangmanScore {
-}
+import game.hangman.HangmanGame;
+
+public class HangmanScore {}
