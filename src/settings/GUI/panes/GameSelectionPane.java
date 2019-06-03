@@ -2,6 +2,7 @@ package settings.GUI.panes;
 
 import game.Game;
 import game.hangman.Hangman;
+import game.hangman.HangmanGame;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
@@ -10,9 +11,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import settings.Session;
-
-import java.util.Set;
-import java.util.TreeSet;
 
 public class GameSelectionPane extends VBox {
     private ComboBox<String> dropdown = new ComboBox<>(fillDropdown());
@@ -31,7 +29,7 @@ public class GameSelectionPane extends VBox {
     private ObservableList<String> fillDropdown() {
         // Array of Games available to play
         return FXCollections.observableArrayList(
-                "Hangman",
+                "HangmanDiagram",
                 "New Game"
         );
     }
@@ -39,7 +37,7 @@ public class GameSelectionPane extends VBox {
 
     public static Game startGame(int n) {
         switch(n) {
-            default: return new Hangman();
+            default: return new HangmanGame();
 
         }
     }

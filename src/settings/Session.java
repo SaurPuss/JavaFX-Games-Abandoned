@@ -1,5 +1,6 @@
 package settings;
 
+import game.Game;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import settings.user.User;
@@ -13,6 +14,7 @@ public class Session {
     public static BorderPane pane = new BorderPane();
     public static User user = new User();
     public static Scene scene = new Scene(pane, 500, 800);
+    public static Game game;
 
     public static final long SERIAL_VERSION_UID = 2L; // Current version, update when file composition changes
     public static final String CURRENT_USER_FILE = "src/assets/currentUser.dat";
@@ -53,10 +55,6 @@ public class Session {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        // Do stuff with the local database which holds multiple user objects
-
-
         // Do scoreboard stuff
     }
 

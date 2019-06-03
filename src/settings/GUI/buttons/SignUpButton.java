@@ -46,7 +46,11 @@ public interface SignUpButton {
             LoginPane.loginError("PasswordEmpty");
         } else if (password.length() < 6) {
             LoginPane.loginError("PasswordTooShort");
-            System.out.println("SIGN UP: Please make sure your password is at least 6 characters long");
+        }
+        // Protected username
+        else if ((username.toLowerCase().contains("anonymous")) || (username.toLowerCase().contains("saurpuss")) ||
+                (username.toLowerCase().contains("battlecrow"))) {
+            LoginPane.loginError("ProtectedUsername");
         }
         // Invoke
         else {

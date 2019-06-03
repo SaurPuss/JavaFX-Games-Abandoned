@@ -26,7 +26,7 @@ import settings.user.UserManager;
 /**
  * Welcome to a set of games made in javafx to entertain you for a hot minute.
  * @author SaurPuss
- * @version 0.1
+ * @version 1.1
  */
 // TODO make real and functional Javadoc
 public class Main extends Application {
@@ -91,13 +91,6 @@ public class Main extends Application {
         gamePane = new HBox();
         gamePane.setAlignment(Pos.CENTER);
 
-//        splashStart();
-        // This is temporary
-//        startGame(0);
-
-//        gamePane.getChildren().addAll(game);
-//        Session.pane.setCenter(gamePane);
-
 
         // Put it all together in a neat little package
         primaryStage.setTitle("Let's Play a Game");
@@ -105,33 +98,6 @@ public class Main extends Application {
         primaryStage.show();
 
         primaryStage.setResizable(false); // No resize for you!
-    }
-
-    /**
-     * Populate the initial pane with starter text and buttons. Only used to get the
-     * game started, never to be seen again (in this session).
-     */
-    private void splashStart() {
-        HBox startPane = new HBox();
-//        LoginPane fields = new LoginPane();
-
-        startPane.setAlignment(Pos.CENTER);
-//        startPane.getChildren().add(fields);
-
-        // Create new base user
-
-        // Give the option to load existing User
-
-
-        // Start a Game
-
-
-        // Go to Scores and UserSettings for an exisitng user
-
-
-        // Add stuff to scene
-
-
     }
 
     /**

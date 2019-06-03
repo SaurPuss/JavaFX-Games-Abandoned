@@ -56,7 +56,7 @@ class Fields extends VBox {
 
     /**
      * Disable input except for a restart button that will start a new
-     * Hangman Game.
+     * HangmanDiagram Game.
      */
     void finishedGame() {
         tfGuess.setEditable(false);

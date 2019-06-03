@@ -116,6 +116,9 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
             case "UsernameAlreadyExists": fields.add(errUser, 0, 1, 3, 1);
                 errUser.setText("* This username is already taken. \nPlease choose something else.");
                 System.out.println("LOGIN PANE: Username already exists."); break;
+            case "ProtectedUsername": fields.add(errUser, 0, 1, 3, 1);
+                errUser.setText("* This username is already taken. \nPlease choose something else.");
+                System.out.println("LOGIN PANE: Protected Username."); break;
             // Password errors
             case "PasswordEmpty": fields.add(errPassword, 0, 3, 3, 1);
                 errPassword.setText("* Please create a password.");

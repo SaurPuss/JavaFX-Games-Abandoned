@@ -6,7 +6,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 
 /**
- * You chose to play Hangman
+ * You chose to play HangmanDiagram
  */
 public class Hangman extends Game {
     // TODO add settings.user.score functionality. Each letter counts as a (-)point. Restart before finish = lose.
@@ -15,7 +15,7 @@ public class Hangman extends Game {
     private Fields fields;
 
     /**
-     * Time to construct a new Game of Hangman /o/
+     * Time to construct a new Game of HangmanDiagram /o/
      */
     public Hangman() {
         // Basic set up for containers

@@ -1,4 +1,4 @@
-package game.hangman;
+package game.hangman.GUI.panes;
 
 import javafx.animation.Animation;
 import javafx.animation.PathTransition;
@@ -10,15 +10,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
-/**
- * Let's get some package private stuff started so the HangmanDiagram doesn't
- * have to deal with the ugliness of hosting all the lines and shit that
- * comes with the visual part of this game.
- */
-class Dude extends Pane {
-    // Data fields
-    // TODO Can I make fewer of these fuckers? Lawd
-    private Pane dude;
+public class HangmanDiagram extends Pane {
+    private Pane diagram;
     private Pane arms;
     private Pane legs;
     private Line noose;
@@ -33,13 +26,13 @@ class Dude extends Pane {
     /**
      * Dude constructor, you know the dealio.
      */
-    Dude() {
-        dude = new Pane();
+    public HangmanDiagram() {
+        diagram = new Pane();
         arms = new Pane();
         legs = new Pane();
         setMinWidth(400);
 
-        dude.getChildren().addAll(arms, legs);
+        diagram.getChildren().addAll(arms, legs);
         getChildren().addAll(buildGallows());
     }
 
@@ -47,37 +40,37 @@ class Dude extends Pane {
     // Methods
     /**
      * Refresh this object with a clear pane.
-     * Making a Dude dude = new Dude(); doesn't seem to do the trick :(
+     * Making a Dude diagram = new Dude(); doesn't seem to do the trick :(
      */
-    void newDude() {
+    void newHangmanDiagram() {
         getChildren().clear();
-        dude = new Pane();
+        diagram = new Pane();
         arms = new Pane();
         legs = new Pane();
         setMinWidth(400);
 
-        dude.getChildren().addAll(arms, legs);
+        diagram.getChildren().addAll(arms, legs);
         getChildren().addAll(buildGallows());
     }
 
     /**
      * Add body parts based on the mistake counter received from the Word.
      * Ignore body parts if they are already added to the Pane.
-     * // TODO Maybe change dude parts to static so there can only be 1?
+     * // TODO Maybe change diagram parts to static so there can only be 1?
      * @param n Wrong guess counter
      */
     void addToDude(int n) {
         switch(n) {
             case 1:
-                if (!dude.getChildren().contains(noose))
+                if (!diagram.getChildren().contains(noose))
                     drawNoose();
                 break;
             case 2:
-                if (!dude.getChildren().contains(head))
+                if (!diagram.getChildren().contains(head))
                     drawHead();
                 break;
             case 3:
-                if (!dude.getChildren().contains(body))
+                if (!diagram.getChildren().contains(body))
                     drawBody();
                 break;
             case 4:
@@ -96,16 +89,16 @@ class Dude extends Pane {
                 if (!legs.getChildren().contains(rightLeg))
                     drawRightLeg();
                 swingAnimation();
-                System.out.println("End Game");
+                System.out.println("HANGMAN: End Game, loss");
                 break;
             default:
-                undrawDude();
-                System.out.println("Undraw Dude");
+                resetDiagram();
+                System.out.println("HANGMAN: reset Dude diagram");
         }
     }
 
     /**
-     * Make the dude swing
+     * Make the diagram swing
      */
     private void swingAnimation() {
         Arc nooseArc = new Arc(230,-15,100,100,260,20);
@@ -194,26 +187,26 @@ class Dude extends Pane {
 
         Line standHorizontal = new Line(60, 30, 230, 30);
 
-        gallowsPane.getChildren().addAll(standArc, standHorizontal, standVertical, dude);
+        gallowsPane.getChildren().addAll(standArc, standHorizontal, standVertical, diagram);
 
         return gallowsPane;
     }
 
     /**
-     * Draw the different limbs and add them to the hanging dude pane.
+     * Draw the different limbs and add them to the hanging diagram pane.
      */
     private void drawNoose() {
         noose = new Line(230, 30, 230, 85);
-        dude.getChildren().addAll(noose); }
+        diagram.getChildren().addAll(noose); }
     private void drawHead() {
         double radius = 30;
         head = new Circle(noose.getEndX(), noose.getEndY() + radius, radius);
         head.setFill(Color.TRANSPARENT);
         head.setStroke(Color.BLACK);
-        dude.getChildren().add(head); }
+        diagram.getChildren().add(head); }
     private void drawBody() {
         body = new Line(230, 145, 230, 255);
-        dude.getChildren().add(body); }
+        diagram.getChildren().add(body); }
     private void drawLeftArm() {
         leftArm = new Line(230, 180, 160, 150);
         arms.getChildren().add(leftArm); }
@@ -226,9 +219,9 @@ class Dude extends Pane {
     private void drawRightLeg() {
         rightLeg = new Line(230, 255, 280, 355);
         legs.getChildren().add(rightLeg); }
-    private void undrawDude() {
+    private void resetDiagram() {
         arms.getChildren().removeAll();
         legs.getChildren().removeAll();
-        dude.getChildren().removeAll(noose, arms, legs, body, head);
+        diagram.getChildren().removeAll(noose, arms, legs, body, head);
     }
 }

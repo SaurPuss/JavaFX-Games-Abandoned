@@ -10,6 +10,12 @@ public interface ContinueAnonymousButton {
      * @return Button to skip the login/signup parts
      */
     default Button continueAnonymous() {
+        // Set session user to this rando from currentUser.dat
+
+        // Set currentUser.dat to random
+
+
+
         // Go to game selection screen
 
 

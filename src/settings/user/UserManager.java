@@ -16,7 +16,7 @@ public class UserManager implements Serializable {
     public static boolean matchCurrentUser() { return findUserName(getCurrentUser().getUserName()); }
 
 
-    private static boolean matchPassword(String username, String password) {
+    public static boolean matchPassword(String username, String password) {
         try {
             System.out.println("USER MANAGER: Password match: " + password.equals(getUserPassword(username)));
             return password.equals(getUserPassword(username));

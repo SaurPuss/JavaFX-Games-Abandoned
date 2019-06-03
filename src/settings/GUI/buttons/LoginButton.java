@@ -1,6 +1,7 @@
 package settings.GUI.buttons;
 
 import javafx.scene.control.Button;
+import settings.GUI.panes.GameSelectionPane;
 import settings.GUI.panes.LoginPane;
 import settings.Session;
 import settings.user.UserManager;
@@ -24,22 +25,20 @@ public interface LoginButton {
         btnLogin.setOnAction(e -> {
             // Check if user exists in the database
             if (UserManager.findUserName(LoginPane.tfUserName.getText())) {
-                // Set user as user
-                // TODO do user stuff
-                Session.user = UserManager.getUserProfile(LoginPane.tfUserName.getText(),
-                        LoginPane.tfUserPassword.getText());
-
-
-                // TODO if password doesn't match allow for retry
-                // TODO how many retries?
-                // Continue to game selection screen
-//                    Session.pane.setCenter(new GameSelectionPane());
-
-
+                // Check password match
+                if (UserManager.matchPassword(LoginPane.tfUserName.getText(), LoginPane.tfUserPassword.getText())) {
+                    // Set user as user
+                    Session.user = UserManager.getUserProfile(LoginPane.tfUserName.getText(),
+                            LoginPane.tfUserPassword.getText());
+                    // Continue to game selection screen
+                    Session.pane.setCenter(new GameSelectionPane());
+                } else {
+                    // TODO how many password attempts?
+                    LoginPane.loginError("PasswordNoMatch");
+                }
             } else {
                 LoginPane.loginError("UserDoesNotExist");
             }
-
         });
 
         return btnLogin;
