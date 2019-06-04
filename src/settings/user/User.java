@@ -1,5 +1,7 @@
 package settings.user;
 
+import com.opencsv.bean.CsvBindAndSplitByName;
+import com.opencsv.bean.CsvBindByName;
 import settings.Session;
 import settings.user.score.UserScore;
 
@@ -12,10 +14,19 @@ import java.util.Random;
 public class User implements Serializable {
     private static final long serialVersionUID = Session.SERIAL_VERSION_UID;
     /* Data fields */
+    @CsvBindByName(column = "Username")
     private String userName;
+
+    @CsvBindByName(column = "Password")
     private String userPassword;
+
+    @CsvBindAndSplitByName(elementType = UserScore.class)
     private UserScore userScore;
+
+    @CsvBindByName(column = "RememberPassword")
     private boolean rememberPassword;
+
+    @CsvBindByName(column = "RememberUser")
     private boolean rememberUser;
     //    private UserSettings userSettings;
 
@@ -81,8 +92,6 @@ public class User implements Serializable {
     public static boolean isDefaultUser() throws NullPointerException {
         return Session.user.getUserName().contains("Anonymous ");
     }
-
-
 
     /**
      * Choose a random username.

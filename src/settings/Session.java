@@ -16,7 +16,7 @@ public class Session {
     public static Scene scene = new Scene(pane, 500, 800);
     public static Game game;
 
-    public static final long SERIAL_VERSION_UID = 2L; // Current version, update when file composition changes
+    public static final long SERIAL_VERSION_UID = 4L; // Current version, update when file composition changes
     public static final String CURRENT_USER_FILE = "src/assets/currentUser.dat";
     public static final String ALL_USER_FILE = "src/assets/users.csv";
 

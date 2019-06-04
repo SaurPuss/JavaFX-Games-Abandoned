@@ -57,7 +57,7 @@ public interface SignUpButton {
         // Invoke
         else {
             // Save new user to database & set Session.user & currentUser.dat
-            UserManager.saveNewUser(username, password, cbRememberUser.isSelected());
+            UserManager.saveUser(new User(username, password, cbRememberUser.isSelected()));
 
             // Get user info
             Session.user = UserManager.getUserProfile(username, password);

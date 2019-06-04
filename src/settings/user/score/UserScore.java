@@ -1,5 +1,6 @@
 package settings.user.score;
 
+import com.opencsv.bean.CsvBindByName;
 import settings.Session;
 
 import java.io.*;
@@ -10,8 +11,13 @@ import java.io.*;
 public class UserScore implements Serializable {
     private static final long serialVersionUID = Session.SERIAL_VERSION_UID;
     // Data fields
+    @CsvBindByName(column = "TotalScore")
     private int totalScore;
+
+    @CsvBindByName(column = "CurrentStreak")
     private int currentScore;
+
+    @CsvBindByName(column = "HighestStreak")
     private int highestStreak;
 
     /**

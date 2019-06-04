@@ -2,6 +2,9 @@ package settings.user;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import com.opencsv.bean.ColumnPositionMappingStrategy;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
 import settings.GUI.panes.LoginPane;
 import settings.Session;
 
@@ -21,7 +24,6 @@ public class UserManager implements Serializable {
 
     public static boolean matchPassword(String username, String password) {
         try {
-            System.out.println("USER MANAGER: Password match: " + password.equals(getUserPassword(username)));
             return password.equals(getUserPassword(username));
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -41,10 +43,10 @@ public class UserManager implements Serializable {
         if (findUserName(userName)) { // verify userName
             // TODO hash password input
             if (matchPassword(userName, userPassword)) {
-                System.out.println("USER MANAGER: Successfully retrieved user from database");
+                System.out.println("USER MANAGER: Retrieving user from database");
                 return retrieveUser(userName, userPassword);
             } else {
-                System.out.println("USER MANAGER: Password mismatch, retrieval failed, returning default user.");
+                System.out.println("USER MANAGER: Password mismatch, can't retrieve user from csv.");
                 return new User();
             }
         }
@@ -60,26 +62,19 @@ public class UserManager implements Serializable {
      */
     public static boolean findUserName(String userName) {
         try {
-            String line;
-            BufferedReader reader = new BufferedReader(new FileReader(Session.ALL_USER_FILE));
-            reader.readLine();
+            CSVReader reader = new CSVReader(new FileReader(Session.ALL_USER_FILE));
 
-            while ((line = reader.readLine()) != null) {
-                String[] fields = line.split(",");
-
-                if (fields.length > 0) {
-                    if (userName.toLowerCase().equals(fields[0].toLowerCase())) {
-                        System.out.println("USER MANAGER: Found user in database");
-                        return true;
-                    }
+            String[] nextLine;
+            while ((nextLine = reader.readNext()) != null) {
+                if (nextLine[0].toLowerCase().equals(userName.toLowerCase())) {
+                    return true;
                 }
             }
-
-            reader.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("USER MANAGER: (Current) User not found in database.");
+
+        System.out.println("USER MANAGER: " + userName + " not found in csv.");
         return false;
     }
 
@@ -92,21 +87,15 @@ public class UserManager implements Serializable {
         // TODO Make this return the hashed password and make a (de)hashing method
         // TODO make this called from the public boolean matchPassword ?
         try {
-            String line;
-            BufferedReader reader = new BufferedReader(new FileReader(Session.ALL_USER_FILE));
-            reader.readLine();
+            CSVReader reader = new CSVReader(new FileReader(Session.ALL_USER_FILE));
 
-            while ((line = reader.readLine()) != null) {
-                String[] fields = line.split(",");
-                if (fields.length > 0) {
-                    if (userName.toLowerCase().equals(fields[0].toLowerCase())) {
-                        return fields[1];
-                    }
+            String[] nextLine;
+            while ((nextLine = reader.readNext()) != null) {
+                if (nextLine[0].toLowerCase().equals(userName.toLowerCase())) {
+                    return nextLine[1];
                 }
             }
-
-            reader.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -122,6 +111,9 @@ public class UserManager implements Serializable {
      * @return if match return user, else return default
      */
     private static User retrieveUser(String userName, String userPassword) {
+
+        // TODO CSV TO BEAN PLS
+
         User user = new User();
         try {
             String line;
@@ -142,7 +134,7 @@ public class UserManager implements Serializable {
                         user.setRememberPassword(Boolean.valueOf(fields[5]));
                         user.setRememberUser(Boolean.valueOf(fields[6]));
                     } else {
-                        System.out.println("USERMANAGER: Can't retrieve user, password did not match.");
+                        System.out.println("USER MANAGER: RETRIEVE USER NEEDS TO BE CSV TO BEANED.");
                     }
                 }
             }
@@ -206,10 +198,6 @@ public class UserManager implements Serializable {
     public static void saveNewUser(String username, String password, boolean rememberUser) {
         User user = new User(username, password, rememberUser);
         System.out.println("USER MANAGER: Saving new user to users.csv.");
-        saveNewUser(user);
-
-        Session.user = user;
-        System.out.println("USER MANAGER: Set Session.user as newly created user");
 
         if (LoginPane.cbRememberUser.isSelected()) {
             UserManager.saveCurrentUser(user);
@@ -218,44 +206,57 @@ public class UserManager implements Serializable {
             System.out.println("USER MANAGER: Not saving new user to currentUser.dat");
             UserManager.resetCurrentUser();
         }
+
+        // Save user to database
+        saveNewUser(user);
+
+        Session.user = user;
+        System.out.println("USER MANAGER: Set Session.user as newly created user");
     }
 
-    /**
-     * Save User to users.csv, assuming it's a unique username and has a password
-     * @param user User input to potentially save
-     */
-    private static void saveNewUser(User user) {
-        try {
-            File check = new File(Session.ALL_USER_FILE);
-            FileWriter fileWriter = new FileWriter(Session.ALL_USER_FILE, true);
 
-            // Add the user information to the file
-            fileWriter.append(user.getUserName());
-            fileWriter.append(',');
-            fileWriter.append(user.getUserPassword());
-            fileWriter.append(',');
-            fileWriter.append(String.valueOf(user.getUserScore().getTotalScore()));
-            fileWriter.append(',');
-            fileWriter.append(String.valueOf(user.getUserScore().getCurrentScore()));
-            fileWriter.append(',');
-            fileWriter.append(String.valueOf(user.getUserScore().getHighestStreak()));
-            fileWriter.append(',');
-            fileWriter.append(String.valueOf(user.isRememberPassword()));
-            fileWriter.append(',');
-            fileWriter.append(String.valueOf(user.isRememberUser()));
-            fileWriter.append("\n");
-
-            System.out.println("USER MANAGER: User has been saved successfully in users.csv");
-            fileWriter.flush();
-            fileWriter.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static void saveUser(User user) {
+        if (findUserName(user.getUserName())) {
+            updateUser(user);
+        } else {
+            saveNewUser(user);
         }
     }
 
+    private static void updateUser(User user) {
+
+    }
+
+    /**
+     * Save NEW user to users.csv
+     * @param user User information to append to users.csv
+     */
+    private static void saveNewUser(User user) {
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter(Session.ALL_USER_FILE, true));
+
+            String[] record = {
+                    user.getUserName(),
+                    user.getUserPassword(),
+                    String.valueOf(user.getUserScore().getTotalScore()),
+                    String.valueOf(user.getUserScore().getHighestStreak()),
+                    String.valueOf(user.getUserScore().getCurrentScore()),
+                    String.valueOf(user.isRememberPassword()),
+                    String.valueOf(user.isRememberUser())
+            };
+
+            writer.writeNext(record);
+
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("USER MANAGER: IOException when trying to user saveNewUser(user)!");
+        }
+    }
+
+
     // TODO make this a working thing
     public void updateSavedUser(User user) {
-        try {
+        /*try {
             File inputFile = new File(Session.ALL_USER_FILE);
 
             // Read existing file
@@ -279,7 +280,7 @@ public class UserManager implements Serializable {
             writer.close();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {

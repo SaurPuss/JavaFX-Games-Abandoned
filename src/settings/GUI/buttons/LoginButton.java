@@ -40,7 +40,7 @@ public interface LoginButton {
                 Session.user = UserManager.getUserProfile(username, password);
 
                 Session.user.setRememberUser(rememberUser);
-                UserManager.saveExistingUser(UserManager.getUserProfile(username, password));
+//                UserManager.saveExistingUser(UserManager.getUserProfile(username, password));
                 // Continue to game selection screen
                 Session.pane.setTop(new TopBarPane());
                 Session.pane.setCenter(new GameSelectionPane());

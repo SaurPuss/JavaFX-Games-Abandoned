@@ -26,7 +26,7 @@ import settings.user.UserManager;
 /**
  * Welcome to a set of games made in javafx to entertain you for a hot minute.
  * @author SaurPuss
- * @version 1.1
+ * @version 1.1.2
  */
 // TODO make real and functional Javadoc
 public class Main extends Application {
