@@ -1,7 +1,9 @@
 package settings.user.score;
 
 import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvCustomBindByName;
 import settings.Session;
+import settings.user.UserScoreToBean;
 
 import java.io.*;
 
@@ -10,14 +12,15 @@ import java.io.*;
  */
 public class UserScore implements Serializable {
     private static final long serialVersionUID = Session.SERIAL_VERSION_UID;
+
     // Data fields
-    @CsvBindByName(column = "TotalScore")
+    @CsvBindByName(column = "TotalScore"/*, converter = UserScoreToBean.class*/)
     private int totalScore;
 
-    @CsvBindByName(column = "CurrentStreak")
+    @CsvBindByName(column = "CurrentStreak"/*, converter = UserScoreToBean.class*/)
     private int currentScore;
 
-    @CsvBindByName(column = "HighestStreak")
+    @CsvBindByName(column = "HighestStreak"/*, converter = UserScoreToBean.class*/)
     private int highestStreak;
 
     /**
@@ -49,7 +52,7 @@ public class UserScore implements Serializable {
         this.highestStreak = highestStreak;
     }
     public int getCurrentScore() { return currentScore; }
-    private void setCurrentScore(int gameScore) { this.currentScore += gameScore; }
+    public void setCurrentScore(int gameScore) { this.currentScore += gameScore; }
     public void resetCurrentScore() { currentScore = 0; }
 
 

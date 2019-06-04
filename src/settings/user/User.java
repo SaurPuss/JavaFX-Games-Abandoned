@@ -1,7 +1,9 @@
 package settings.user;
 
+import com.opencsv.bean.AbstractBeanField;
 import com.opencsv.bean.CsvBindAndSplitByName;
 import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvCustomBindByPosition;
 import settings.Session;
 import settings.user.score.UserScore;
 
@@ -20,7 +22,7 @@ public class User implements Serializable {
     @CsvBindByName(column = "Password")
     private String userPassword;
 
-    @CsvBindAndSplitByName(elementType = UserScore.class)
+    @CsvBindAndSplitByName(elementType = UserScore.class, splitOn = "\\.", converter = TextToUserScore.class)
     private UserScore userScore;
 
     @CsvBindByName(column = "RememberPassword")

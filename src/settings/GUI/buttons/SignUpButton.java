@@ -60,9 +60,9 @@ public interface SignUpButton {
             UserManager.saveUser(new User(username, password, cbRememberUser.isSelected()));
 
             // Get user info
-            Session.user = UserManager.getUserProfile(username, password);
+//            Session.user = UserManager.getUserProfile(username, password);
             // Continue to game selection pane
-            Session.pane.setCenter(new GameSelectionPane());
+//            Session.pane.setCenter(new GameSelectionPane());
         }
     }
 }

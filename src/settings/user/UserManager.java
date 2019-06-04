@@ -2,13 +2,19 @@ package settings.user;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import com.opencsv.bean.ColumnPositionMappingStrategy;
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.*;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import settings.GUI.panes.LoginPane;
 import settings.Session;
+import settings.user.score.UserScore;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 // TODO password hashing and encryption
@@ -111,40 +117,31 @@ public class UserManager implements Serializable {
      * @return if match return user, else return default
      */
     private static User retrieveUser(String userName, String userPassword) {
-
         // TODO CSV TO BEAN PLS
-
-        User user = new User();
         try {
-            String line;
-            BufferedReader reader = new BufferedReader(new FileReader(Session.ALL_USER_FILE));
-            reader.readLine();
+            CSVReader reader = new CSVReader(new FileReader(Session.ALL_USER_FILE));
 
-            while ((line = reader.readLine()) != null) {
-                String[] fields = line.split(",");
+            CsvToBean csvToBean = new CsvToBeanBuilder(new FileReader(Session.ALL_USER_FILE))
+                    .withSeparator(',').withSkipLines(1).withType(User.class).withType(UserScore.class).build();
 
-                if (fields.length > 0) {
-                    // Can't hurt to double check username and password before filling object
-                    if ((userName.toLowerCase().equals(fields[0].toLowerCase())) && (userPassword.equals(fields[1]))) {
-                        user.setUserName(fields[0]);
-                        user.setUserPassword(fields[1]);
-                        user.getUserScore().setSavedTotalScore(Integer.valueOf(fields[2]));
-                        user.getUserScore().resetCurrentScore();
-                        user.getUserScore().setSavedHighestStreak(Integer.valueOf(fields[4]));
-                        user.setRememberPassword(Boolean.valueOf(fields[5]));
-                        user.setRememberUser(Boolean.valueOf(fields[6]));
-                    } else {
-                        System.out.println("USER MANAGER: RETRIEVE USER NEEDS TO BE CSV TO BEANED.");
-                    }
-                }
-            }
 
-            reader.close();
-        } catch (Exception e) {
+            List<User> list = csvToBean.parse();
+
+            for (User user : list)
+                System.out.println(user.toString());
+//            CsvToBeanBuilder<User> beanBuilder = new CsvToBeanBuilder<>(new InputStreamReader(new FileInputStream(Session.ALL_USER_FILE)));
+//
+//            beanBuilder.withType(User.class);
+//            // build methods returns a list of Beans
+//            beanBuilder.build().parse().forEach(e -> System.out.println(csvToBean.toString()));
+
+        } catch (IOException e) {
+
             e.printStackTrace();
         }
 
-        return user;
+        System.out.println("USER MANAGER: retrieve user failed to parse the bean");
+        return new User();
     }
 
 
@@ -232,8 +229,27 @@ public class UserManager implements Serializable {
      * @param user User information to append to users.csv
      */
     private static void saveNewUser(User user) {
-        try {
+
+
+        try{
+
             CSVWriter writer = new CSVWriter(new FileWriter(Session.ALL_USER_FILE, true));
+
+//            Writer writer = new FileWriter(Session.ALL_USER_FILE);
+            /*HeaderColumnNameMappingStrategy<User> strategy = new HeaderColumnNameMappingStrategy<>();
+            strategy.setType(User.class);
+
+            StatefulBeanToCsvBuilder<User> builder = new StatefulBeanToCsvBuilder(writer);
+            StatefulBeanToCsv beanWriter = builder
+                    .withMappingStrategy(strategy)
+                    .withSeparator(',').build();
+
+            beanWriter.write(user);*/
+            /*StatefulBeanToCsvBuilder<User> builder = new StatefulBeanToCsvBuilder<>(writer);
+            StatefulBeanToCsv<User> beanWriter = builder.build();
+            beanWriter.write(user);
+            writer.close();*/
+
 
             String[] record = {
                     user.getUserName(),
@@ -248,8 +264,9 @@ public class UserManager implements Serializable {
             writer.writeNext(record);
 
             writer.close();
-        } catch (IOException e) {
-            System.out.println("USER MANAGER: IOException when trying to user saveNewUser(user)!");
+        } catch (Exception e) {
+            System.out.println("USER MANAGER: failed saveNewUser(user)!");
+            e.printStackTrace();
         }
     }
 
