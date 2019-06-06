@@ -1,6 +1,7 @@
 package settings.GUI.buttons;
 
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
 import settings.GUI.panes.GameSelectionPane;
 import settings.GUI.panes.LoginPane;
 import settings.GUI.panes.TopBarPane;
@@ -22,7 +23,14 @@ public interface LoginButton {
     default Button login() {
         Button btnLogin = new Button("Log In");
 
-        // Attach event to the button
+        // TODO move into its own stuff, because this is lazy
+        LoginPane.tfUserPassword.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER)
+                loginAction(LoginPane.tfUserName.getText(),
+                        LoginPane.tfUserPassword.getText(),
+                        LoginPane.cbRememberUser.isSelected());
+        });
+        // button action
         btnLogin.setOnAction(e -> loginAction(
                 LoginPane.tfUserName.getText(),
                 LoginPane.tfUserPassword.getText(),
@@ -38,8 +46,9 @@ public interface LoginButton {
             if (UserManager.matchPassword(username, password)) {
                 // Set user as user
                 Session.user = UserManager.getUserProfile(username, password);
-
                 Session.user.setRememberUser(rememberUser);
+
+                Session.printSessionUser();
 //                UserManager.saveExistingUser(UserManager.getUserProfile(username, password));
                 // Continue to game selection screen
                 Session.pane.setTop(new TopBarPane());

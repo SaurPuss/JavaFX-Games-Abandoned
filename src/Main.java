@@ -6,9 +6,11 @@
  *              You can probably use it for your own stuff, just shoot her a mail.
  * @assets      Dictionary source: http://www-personal.umich.edu/~jlawler/wordlist
  * @contact     saurlemons@gmail.com
+ * @version     1.1.5
  */
 
 // You know what this is, why are you reading this comment?
+
 import game.Game;
 import settings.GUI.panes.GameSelectionPane;
 import javafx.application.Application;
@@ -25,10 +27,9 @@ import settings.user.UserManager;
 
 /**
  * Welcome to a set of games made in javafx to entertain you for a hot minute.
- * @author SaurPuss
- * @version 1.1.2
  */
 // TODO make real and functional Javadoc
+// TODO Make user of OpenCSV I guess
 public class Main extends Application {
     // This is the main Pane
     private static Scoreboard scoreboard = new Scoreboard();
@@ -45,13 +46,13 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         // Make sure all things are working on launch
         Session.initSession();
-        Session.printCurrentUser();
 
         // Check if user is default profile
         if (User.isDefaultUser()) {
             System.out.println("MAIN: Default User detected");
 
             Session.pane.setCenter(new LoginPane());
+            LoginPane.cbRememberUser.setSelected(false);
 
 
         } // Check if there is a current user that's also saved to the database
@@ -99,6 +100,18 @@ public class Main extends Application {
         primaryStage.setResizable(false); // No resize for you!
     }
 
+    @Override
+    public void stop() {
+        System.out.println("MAIN: Stopping application");
+        // TODO Save session user updates to db
+
+        if (!Session.user.isRememberUser()) {
+            System.out.println("MAIN: Saving default user to currentUser.dat");
+            UserManager.saveCurrentUser(new User());
+        }
+        Session.printSessionUser();
+        Session.printSavedUser();
+    }
     /**
      * Adding a main, because technically you're supposed to do that
      */

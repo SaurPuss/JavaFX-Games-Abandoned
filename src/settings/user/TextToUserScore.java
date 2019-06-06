@@ -8,15 +8,15 @@ public class TextToUserScore extends AbstractCsvConverter {
     public Object convertToRead(String value) {
         UserScore score = new UserScore();
         String[] split = value.split("\\.", 3);
-        score.setSavedTotalScore(Integer.valueOf(split[0]));
-        score.setCurrentScore(0);
-        score.setSavedHighestStreak(Integer.valueOf(split[2]));
+        score.setTotalScore(Integer.valueOf(split[0]));
+        score.setCurrentScore(Integer.valueOf(split[1]));
+        score.setHighestStreak(Integer.valueOf(split[2]));
         return score;
     }
 
-    @Override
+    /*@Override
     public String convertToWrite(Object value) {
         UserScore userScore = (UserScore) value;
         return String.format("%s.%s.%s", userScore.getTotalScore(), userScore.getCurrentScore(), userScore.getHighestStreak());
-    }
+    }*/
 }

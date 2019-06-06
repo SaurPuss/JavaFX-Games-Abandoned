@@ -2,20 +2,10 @@ package settings.user;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import com.opencsv.bean.*;
-import com.opencsv.exceptions.CsvDataTypeMismatchException;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
-import settings.GUI.panes.LoginPane;
 import settings.Session;
 import settings.user.score.UserScore;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 // TODO password hashing and encryption
 public class UserManager implements Serializable {
@@ -117,30 +107,44 @@ public class UserManager implements Serializable {
      * @return if match return user, else return default
      */
     private static User retrieveUser(String userName, String userPassword) {
-        // TODO CSV TO BEAN PLS
+        // TODO OPENCSV TO (NESTED)BEAN PLS
         try {
             CSVReader reader = new CSVReader(new FileReader(Session.ALL_USER_FILE));
 
-            CsvToBean csvToBean = new CsvToBeanBuilder(new FileReader(Session.ALL_USER_FILE))
-                    .withSeparator(',').withSkipLines(1).withType(User.class).withType(UserScore.class).build();
+            User temp = new User();
+            UserScore score = new UserScore();
+            String[] nextLine;
+            while ((nextLine = reader.readNext()) != null) {
+                if ((nextLine[0].toLowerCase().equals(userName.toLowerCase())) &&
+                        (nextLine[1].equals(userPassword))) {
+                    // USERNAME
+                    temp.setUserName(nextLine[0]);
+                    // PASSWORD
+                    temp.setUserPassword(nextLine[1]);
+                    // REMEMBERPASSWORD
+                    temp.setRememberPassword(Boolean.valueOf(nextLine[2]));
+                    // REMEMBERUSER
+                    temp.setRememberUser(Boolean.valueOf(nextLine[3]));
 
+                    // CURRENTSCORE
+                    score.setCurrentScore(Integer.valueOf(nextLine[4]));
+                    // HIGHESTSTREAK
+                    score.setHighestStreak(Integer.valueOf(nextLine[5]));
+                    // TOTALSCORE
+                    score.setTotalScore(Integer.valueOf(nextLine[6]));
 
-            List<User> list = csvToBean.parse();
+                    temp.setUserScore(score);
 
-            for (User user : list)
-                System.out.println(user.toString());
-//            CsvToBeanBuilder<User> beanBuilder = new CsvToBeanBuilder<>(new InputStreamReader(new FileInputStream(Session.ALL_USER_FILE)));
-//
-//            beanBuilder.withType(User.class);
-//            // build methods returns a list of Beans
-//            beanBuilder.build().parse().forEach(e -> System.out.println(csvToBean.toString()));
+                    return temp;
+                }
+            }
 
         } catch (IOException e) {
 
             e.printStackTrace();
         }
 
-        System.out.println("USER MANAGER: retrieve user failed to parse the bean");
+        System.out.println("USER MANAGER: retrieve user failed to get the bean");
         return new User();
     }
 
@@ -169,6 +173,7 @@ public class UserManager implements Serializable {
      * @param user User to be saved
      */
     public static void saveCurrentUser(User user) {
+//        System.out.println("USER MANAGER: Saving current user");
         try {
             FileOutputStream f = new FileOutputStream(Session.CURRENT_USER_FILE, false);
             ObjectOutputStream o = new ObjectOutputStream(f);
@@ -179,86 +184,41 @@ public class UserManager implements Serializable {
         }
     }
 
-    /**
-     * Set currentUser.dat to random default user, wiping any existing record.
-     */
-    private static void resetCurrentUser() {
-        System.out.println("USER MANAGER: Setting random default user to currentUser.dat");
-        saveCurrentUser(new User());
-    }
-
-    /**
-     * Convenience method that invokes the saveNewUser(User) method
-     * @param username Making a new user with this username
-     * @param password Adding a password to be saved too
-     */
-    public static void saveNewUser(String username, String password, boolean rememberUser) {
-        User user = new User(username, password, rememberUser);
-        System.out.println("USER MANAGER: Saving new user to users.csv.");
-
-        if (LoginPane.cbRememberUser.isSelected()) {
-            UserManager.saveCurrentUser(user);
-            System.out.println("USER MANAGER: Saving new user to currentUser.dat");
-        } else {
-            System.out.println("USER MANAGER: Not saving new user to currentUser.dat");
-            UserManager.resetCurrentUser();
-        }
-
-        // Save user to database
-        saveNewUser(user);
-
-        Session.user = user;
-        System.out.println("USER MANAGER: Set Session.user as newly created user");
-    }
-
 
     public static void saveUser(User user) {
         if (findUserName(user.getUserName())) {
             updateUser(user);
         } else {
+            System.out.println("USER MANAGER: Invoke saveNewUser(user)");
             saveNewUser(user);
+            Session.user = user;
+            Session.printSessionUser();
+            if (user.isRememberUser()) {
+                saveCurrentUser(user);
+                Session.printSavedUser();
+            }
         }
     }
 
-    private static void updateUser(User user) {
-
-    }
+    private static void updateUser(User user) {}
 
     /**
      * Save NEW user to users.csv
      * @param user User information to append to users.csv
      */
     private static void saveNewUser(User user) {
-
-
-        try{
-
+        try {
             CSVWriter writer = new CSVWriter(new FileWriter(Session.ALL_USER_FILE, true));
-
-//            Writer writer = new FileWriter(Session.ALL_USER_FILE);
-            /*HeaderColumnNameMappingStrategy<User> strategy = new HeaderColumnNameMappingStrategy<>();
-            strategy.setType(User.class);
-
-            StatefulBeanToCsvBuilder<User> builder = new StatefulBeanToCsvBuilder(writer);
-            StatefulBeanToCsv beanWriter = builder
-                    .withMappingStrategy(strategy)
-                    .withSeparator(',').build();
-
-            beanWriter.write(user);*/
-            /*StatefulBeanToCsvBuilder<User> builder = new StatefulBeanToCsvBuilder<>(writer);
-            StatefulBeanToCsv<User> beanWriter = builder.build();
-            beanWriter.write(user);
-            writer.close();*/
-
 
             String[] record = {
                     user.getUserName(),
                     user.getUserPassword(),
+                    String.valueOf(user.isRememberPassword()),
+                    String.valueOf(user.isRememberUser()),
                     String.valueOf(user.getUserScore().getTotalScore()),
                     String.valueOf(user.getUserScore().getHighestStreak()),
                     String.valueOf(user.getUserScore().getCurrentScore()),
-                    String.valueOf(user.isRememberPassword()),
-                    String.valueOf(user.isRememberUser())
+
             };
 
             writer.writeNext(record);
@@ -268,36 +228,6 @@ public class UserManager implements Serializable {
             System.out.println("USER MANAGER: failed saveNewUser(user)!");
             e.printStackTrace();
         }
-    }
-
-
-    // TODO make this a working thing
-    public void updateSavedUser(User user) {
-        /*try {
-            File inputFile = new File(Session.ALL_USER_FILE);
-
-            // Read existing file
-            CSVReader reader = new CSVReader(new FileReader(inputFile));
-            List<String[]> csvBody = reader.readAll();
-            // get CSV row column and replace with by using row and column
-            for (int i = 0; i < csvBody.size(); i++) {
-                String[] strArray = csvBody.get(i);
-                for (int j = 0; j < strArray.length; j++) {
-                    if (strArray[j].equalsIgnoreCase("Update_date")) { //String to be replaced
-                        csvBody.get(i)[j] = "Updated_date"; //Target replacement
-                    }
-                }
-            }
-            reader.close();
-
-            // Write to CSV file which is open
-            CSVWriter writer = new CSVWriter(new FileWriter(inputFile));
-            writer.writeAll(csvBody);
-            writer.flush();
-            writer.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {

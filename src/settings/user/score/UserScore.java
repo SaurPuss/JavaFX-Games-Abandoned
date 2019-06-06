@@ -2,6 +2,7 @@ package settings.user.score;
 
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvCustomBindByName;
+import com.opencsv.bean.CsvCustomBindByPosition;
 import settings.Session;
 import settings.user.UserScoreToBean;
 
@@ -14,13 +15,11 @@ public class UserScore implements Serializable {
     private static final long serialVersionUID = Session.SERIAL_VERSION_UID;
 
     // Data fields
-    @CsvBindByName(column = "TotalScore"/*, converter = UserScoreToBean.class*/)
+    @CsvBindByName
     private int totalScore;
-
-    @CsvBindByName(column = "CurrentStreak"/*, converter = UserScoreToBean.class*/)
+    @CsvBindByName
     private int currentScore;
-
-    @CsvBindByName(column = "HighestStreak"/*, converter = UserScoreToBean.class*/)
+    @CsvBindByName
     private int highestStreak;
 
     /**
@@ -32,28 +31,46 @@ public class UserScore implements Serializable {
         highestStreak = 0;
     }
 
-    /* Getters and Setters
-    * Setters are private, with the exception of User retrieval
-    * from the database
-    */
-    public int getTotalScore() { return totalScore; }
-    private void setTotalScore(int gameScore) {
-        this.totalScore += gameScore;
+    public UserScore(int totalScore, int currentScore, int highestStreak) {
+        this.totalScore = totalScore;
+        this.currentScore = currentScore;
+        this.highestStreak = highestStreak;
     }
-    public void setSavedTotalScore(int totalScore) {
+
+    /* Getters and Setters */
+    public int getTotalScore() {
+        return totalScore;
+    }
+    public void setTotalScore(int totalScore) {
         this.totalScore = totalScore;
     }
-    public int getHighestStreak() { return highestStreak; }
-    private void setHighestStreak() {
+    private void updateTotalScore(int gameScore) {
+        this.totalScore += gameScore;
+    }
+
+    public int getHighestStreak() {
+        return highestStreak;
+    }
+    public void setHighestStreak(int highestStreak) {
+        this.highestStreak = highestStreak;
+    }
+    private void updateHighestStreak() {
         if (currentScore > highestStreak)
             highestStreak = currentScore;
     }
-    public void setSavedHighestStreak(int highestStreak) {
-        this.highestStreak = highestStreak;
+
+    public int getCurrentScore() {
+        return currentScore;
     }
-    public int getCurrentScore() { return currentScore; }
-    public void setCurrentScore(int gameScore) { this.currentScore += gameScore; }
-    public void resetCurrentScore() { currentScore = 0; }
+    public void setCurrentScore(int currentScore) {
+        this.currentScore = currentScore;
+    }
+    private void updateCurrentScore(int gameScore) {
+        this.currentScore += gameScore;
+    }
+    public void resetCurrentScore() {
+        currentScore = 0;
+    }
 
 
     /**
@@ -61,11 +78,14 @@ public class UserScore implements Serializable {
      * @param gameScore update all scores with the new numbers gotten from the Game
      */
     public void updateScores(int gameScore) {
-        setTotalScore(gameScore);
-        setCurrentScore(gameScore);
-        setHighestStreak();
+        updateTotalScore(gameScore);
+        updateCurrentScore(gameScore);
+        updateHighestStreak();
     }
 
+    public String toString() {
+        return String.valueOf(totalScore) + "." + String.valueOf(currentScore) + "." + String.valueOf(highestStreak);
+    }
 
     /**
      * Implement Serializable Interface methods

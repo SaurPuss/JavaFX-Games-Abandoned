@@ -1,9 +1,6 @@
 package settings.user;
 
-import com.opencsv.bean.AbstractBeanField;
-import com.opencsv.bean.CsvBindAndSplitByName;
-import com.opencsv.bean.CsvBindByName;
-import com.opencsv.bean.CsvCustomBindByPosition;
+import com.opencsv.bean.*;
 import settings.Session;
 import settings.user.score.UserScore;
 
@@ -16,21 +13,16 @@ import java.util.Random;
 public class User implements Serializable {
     private static final long serialVersionUID = Session.SERIAL_VERSION_UID;
     /* Data fields */
-    @CsvBindByName(column = "Username")
+    @CsvBindByName
     private String userName;
-
-    @CsvBindByName(column = "Password")
+    @CsvBindByName
     private String userPassword;
-
-    @CsvBindAndSplitByName(elementType = UserScore.class, splitOn = "\\.", converter = TextToUserScore.class)
-    private UserScore userScore;
-
-    @CsvBindByName(column = "RememberPassword")
+    @CsvBindByName
     private boolean rememberPassword;
-
-    @CsvBindByName(column = "RememberUser")
+    @CsvBindByName
     private boolean rememberUser;
-    //    private UserSettings userSettings;
+    // Saved in separate csv
+    private UserScore userScore;
 
     private static String[] anonymousName = {
             "Anonymous Badger", "Anonymous Llama", "Anonymous Gopher",
@@ -51,7 +43,6 @@ public class User implements Serializable {
         userScore = new UserScore();
         rememberPassword = false;
         rememberUser = false;
-//        userSettings = new UserSettings();
     }
 
     /**
@@ -70,8 +61,7 @@ public class User implements Serializable {
     /* Getters and Setters */
     public String getUserName() { return this.userName; }
     void setUserName(String userName) {
-        if ((userName.length() >= 6) && (!UserManager.findUserName(userName)))
-            this.userName = userName;
+        this.userName = userName;
     }
 
     // TODO figure this out - getUserPassword() obfuscate
@@ -81,6 +71,9 @@ public class User implements Serializable {
     }
 
     public UserScore getUserScore() { return userScore; }
+    public void setUserScore(UserScore userScore) {
+        this.userScore = userScore;
+    }
     void setUserPassword(String userPassword) { this.userPassword = userPassword; }
     public boolean isRememberPassword() { return rememberPassword; }
     void setRememberPassword(boolean rememberPassword) { this.rememberPassword = rememberPassword; }
@@ -92,6 +85,7 @@ public class User implements Serializable {
      * @return boolean default username
      */
     public static boolean isDefaultUser() throws NullPointerException {
+        System.out.println("USER: Checking for default user");
         return Session.user.getUserName().contains("Anonymous ");
     }
 

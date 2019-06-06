@@ -53,6 +53,7 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
      * Default constructor for login/signup form
      */
     public LoginPane() {
+        Session.printSessionUser();
         welcome = new Text("Welcome " + Session.user.getUserName());
         welcome.setFont(Font.font(18));
         cbRememberUser.setSelected(Session.user.isRememberUser());

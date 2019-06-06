@@ -16,9 +16,6 @@ public class GameSelectionPane extends VBox implements GameSelectionList, GameSe
     private ComboBox<String> dropdown = new ComboBox<>();
 
     public GameSelectionPane() {
-        // Printing Session user
-        Session.printCurrentUser();
-
         dropdown.getItems().addAll(gameSelectionList());
         dropdown.getSelectionModel().selectFirst();
 
