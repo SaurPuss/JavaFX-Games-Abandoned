@@ -200,7 +200,10 @@ public class UserManager implements Serializable {
         }
     }
 
-    private static void updateUser(User user) {}
+    private static void updateUser(User user) {
+
+
+    }
 
     /**
      * Save NEW user to users.csv

@@ -1,8 +1,8 @@
-package game.hangman.GUI.buttons;
+package game.hangman.GUI;
 
 import javafx.scene.control.Button;
 
-public interface HangmanGuessButton {
+public interface GuessButton {
 
     default Button guessButton() {
 

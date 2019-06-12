@@ -1,97 +1,35 @@
 package game.hangman;
 
 import game.Game;
-import javafx.geometry.Pos;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.VBox;
+import game.hangman.GUI.GameResetButton;
+import game.hangman.GUI.GameFields;
+import game.hangman.GUI.GameDiagram;
+import game.hangman.logic.GameSession;
+import game.hangman.logic.GameWord;
 
-/**
- * You chose to play HangmanDiagram
- */
-public class Hangman extends Game {
-    // TODO add settings.user.score functionality. Each letter counts as a (-)point. Restart before finish = lose.
-    private Word word;
-    private Dude dude;
-    private Fields fields;
+public class Hangman extends Game implements GameResetButton {
+    private GameWord gameWord;
+    private GameDiagram hangmanView;
+    private GameFields hangmanFields;
 
-    /**
-     * Time to construct a new Game of HangmanDiagram /o/
-     */
     public Hangman() {
-        // Basic set up for containers
-        VBox container = new VBox();
-        container.setAlignment(Pos.CENTER);
+        // init new game
+        gameWord = new GameWord();
+        hangmanView = new GameDiagram();
+        hangmanFields = new GameFields();
 
-        // Give it something to make it functional
-        word = new Word();
+        getChildren().addAll(hangmanView, hangmanFields);
 
-        // Container contents
-        dude = new Dude();
-        fields = new Fields();
+        // Set initial score as a negative of the gameWord length
+        GameSession.gameScore -= gameWord.gameWordLength();
+        // if letter is guessed correct add it back to the score
 
-        fields.setHiddenWord(word.getHiddenWordString());
-        fields.setGuesses(word.getGuessesString());
-        System.out.println("gameWord: " + word.getGameWordString());
-
-        // Make the buttons do stuff
-        fields.tfGuess.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER) {
-                guessLetterInput();
-                dude.addToDude(word.getMistakes());
-                endGame();
-            }
-        });
-        fields.btnGuess.setOnAction(e -> {
-            guessLetterInput();
-            dude.addToDude(word.getMistakes());
-            endGame();
-        });
-        fields.btnRestart.setOnAction(e -> restartGame());
-
-        // Put it all together
-        container.getChildren().addAll(dude, fields);
-        getChildren().addAll(container);
+        // TODO on win add the full word length to the score before sending it to userScore
     }
 
-    // TODO move to default interface with the buttons
-    private void guessLetterInput() {
-        if (!fields.tfGuess.getText().equals("")) {
-            if (fields.tfGuess.getText().charAt(0) == ' ')
-                fields.tfGuess.setText("");
-            else {
-                word.guessLetter(fields.tfGuess.getText().charAt(0));
-                fields.setHiddenWord(word.getHiddenWordString());
-                fields.setGuesses(word.getGuessesString());
-                fields.tfGuess.setText("");
-            }
-        }
-    }
-
-    private void endGame() {
-        if (word.getMistakes() == 7) {
-            // Maxed out mistakes, disable fields and end game
-            fields.tfGuess.setDisable(true);
-            fields.btnGuess.setDisable(true);
-
-            // display restart button
-        } else if (word.getHiddenWord().equals(word.getGameWord())) {
-            // We have a winner
-            fields.tfGuess.setDisable(true);
-            fields.btnGuess.setDisable(true);
-            dude.addToDude(0); // remove the dude
-            // display restart button
-        }
-    }
-
-    public void restartGame() {
-        dude.newDude();
-        word = new Word();
-
-        fields.tfGuess.setDisable(false);
-        fields.btnGuess.setDisable(false);
-        fields.setHiddenWord(word.getHiddenWordString());
-        fields.setGuesses(word.getGuessesString());
-
-        System.out.println("gameWord: " + word.getGameWordString());
+    Hangman(String word) {
+        gameWord = new GameWord(word);
+        hangmanView = new GameDiagram();
+        hangmanFields = new GameFields();
     }
 }

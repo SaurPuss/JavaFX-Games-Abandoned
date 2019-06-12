@@ -1,27 +1,25 @@
 package game.hangman.logic;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Random;
 import java.util.Scanner;
 
-public class HangmanWord {
+public class GameWord {
     private ArrayList<Character> gameWord = new ArrayList<>();
     private ArrayList<Character> hiddenWord = new ArrayList<>();
     private LinkedHashMap<Character, Boolean> guesses = new LinkedHashMap<>();
-    private static final File FILE_DICTIONARY = new File("src/assets/dictionary.txt");
     private int mistakes = 0;
 
 
-    public HangmanWord() {
+    public GameWord() {
         // pick word from dictionary
         setWord();
         mistakes = 0;
     }
 
-    public HangmanWord(String gameWord) {
+    public GameWord(String gameWord) {
         // pick custom word
         setWord(gameWord);
         mistakes = 0;
@@ -152,7 +150,7 @@ public class HangmanWord {
             Random random = new Random();
             int n = 0;
 
-            for (Scanner input = new Scanner(FILE_DICTIONARY); input.hasNextLine(); ) {
+            for (Scanner input = new Scanner(GameSession.HANGMAN_DICTIONARY); input.hasNextLine(); ) {
                 ++n;
                 String line = input.nextLine();
 
@@ -167,7 +165,7 @@ public class HangmanWord {
 
 
         } catch (FileNotFoundException ex) {
-            System.out.println("dictionary.txt not found, using backup words");
+            System.out.println("HANGMAN WORD: dictionary.txt not found, using backup words");
 
             String[] word = {"rerouted", "pistache", "subtransverse",
                     "hesiodus", "unbrushable", "wayne", "jebusite",

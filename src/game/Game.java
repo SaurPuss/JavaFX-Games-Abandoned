@@ -8,6 +8,4 @@ import javafx.scene.layout.Pane;
 public abstract class Game extends Pane {
     // TODO add settings.user.score stuff
     protected Game() {}
-
-    public void restartGame() {}
 }

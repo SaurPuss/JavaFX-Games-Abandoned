@@ -1,4 +1,4 @@
-package game.hangman.GUI.panes;
+package game.hangman.GUI;
 
 import javafx.animation.Animation;
 import javafx.animation.PathTransition;
@@ -10,7 +10,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
-public class HangmanDiagram extends Pane {
+public class GameDiagram extends Pane {
     private Pane diagram;
     private Pane arms;
     private Pane legs;
@@ -31,7 +31,7 @@ public class HangmanDiagram extends Pane {
     /**
      * Dude constructor, you know the dealio.
      */
-    public HangmanDiagram() {
+    public GameDiagram() {
         diagram = new Pane();
         arms = new Pane();
         legs = new Pane();
@@ -61,7 +61,7 @@ public class HangmanDiagram extends Pane {
      * // TODO Maybe change diagram parts to static so there can only be 1?
      * @param n Wrong guess counter
      */
-    void addToDude(int n) {
+    void addToDiagram(int n) {
         switch(n) {
             case 1:
                 if (!diagram.getChildren().contains(noose))
@@ -92,6 +92,7 @@ public class HangmanDiagram extends Pane {
                     drawRightLeg();
                 swingAnimation();
                 System.out.println("HANGMAN: End Game, loss");
+                // TODO subtract from score
                 break;
             default:
                 resetDiagram();

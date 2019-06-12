@@ -1,10 +1,10 @@
-package game.hangman.GUI.buttons;
+package game.hangman.GUI;
 
-import game.hangman.HangmanGame;
+import game.hangman.Hangman;
 import javafx.scene.control.Button;
 import settings.Session;
 
-public interface HangmanResetButton {
+public interface GameResetButton {
 
     default Button resetHangman() {
         Button resetHangman = new Button("Reset Game");
@@ -14,7 +14,7 @@ public interface HangmanResetButton {
 
 
             // Set up a new HangmanGamePane
-            Session.game = new HangmanGame();
+            Session.game = new Hangman();
         });
 
         return resetHangman;
