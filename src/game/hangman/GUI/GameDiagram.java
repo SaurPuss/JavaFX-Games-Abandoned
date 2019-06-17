@@ -11,22 +11,17 @@ import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
 public class GameDiagram extends Pane {
-    private Pane diagram;
-    private Pane arms;
-    private Pane legs;
-    private Line noose;
-    private Circle head;
-    private Line body;
-    private Line leftArm;
-    private Line rightArm;
-    private Line leftLeg;
-    private Line rightLeg;
+    private static Pane diagram;
+    private static Pane arms;
+    private static Pane legs;
+    private static Line noose;
+    private static Circle head;
+    private static Line body;
+    private static Line leftArm;
+    private static Line rightArm;
+    private static Line leftLeg;
+    private static Line rightLeg;
 
-    /*static {
-        getChildren().clear();
-        setMinWidth(400);
-        getChildren().addAll(buildGallows());
-    }*/
     // Constructor
     /**
      * Dude constructor, you know the dealio.
@@ -61,7 +56,7 @@ public class GameDiagram extends Pane {
      * // TODO Maybe change diagram parts to static so there can only be 1?
      * @param n Wrong guess counter
      */
-    void addToDiagram(int n) {
+    static void addToDiagram(int n) {
         switch(n) {
             case 1:
                 if (!diagram.getChildren().contains(noose))
@@ -103,7 +98,7 @@ public class GameDiagram extends Pane {
     /**
      * Make the diagram swing
      */
-    private void swingAnimation() {
+    private static void swingAnimation() {
         Arc nooseArc = new Arc(230,-15,100,100,260,20);
         PathTransition ptNoose = new PathTransition();
         Circle circle = new Circle(5);
@@ -198,31 +193,31 @@ public class GameDiagram extends Pane {
     /**
      * Draw the different limbs and add them to the hanging diagram pane.
      */
-    private void drawNoose() {
+    private static void drawNoose() {
         noose = new Line(230, 30, 230, 85);
         diagram.getChildren().addAll(noose); }
-    private void drawHead() {
+    private static void drawHead() {
         double radius = 30;
         head = new Circle(noose.getEndX(), noose.getEndY() + radius, radius);
         head.setFill(Color.TRANSPARENT);
         head.setStroke(Color.BLACK);
         diagram.getChildren().add(head); }
-    private void drawBody() {
+    private static void drawBody() {
         body = new Line(230, 145, 230, 255);
         diagram.getChildren().add(body); }
-    private void drawLeftArm() {
+    private static void drawLeftArm() {
         leftArm = new Line(230, 180, 160, 150);
         arms.getChildren().add(leftArm); }
-    private void drawRightArm() {
+    private static void drawRightArm() {
         rightArm = new Line(230, 180, 300, 150);
         arms.getChildren().add(rightArm); }
-    private void drawLeftLeg() {
+    private static void drawLeftLeg() {
         leftLeg = new Line(230, 255, 180, 355);
         legs.getChildren().add(leftLeg); }
-    private void drawRightLeg() {
+    private static void drawRightLeg() {
         rightLeg = new Line(230, 255, 280, 355);
         legs.getChildren().add(rightLeg); }
-    private void resetDiagram() {
+    private static void resetDiagram() {
         arms.getChildren().removeAll();
         legs.getChildren().removeAll();
         diagram.getChildren().removeAll(noose, arms, legs, body, head);

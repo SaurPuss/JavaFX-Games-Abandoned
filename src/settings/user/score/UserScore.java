@@ -1,26 +1,29 @@
 package settings.user.score;
 
+import com.opencsv.bean.AbstractBeanField;
 import com.opencsv.bean.CsvBindByName;
-import com.opencsv.bean.CsvCustomBindByName;
-import com.opencsv.bean.CsvCustomBindByPosition;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import settings.Session;
-import settings.user.UserScoreToBean;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * User saves scores in here
  */
-public class UserScore implements Serializable {
+public class UserScore /*extends AbstractBeanField*/ implements Serializable {
     private static final long serialVersionUID = Session.SERIAL_VERSION_UID;
 
     // Data fields
-    @CsvBindByName
+    @CsvBindByName(column = "totalScore")
     private int totalScore;
-    @CsvBindByName
+    @CsvBindByName(column = "currentScore")
     private int currentScore;
-    @CsvBindByName
+    @CsvBindByName(column = "highestStreak")
     private int highestStreak;
+
 
     /**
      * Default User Scores, everyone starts with this
@@ -83,10 +86,30 @@ public class UserScore implements Serializable {
         updateHighestStreak();
     }
 
+    @Override
     public String toString() {
         return String.valueOf(totalScore) + "." + String.valueOf(currentScore) + "." + String.valueOf(highestStreak);
     }
 
+    /*@Override
+    protected Object convert(String s) {
+        System.out.println("USER SCORE: " + s);
+        UserScore score = new UserScore();
+        String[] split = s.split(".", 3);
+        score.setTotalScore(Integer.valueOf(split[0]));
+        score.setCurrentScore(Integer.valueOf(split[1]));
+        score.setHighestStreak(Integer.valueOf(split[2]));
+        return score;
+//        return null;
+    }
+
+    @Override
+    protected String convertToWrite(Object value) throws CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
+        UserScore score = (UserScore) value;
+
+        return "\"" + score.getTotalScore() + "." + score.getCurrentScore() + "." + score.getHighestStreak() + "\"";
+//        return super.convertToWrite(value);
+    }*/
     /**
      * Implement Serializable Interface methods
      */

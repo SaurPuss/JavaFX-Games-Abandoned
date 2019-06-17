@@ -1,7 +1,7 @@
 package settings.GUI.buttons;
 
 import game.hangman.Hangman;
-import game.minesweeper.MinesweeperGame;
+import game.minesweeper.Minesweeper;
 import javafx.scene.control.Button;
 import settings.Session;
 
@@ -13,12 +13,15 @@ public interface GameSelectionButton {
         btnSelect.setOnAction(e -> {
             switch (selection) {
                 case "Hangman":
-                    Session.pane.setCenter(new Hangman()); break;
+                    Session.game = new Hangman(); break;
                 case "Minesweeper":
-                    Session.pane.setCenter(new MinesweeperGame()); break;
+                    Session.game = new Minesweeper(); break;
                 default:
                     System.out.println("GAME SELECTION BUTTON: Default case. Nothing happens.");
+                    Session.game = new Hangman(); // default hangman to make sure that there is *something*
             }
+
+            Session.pane.setCenter(Session.game);
         });
 
         return btnSelect;

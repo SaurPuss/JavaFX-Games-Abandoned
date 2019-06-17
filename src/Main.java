@@ -33,8 +33,6 @@ import settings.user.UserManager;
 public class Main extends Application {
     // This is the main Pane
     private static Scoreboard scoreboard = new Scoreboard();
-
-    private Game game;
     private HBox gamePane;
 
 
@@ -45,7 +43,11 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         // Make sure all things are working on launch
-        Session.initSession();
+        try {
+            Session.initSession();
+        } catch (Exception e) {
+            System.out.println("MAIN: Exception caught in session initialization.");
+        }
 
         // Check if user is default profile
         if (User.isDefaultUser()) {

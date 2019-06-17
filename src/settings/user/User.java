@@ -13,15 +13,17 @@ import java.util.Random;
 public class User implements Serializable {
     private static final long serialVersionUID = Session.SERIAL_VERSION_UID;
     /* Data fields */
-    @CsvBindByName
+    @CsvBindByName(column = "username")
     private String userName;
-    @CsvBindByName
+    @CsvBindByName(column = "password")
     private String userPassword;
-    @CsvBindByName
+    // TODO move to User Settings
+    // TODO add toggle button with light/dark mode << style sheets <3
+    @CsvBindByName(column = "rememberPassword")
     private boolean rememberPassword;
-    @CsvBindByName
+    @CsvBindByName(column = "rememberUser")
     private boolean rememberUser;
-    // Saved in separate csv
+    @CsvCustomBindByName(column = "scores", converter = UserScoreToBean.class)
     private UserScore userScore;
 
     private static String[] anonymousName = {
@@ -70,8 +72,8 @@ public class User implements Serializable {
         return userPassword;
     }
 
-    public UserScore getUserScore() { return userScore; }
-    public void setUserScore(UserScore userScore) {
+    UserScore getUserScore() { return userScore; }
+    void setUserScore(UserScore userScore) {
         this.userScore = userScore;
     }
     void setUserPassword(String userPassword) { this.userPassword = userPassword; }
@@ -118,7 +120,8 @@ public class User implements Serializable {
      * Override toString to give a basic output with User info. Excluding the password.
      * @return String Name, Total Score, Current Score, Highest Streak
      */
-    public String toString() throws NullPointerException {
+    @Override
+    public String toString() {
         return "Name: " + this.userName + "\nTotal Score: " + this.userScore.getTotalScore() +
         "\nCurrent Score: " + this.userScore.getCurrentScore() + "\nHighest Score Streak: " +
         this.userScore.getHighestStreak();

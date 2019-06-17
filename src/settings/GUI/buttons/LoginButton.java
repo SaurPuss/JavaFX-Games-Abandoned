@@ -1,12 +1,12 @@
 package settings.GUI.buttons;
 
 import javafx.scene.control.Button;
-import javafx.scene.input.KeyCode;
 import settings.GUI.panes.GameSelectionPane;
-import settings.GUI.panes.LoginPane;
 import settings.GUI.panes.TopBarPane;
-import settings.Session;
 import settings.user.UserManager;
+
+import static settings.GUI.panes.LoginPane.*;
+import static settings.Session.*;
 
 public interface LoginButton {
     // TODO learn more about this::blabla
@@ -23,18 +23,11 @@ public interface LoginButton {
     default Button login() {
         Button btnLogin = new Button("Log In");
 
-        // TODO move into its own stuff, because this is lazy
-        LoginPane.tfUserPassword.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER)
-                loginAction(LoginPane.tfUserName.getText(),
-                        LoginPane.tfUserPassword.getText(),
-                        LoginPane.cbRememberUser.isSelected());
-        });
         // button action
         btnLogin.setOnAction(e -> loginAction(
-                LoginPane.tfUserName.getText(),
-                LoginPane.tfUserPassword.getText(),
-                LoginPane.cbRememberUser.isSelected()));
+                tfUserName.getText(),
+                tfUserPassword.getText(),
+                cbRememberUser.isSelected()));
 
         return btnLogin;
     }
@@ -45,20 +38,20 @@ public interface LoginButton {
             // Check password match
             if (UserManager.matchPassword(username, password)) {
                 // Set user as user
-                Session.user = UserManager.getUserProfile(username, password);
-                Session.user.setRememberUser(rememberUser);
+                user = UserManager.getUserProfile(username, password);
+                user.setRememberUser(rememberUser);
 
-                Session.printSessionUser();
+                printSessionUser();
 //                UserManager.saveExistingUser(UserManager.getUserProfile(username, password));
                 // Continue to game selection screen
-                Session.pane.setTop(new TopBarPane());
-                Session.pane.setCenter(new GameSelectionPane());
+                pane.setTop(new TopBarPane());
+                pane.setCenter(new GameSelectionPane());
             } else {
                 // TODO how many password attempts?
-                LoginPane.loginError("PasswordNoMatch");
+                loginError("PasswordNoMatch");
             }
         } else {
-            LoginPane.loginError("UserDoesNotExist");
+            loginError("UserDoesNotExist");
         }
 
     }

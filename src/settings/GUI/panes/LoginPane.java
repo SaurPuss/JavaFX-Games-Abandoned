@@ -3,6 +3,7 @@ package settings.GUI.panes;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -12,8 +13,9 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import settings.GUI.buttons.LoginButton;
 import settings.GUI.buttons.SignUpButton;
-import settings.Session;
 import settings.user.User;
+
+import static settings.Session.*;
 
 public class LoginPane extends VBox implements LoginButton, SignUpButton {
     private static Text welcome;
@@ -53,16 +55,18 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
      * Default constructor for login/signup form
      */
     public LoginPane() {
-        Session.printSessionUser();
-        welcome = new Text("Welcome " + Session.user.getUserName());
+        printSessionUser();
+        welcome = new Text("Welcome " + user.getUserName());
         welcome.setFont(Font.font(18));
-        cbRememberUser.setSelected(Session.user.isRememberUser());
+        cbRememberUser.setSelected(user.isRememberUser());
 
         buttons.getChildren().addAll(login(), signUp());
 
         setSpacing(5);
         setAlignment(Pos.CENTER);
         getChildren().addAll(welcome, chooseAction, fields, buttons);
+
+        textFieldLogin();
     }
 
     /**
@@ -80,6 +84,8 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
         setSpacing(5);
         setAlignment(Pos.CENTER);
         getChildren().addAll(welcome, chooseAction, fields, buttons);
+
+        textFieldLogin();
     }
 
     /**
@@ -130,5 +136,18 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
             default: fields.add(errPassword, 0, 3, 3, 1);
                 errPassword.setText("* Username or Password can't be found.");
         }
+    }
+
+    /**
+     * Helper method that will try to log in a user that hits enter while
+     * in the password TextField.
+     */
+    private void textFieldLogin() {
+        tfUserPassword.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER)
+                loginAction(LoginPane.tfUserName.getText(),
+                        LoginPane.tfUserPassword.getText(),
+                        LoginPane.cbRememberUser.isSelected());
+        });
     }
 }

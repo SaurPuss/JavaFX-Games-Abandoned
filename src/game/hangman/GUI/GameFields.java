@@ -1,5 +1,7 @@
 package game.hangman.GUI;
 
+import game.hangman.Hangman;
+import game.hangman.logic.GameWord;
 import javafx.geometry.Pos;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -7,13 +9,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
 public class GameFields extends HBox implements GuessButton {
-    Text tHiddenWord = new Text();
-    Text tGuesses = new Text();
-    TextField tfGuess = new TextField();
-    GridPane fields = new GridPane();
+    static Text tHiddenWord = new Text();
+    static Text tGuesses = new Text();
+    static TextField tfGuess = new TextField();
 
     public GameFields() {
         setAlignment(Pos.TOP_CENTER);
+
+        GridPane fields = new GridPane();
         Text lblHiddenWord = new Text("You're guessing: ");
         Text lblGuesses = new Text("You've tried: ");
 
@@ -34,6 +37,7 @@ public class GameFields extends HBox implements GuessButton {
     void setGuesses(String s) {
         tGuesses.setText(s);
     }
+
 
 
 

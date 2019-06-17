@@ -8,7 +8,7 @@ import game.hangman.logic.GameSession;
 import game.hangman.logic.GameWord;
 
 public class Hangman extends Game implements GameResetButton {
-    private GameWord gameWord;
+    private static GameWord gameWord;
     private GameDiagram hangmanView;
     private GameFields hangmanFields;
 
@@ -31,5 +31,9 @@ public class Hangman extends Game implements GameResetButton {
         gameWord = new GameWord(word);
         hangmanView = new GameDiagram();
         hangmanFields = new GameFields();
+    }
+
+    public static GameWord getGameWord() {
+        return gameWord;
     }
 }

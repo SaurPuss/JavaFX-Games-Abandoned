@@ -2,6 +2,10 @@ package settings.user;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import com.opencsv.bean.HeaderColumnNameMappingStrategy;
+import com.opencsv.bean.MappingStrategy;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import settings.Session;
 import settings.user.score.UserScore;
 
@@ -211,7 +215,22 @@ public class UserManager implements Serializable {
      */
     private static void saveNewUser(User user) {
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter(Session.ALL_USER_FILE, true));
+            Writer writer = new FileWriter(Session.ALL_USER_FILE);
+
+            MappingStrategy<UserScore> scoreStrategy = new HeaderColumnNameMappingStrategy<>();
+            scoreStrategy.setType(UserScore.class);
+
+            MappingStrategy<User> userStrategy = new HeaderColumnNameMappingStrategy<>();
+            userStrategy.setType(User.class);
+
+            StatefulBeanToCsvBuilder<User> beanBuilder = new StatefulBeanToCsvBuilder<>(writer);
+
+            StatefulBeanToCsv<User> beanToCsv = beanBuilder.build();
+            beanToCsv.write(user);
+            writer.close();
+
+
+/*            CSVWriter writer = new CSVWriter(new FileWriter(Session.ALL_USER_FILE, true));
 
             String[] record = {
                     user.getUserName(),
@@ -226,7 +245,7 @@ public class UserManager implements Serializable {
 
             writer.writeNext(record);
 
-            writer.close();
+            writer.close();*/
         } catch (Exception e) {
             System.out.println("USER MANAGER: failed saveNewUser(user)!");
             e.printStackTrace();

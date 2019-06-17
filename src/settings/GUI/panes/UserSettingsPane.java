@@ -1,4 +1,9 @@
 package settings.GUI.panes;
 
-public class UserSettingsPane {
+import javafx.scene.layout.Pane;
+
+public class UserSettingsPane extends Pane {
+
+
+    public UserSettingsPane() {}
 }

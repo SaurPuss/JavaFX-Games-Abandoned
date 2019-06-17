@@ -10,7 +10,7 @@ public class GameWord {
     private ArrayList<Character> gameWord = new ArrayList<>();
     private ArrayList<Character> hiddenWord = new ArrayList<>();
     private LinkedHashMap<Character, Boolean> guesses = new LinkedHashMap<>();
-    private int mistakes = 0;
+    private int mistakes = 0; // TODO Move to GameSession
 
 
     public GameWord() {
@@ -66,7 +66,7 @@ public class GameWord {
         System.out.println(guesses.values().toString());
     }
 
-    int getMistakes() {
+    public int getMistakes() {
         return mistakes;
     }
 

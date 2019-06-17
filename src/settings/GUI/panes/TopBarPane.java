@@ -10,7 +10,7 @@ import settings.Session;
 
 public class TopBarPane extends BorderPane implements UserSettingsButton, UserScoreButton {
     public TopBarPane() {
-        Text userName = new Text(Session.user.getUserName());
+        Text userName = new Text("Hi, " + Session.user.getUserName());
 
         // Add the buttons in their own box
         HBox buttons = new HBox(5);
