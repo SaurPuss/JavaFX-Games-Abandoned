@@ -9,7 +9,7 @@ public class TextToUserScore extends AbstractCsvConverter {
         UserScore score = new UserScore();
         String[] split = value.split("\\.", 3);
         score.setTotalScore(Integer.valueOf(split[0]));
-        score.setCurrentScore(Integer.valueOf(split[1]));
+        score.setCurrentStreak(Integer.valueOf(split[1]));
         score.setHighestStreak(Integer.valueOf(split[2]));
         return score;
     }
@@ -17,6 +17,6 @@ public class TextToUserScore extends AbstractCsvConverter {
     /*@Override
     public String convertToWrite(Object value) {
         UserScore userScore = (UserScore) value;
-        return String.format("%s.%s.%s", userScore.getTotalScore(), userScore.getCurrentScore(), userScore.getHighestStreak());
+        return String.format("%s.%s.%s", userScore.getTotalScore(), userScore.getCurrentStreak(), userScore.getHighestStreak());
     }*/
 }

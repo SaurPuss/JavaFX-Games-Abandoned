@@ -1,19 +1,20 @@
 package settings.user;
 
 import com.opencsv.bean.*;
-import settings.Session;
 import settings.user.score.UserScore;
 
 import java.io.*;
 import java.util.Random;
 
+import static settings.Session.*;
+
 /**
  * User specific settings and saved info go here
  */
 public class User implements Serializable {
-    private static final long serialVersionUID = Session.SERIAL_VERSION_UID;
+    private static final long serialVersionUID = SERIAL_VERSION_UID;
     /* Data fields */
-    @CsvBindByName(column = "username")
+    @CsvBindByName(column = "username", required = true)
     private String userName;
     @CsvBindByName(column = "password")
     private String userPassword;
@@ -23,8 +24,13 @@ public class User implements Serializable {
     private boolean rememberPassword;
     @CsvBindByName(column = "rememberUser")
     private boolean rememberUser;
-    @CsvCustomBindByName(column = "scores", converter = UserScoreToBean.class)
-    private UserScore userScore;
+//    @CsvCustomBindByName(column = "scores", converter = UserScoreToBean.class)
+//    private UserScore userScore;
+    @CsvBindByName(column = "totalScore")
+    private int totalScore;
+    @CsvBindByName(column = "highestStreak")
+    private int highestStreak;
+    private int currentStreak;
 
     private static String[] anonymousName = {
             "Anonymous Badger", "Anonymous Llama", "Anonymous Gopher",
@@ -42,9 +48,12 @@ public class User implements Serializable {
     public User() {
         userName = randomName();
         userPassword = null;
-        userScore = new UserScore();
+//        userScore = new UserScore();
         rememberPassword = false;
         rememberUser = false;
+        totalScore = 0;
+        highestStreak = 0;
+        currentStreak = 0;
     }
 
     /**
@@ -55,40 +64,53 @@ public class User implements Serializable {
     public User(String name, String password, boolean rememberUser) {
         this.userName = name;
         this.userPassword = password;
-        userScore = new UserScore();
+//        userScore = new UserScore();
         rememberPassword = false;
         this.rememberUser = rememberUser;
+        totalScore = 0;
+        highestStreak = 0;
+        currentStreak = 0;
     }
 
     /* Getters and Setters */
     public String getUserName() { return this.userName; }
-    void setUserName(String userName) {
+    public void setUserName(String userName) {
         this.userName = userName;
     }
 
     // TODO figure this out - getUserPassword() obfuscate
-    String getUserPassword() {
+    public String getUserPassword() {
         // Do stuff
         return userPassword;
     }
 
-    UserScore getUserScore() { return userScore; }
-    void setUserScore(UserScore userScore) {
-        this.userScore = userScore;
-    }
-    void setUserPassword(String userPassword) { this.userPassword = userPassword; }
+//    UserScore getUserScore() { return userScore; }
+//    void setUserScore(UserScore userScore) { this.userScore = userScore; }
+    public void setUserPassword(String userPassword) { this.userPassword = userPassword; }
     public boolean isRememberPassword() { return rememberPassword; }
-    void setRememberPassword(boolean rememberPassword) { this.rememberPassword = rememberPassword; }
+    public void setRememberPassword(boolean rememberPassword) { this.rememberPassword = rememberPassword; }
     public boolean isRememberUser() { return rememberUser; }
     public void setRememberUser(boolean rememberUser) { this.rememberUser = rememberUser; }
+    public int getTotalScore() { return totalScore; }
+    public void setTotalScore(int totalScore) { this.totalScore = totalScore; }
+    public int getHighestStreak() { return highestStreak; }
+    public void setHighestStreak(int highestStreak) { this.highestStreak = highestStreak; }
+    public int getCurrentStreak() { return currentStreak; }
+    public void setCurrentStreak(int currentStreak) { this.currentStreak = currentStreak; }
 
     /**
      * Static method to check if Session User is default
      * @return boolean default username
      */
-    public static boolean isDefaultUser() throws NullPointerException {
-        System.out.println("USER: Checking for default user");
-        return Session.user.getUserName().contains("Anonymous ");
+    public static boolean isDefaultUser() {
+        try {
+            System.out.println("USER: Checking for default user");
+            return user.getUserName().contains("Anonymous ");
+        } catch (NullPointerException e) {
+            System.out.println("USER: NullPointerException in isDefaultUser");
+        }
+
+        return true;
     }
 
     /**
@@ -122,9 +144,9 @@ public class User implements Serializable {
      */
     @Override
     public String toString() {
-        return "Name: " + this.userName + "\nTotal Score: " + this.userScore.getTotalScore() +
-        "\nCurrent Score: " + this.userScore.getCurrentScore() + "\nHighest Score Streak: " +
-        this.userScore.getHighestStreak();
+        return "Name: " + this.userName + "\nTotal Score: " + this.totalScore +
+        "\nCurrent Score: " + this.currentStreak + "\nHighest Score Streak: " +
+        this.highestStreak;
     }
 
     /**

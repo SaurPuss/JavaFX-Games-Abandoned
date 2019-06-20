@@ -19,9 +19,6 @@ import static settings.Session.*;
 
 public class LoginPane extends VBox implements LoginButton, SignUpButton {
     private static Text welcome;
-    private static Text chooseAction = new Text(
-            "Unless you want to remain anonymous" +
-            "\nyou should log in or sign up.");
     private static Text errUser = new Text("");
     private static Text errPassword = new Text("");
     public static TextField tfUserName = new TextField();
@@ -33,10 +30,10 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
     public static CheckBox cbRememberUser = new CheckBox();
 
     private static GridPane fields = new GridPane();
-    private static HBox buttons = new HBox(5);
+    private static HBox buttons = new HBox(0);
 
     static { // Set this up for all LoginPane() objects
-        chooseAction.setTextAlignment(TextAlignment.CENTER);
+
 
         fields.add(tUserName, 0, 0, 2, 1);
         fields.add(tfUserName, 2, 0, 2, 1);
@@ -56,7 +53,15 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
      */
     public LoginPane() {
         printSessionUser();
+        getChildren().add(welcome);
         welcome = new Text("Welcome " + user.getUserName());
+        if (User.isDefaultUser()) {
+            Text chooseAction = new Text("Unless you want to remain anonymous" +
+                    "\nyou should log in or sign up.");
+            chooseAction.setTextAlignment(TextAlignment.CENTER);
+            // TODO add continue as default button
+        }
+
         welcome.setFont(Font.font(18));
         cbRememberUser.setSelected(user.isRememberUser());
 
@@ -64,9 +69,9 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
 
         setSpacing(5);
         setAlignment(Pos.CENTER);
-        getChildren().addAll(welcome, chooseAction, fields, buttons);
+        getChildren().addAll(fields, buttons);
 
-        textFieldLogin();
+//        textFieldLogin();
     }
 
     /**
@@ -83,9 +88,9 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
 
         setSpacing(5);
         setAlignment(Pos.CENTER);
-        getChildren().addAll(welcome, chooseAction, fields, buttons);
+        getChildren().addAll(welcome, fields, buttons);
 
-        textFieldLogin();
+//        textFieldLogin();
     }
 
     /**

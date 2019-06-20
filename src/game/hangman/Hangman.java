@@ -6,6 +6,9 @@ import game.hangman.GUI.GameFields;
 import game.hangman.GUI.GameDiagram;
 import game.hangman.logic.GameSession;
 import game.hangman.logic.GameWord;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.layout.VBox;
 
 public class Hangman extends Game implements GameResetButton {
     private static GameWord gameWord;
@@ -18,7 +21,12 @@ public class Hangman extends Game implements GameResetButton {
         hangmanView = new GameDiagram();
         hangmanFields = new GameFields();
 
-        getChildren().addAll(hangmanView, hangmanFields);
+        // Display the parts
+        VBox view = new VBox(5);
+        view.setAlignment(Pos.CENTER);
+        view.setPadding(new Insets(0, 50, 0, 50));
+        view.getChildren().addAll(hangmanView, hangmanFields);
+        getChildren().add(view);
 
         // Set initial score as a negative of the gameWord length
         GameSession.gameScore -= gameWord.gameWordLength();

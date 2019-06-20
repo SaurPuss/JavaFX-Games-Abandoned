@@ -130,14 +130,17 @@ public class UserManager implements Serializable {
                     // REMEMBERUSER
                     temp.setRememberUser(Boolean.valueOf(nextLine[3]));
 
-                    // CURRENTSCORE
-                    score.setCurrentScore(Integer.valueOf(nextLine[4]));
+                    // CURRENTSTREAK
+//                    score.setCurrentStreak(Integer.valueOf(nextLine[4]));
+                    temp.setCurrentStreak(0);
                     // HIGHESTSTREAK
-                    score.setHighestStreak(Integer.valueOf(nextLine[5]));
+//                    score.setHighestStreak(Integer.valueOf(nextLine[5]));
+                    temp.setHighestStreak(Integer.valueOf(nextLine[4]));
                     // TOTALSCORE
-                    score.setTotalScore(Integer.valueOf(nextLine[6]));
+                    temp.setTotalScore(Integer.valueOf(nextLine[5]));
+//                    score.setTotalScore(Integer.valueOf(nextLine[6]));
 
-                    temp.setUserScore(score);
+//                    temp.setUserScore(score);
 
                     return temp;
                 }
@@ -177,7 +180,7 @@ public class UserManager implements Serializable {
      * @param user User to be saved
      */
     public static void saveCurrentUser(User user) {
-//        System.out.println("USER MANAGER: Saving current user");
+        System.out.println("USER MANAGER: Saving current user");
         try {
             FileOutputStream f = new FileOutputStream(Session.CURRENT_USER_FILE, false);
             ObjectOutputStream o = new ObjectOutputStream(f);
@@ -215,37 +218,34 @@ public class UserManager implements Serializable {
      */
     private static void saveNewUser(User user) {
         try {
-            Writer writer = new FileWriter(Session.ALL_USER_FILE);
+           /* Writer writer = new FileWriter(Session.ALL_USER_FILE, true);
 
-            MappingStrategy<UserScore> scoreStrategy = new HeaderColumnNameMappingStrategy<>();
-            scoreStrategy.setType(UserScore.class);
+//            MappingStrategy<UserScore> scoreStrategy = new HeaderColumnNameMappingStrategy<>();
+//            scoreStrategy.setType(UserScore.class);
 
             MappingStrategy<User> userStrategy = new HeaderColumnNameMappingStrategy<>();
             userStrategy.setType(User.class);
+            userStrategy.captureHeader(new CSVReader(new FileReader(Session.ALL_USER_FILE)));
 
             StatefulBeanToCsvBuilder<User> beanBuilder = new StatefulBeanToCsvBuilder<>(writer);
 
-            StatefulBeanToCsv<User> beanToCsv = beanBuilder.build();
+            StatefulBeanToCsv<User> beanToCsv = beanBuilder.withMappingStrategy(userStrategy).build();
             beanToCsv.write(user);
-            writer.close();
+            writer.close();*/
 
-
-/*            CSVWriter writer = new CSVWriter(new FileWriter(Session.ALL_USER_FILE, true));
+            CSVWriter writer = new CSVWriter(new FileWriter(Session.ALL_USER_FILE, true));
 
             String[] record = {
                     user.getUserName(),
                     user.getUserPassword(),
                     String.valueOf(user.isRememberPassword()),
                     String.valueOf(user.isRememberUser()),
-                    String.valueOf(user.getUserScore().getTotalScore()),
-                    String.valueOf(user.getUserScore().getHighestStreak()),
-                    String.valueOf(user.getUserScore().getCurrentScore()),
-
+                    String.valueOf(user.getTotalScore()),
+                    String.valueOf(user.getHighestStreak()),
             };
 
             writer.writeNext(record);
-
-            writer.close();*/
+            writer.close();
         } catch (Exception e) {
             System.out.println("USER MANAGER: failed saveNewUser(user)!");
             e.printStackTrace();

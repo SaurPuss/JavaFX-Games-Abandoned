@@ -22,6 +22,7 @@ public interface LoginButton {
      */
     default Button login() {
         Button btnLogin = new Button("Log In");
+        btnLogin.setDefaultButton(true);
 
         // button action
         btnLogin.setOnAction(e -> loginAction(

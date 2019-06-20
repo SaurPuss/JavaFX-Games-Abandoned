@@ -1,5 +1,7 @@
 package game.hangman.logic;
 
+import game.hangman.GUI.GameDiagram;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -54,16 +56,16 @@ public class GameWord {
         return s.toString();
     }
 
-    void guessLetter(char c) {
+    public void guessLetter(char c) {
         if (!guesses.containsKey(c)) {
             if (gameWord.contains(c))
                 guesses.put(c, true);
             else {
                 guesses.put(c, false);
-                mistakes++;
+                GameDiagram.addToDiagram(++mistakes);
             }
         }
-        System.out.println(guesses.values().toString());
+//        System.out.println(guesses.values().toString());
     }
 
     public int getMistakes() {
@@ -75,7 +77,7 @@ public class GameWord {
         return guesses;
     }
 
-    String getGuessesString() {
+    public String getGuessesString() {
         StringBuilder s = new StringBuilder();
 
         int i = 0;
@@ -122,7 +124,7 @@ public class GameWord {
      * Time to get a (partially) obfuscated version of the gameWord
      * @return String hiddenWord
      */
-    String getHiddenWordString() {
+    public String getHiddenWordString() {
         updateHiddenWord();
 
         StringBuilder s = new StringBuilder();

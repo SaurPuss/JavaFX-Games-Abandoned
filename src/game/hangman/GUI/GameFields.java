@@ -1,44 +1,47 @@
 package game.hangman.GUI;
 
 import game.hangman.Hangman;
-import game.hangman.logic.GameWord;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
-public class GameFields extends HBox implements GuessButton {
+public class GameFields extends VBox implements GuessButton {
     static Text tHiddenWord = new Text();
     static Text tGuesses = new Text();
     static TextField tfGuess = new TextField();
 
+    /**
+     * Create Hangman interaction fields.
+     */
     public GameFields() {
-        setAlignment(Pos.TOP_CENTER);
-
-        GridPane fields = new GridPane();
+        // Add layout elements
+        HBox wordBox = new HBox(5);
+        HBox tryBox = new HBox(5);
+        HBox guessBox = new HBox(0);
         Text lblHiddenWord = new Text("You're guessing: ");
         Text lblGuesses = new Text("You've tried: ");
 
-        fields.add(lblHiddenWord, 0, 0);
-        fields.add(tHiddenWord, 1, 0);
-        fields.add(lblGuesses, 0, 1);
-        fields.add(tGuesses,1, 1);
-        fields.add(tfGuess, 0, 2);
-        fields.add(guessButton(), 1, 2);
+        // Style layout elements
+        wordBox.setAlignment(Pos.CENTER);
+        tryBox.setAlignment(Pos.CENTER);
+        guessBox.setAlignment(Pos.CENTER);
+        tfGuess.setPrefColumnCount(1);
+        wordBox.getChildren().addAll(lblHiddenWord, tHiddenWord);
+        tryBox.getChildren().addAll(lblGuesses, tGuesses);
+        guessBox.getChildren().addAll(tfGuess, guessButton());
 
-        getChildren().addAll(fields);
+        // Layout Styling
+        setAlignment(Pos.TOP_CENTER);
+        setSpacing(10);
+        setPadding(new Insets(40, 0, 0, 0));
+        getChildren().addAll(wordBox, tryBox, guessBox);
+
+        // Add some functionality
+        tHiddenWord.setText(Hangman.getGameWord().getHiddenWordString());
+        Platform.runLater(() -> tfGuess.requestFocus());
     }
-
-    void setHiddenWord(String s) {
-        tHiddenWord.setText(s);
-    }
-
-    void setGuesses(String s) {
-        tGuesses.setText(s);
-    }
-
-
-
-
 }

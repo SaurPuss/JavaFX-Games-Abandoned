@@ -60,6 +60,7 @@ public class Main extends Application {
         } // Check if there is a current user that's also saved to the database
         else if (UserManager.matchCurrentUser()) {
             System.out.println("MAIN: User exists.");
+            // TODO if current user is not saved in the db reset to default
 
             // Password auto login?
             if (!Session.user.isRememberPassword()) {

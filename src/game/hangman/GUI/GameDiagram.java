@@ -2,6 +2,7 @@ package game.hangman.GUI;
 
 import javafx.animation.Animation;
 import javafx.animation.PathTransition;
+import javafx.geometry.Insets;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
@@ -31,9 +32,8 @@ public class GameDiagram extends Pane {
         arms = new Pane();
         legs = new Pane();
         setMinWidth(400);
-
-        diagram.getChildren().addAll(arms, legs);
         getChildren().addAll(buildGallows());
+        diagram.getChildren().addAll(arms, legs);
     }
 
 
@@ -56,7 +56,7 @@ public class GameDiagram extends Pane {
      * // TODO Maybe change diagram parts to static so there can only be 1?
      * @param n Wrong guess counter
      */
-    static void addToDiagram(int n) {
+    public static void addToDiagram(int n) {
         switch(n) {
             case 1:
                 if (!diagram.getChildren().contains(noose))

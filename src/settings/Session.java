@@ -17,7 +17,7 @@ public class Session {
     public static Scene scene = new Scene(pane, 500, 800);
     public static Game game;
 
-    public static final long SERIAL_VERSION_UID = 6L;
+    public static final long SERIAL_VERSION_UID = 7L;
     public static final String CURRENT_USER_FILE = "src/assets/userdata/currentUser.dat";
     public static final String ALL_USER_FILE = "src/assets/userdata/users.csv";
 
@@ -41,24 +41,17 @@ public class Session {
             allUsersFile.createNewFile();
             if (allUsersFile.length() == 0) {
                 // add header to the file
-//                System.out.println("SESSION: Creating new users.csv");
-//                FileWriter fileWriter = new FileWriter(Session.ALL_USER_FILE);
-//                fileWriter.append("USERNAME,PASSWORD,REMEMBERPASSWORD,REMEMBERUSER,CURRENTSCORE,HIGHESTSTREAK,TOTALSCORE\n");
-//                fileWriter.close();
-                try {
-                    System.out.println("SESSION: Generating new Header");
-                    MappingStrategy<User> userStrategy = new HeaderColumnNameMappingStrategy<>();
-                    userStrategy.setType(User.class);
-                    userStrategy.generateHeader(new User());
-                } catch (CsvRequiredFieldEmptyException e) {
-                    System.out.println(e.getDestinationFields());
-                }
+                System.out.println("SESSION: Generating new Header");
+                FileWriter fileWriter = new FileWriter(Session.ALL_USER_FILE);
+                fileWriter.append("\"USERNAME\",\"PASSWORD\",\"REMEMBERPASSWORD\",\"REMEMBERUSER\",\"TOTALSCORE\",\"HIGHESTSTREAK\"\n");
+                fileWriter.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         // pull up a user to start with
+        System.out.println("SESSION: Getting current user");
         user = UserManager.getCurrentUser();
     }
 

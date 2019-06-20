@@ -1,14 +1,9 @@
 package settings.user.score;
 
-import com.opencsv.bean.AbstractBeanField;
 import com.opencsv.bean.CsvBindByName;
-import com.opencsv.exceptions.CsvDataTypeMismatchException;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import settings.Session;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * User saves scores in here
@@ -19,8 +14,8 @@ public class UserScore /*extends AbstractBeanField*/ implements Serializable {
     // Data fields
     @CsvBindByName(column = "totalScore")
     private int totalScore;
-    @CsvBindByName(column = "currentScore")
-    private int currentScore;
+    @CsvBindByName(column = "currentStreak")
+    private int currentStreak;
     @CsvBindByName(column = "highestStreak")
     private int highestStreak;
 
@@ -30,13 +25,13 @@ public class UserScore /*extends AbstractBeanField*/ implements Serializable {
      */
     public UserScore() {
         totalScore = 0;
-        currentScore = 0;
+        currentStreak = 0;
         highestStreak = 0;
     }
 
     public UserScore(int totalScore, int currentScore, int highestStreak) {
         this.totalScore = totalScore;
-        this.currentScore = currentScore;
+        this.currentStreak = currentScore;
         this.highestStreak = highestStreak;
     }
 
@@ -58,21 +53,21 @@ public class UserScore /*extends AbstractBeanField*/ implements Serializable {
         this.highestStreak = highestStreak;
     }
     private void updateHighestStreak() {
-        if (currentScore > highestStreak)
-            highestStreak = currentScore;
+        if (currentStreak > highestStreak)
+            highestStreak = currentStreak;
     }
 
-    public int getCurrentScore() {
-        return currentScore;
+    public int getCurrentStreak() {
+        return currentStreak;
     }
-    public void setCurrentScore(int currentScore) {
-        this.currentScore = currentScore;
+    public void setCurrentStreak(int currentStreak) {
+        this.currentStreak = currentStreak;
     }
     private void updateCurrentScore(int gameScore) {
-        this.currentScore += gameScore;
+        this.currentStreak += gameScore;
     }
     public void resetCurrentScore() {
-        currentScore = 0;
+        currentStreak = 0;
     }
 
 
@@ -88,7 +83,7 @@ public class UserScore /*extends AbstractBeanField*/ implements Serializable {
 
     @Override
     public String toString() {
-        return String.valueOf(totalScore) + "." + String.valueOf(currentScore) + "." + String.valueOf(highestStreak);
+        return String.valueOf(totalScore) + "." + String.valueOf(currentStreak) + "." + String.valueOf(highestStreak);
     }
 
     /*@Override
@@ -97,7 +92,7 @@ public class UserScore /*extends AbstractBeanField*/ implements Serializable {
         UserScore score = new UserScore();
         String[] split = s.split(".", 3);
         score.setTotalScore(Integer.valueOf(split[0]));
-        score.setCurrentScore(Integer.valueOf(split[1]));
+        score.setCurrentStreak(Integer.valueOf(split[1]));
         score.setHighestStreak(Integer.valueOf(split[2]));
         return score;
 //        return null;
@@ -107,7 +102,7 @@ public class UserScore /*extends AbstractBeanField*/ implements Serializable {
     protected String convertToWrite(Object value) throws CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
         UserScore score = (UserScore) value;
 
-        return "\"" + score.getTotalScore() + "." + score.getCurrentScore() + "." + score.getHighestStreak() + "\"";
+        return "\"" + score.getTotalScore() + "." + score.getCurrentStreak() + "." + score.getHighestStreak() + "\"";
 //        return super.convertToWrite(value);
     }*/
     /**

@@ -9,6 +9,7 @@ public interface GameSelectionButton {
 
     default Button gameSelectionButton(String selection) {
         Button btnSelect = new Button("Play!");
+        btnSelect.setDefaultButton(true);
 
         btnSelect.setOnAction(e -> {
             switch (selection) {
