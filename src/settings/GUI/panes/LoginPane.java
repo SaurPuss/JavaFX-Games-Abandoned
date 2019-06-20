@@ -1,29 +1,24 @@
 package settings.GUI.panes;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.geometry.*;
+import javafx.scene.text.*;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import settings.GUI.buttons.LoginButton;
 import settings.GUI.buttons.SignUpButton;
 import settings.user.User;
 
+import static org.controlsfx.control.textfield.TextFields.*;
 import static settings.Session.*;
 
 public class LoginPane extends VBox implements LoginButton, SignUpButton {
     private static Text welcome;
     private static Text errUser = new Text("");
     private static Text errPassword = new Text("");
-    public static TextField tfUserName = new TextField();
-    // TODO obfuscate password input field
-    public static TextField tfUserPassword = new TextField();
+    public static TextField tfUserName = createClearableTextField();
+    public static PasswordField tfUserPassword = createClearablePasswordField();
     private static Text tUserName = new Text("Username:  ");
     private static Text tUserPassword = new Text("Password:  ");
     private static Text tRemember = new Text(" Remember me");
@@ -33,7 +28,6 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
     private static HBox buttons = new HBox(0);
 
     static { // Set this up for all LoginPane() objects
-
 
         fields.add(tUserName, 0, 0, 2, 1);
         fields.add(tfUserName, 2, 0, 2, 1);

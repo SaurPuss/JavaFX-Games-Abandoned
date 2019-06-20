@@ -1,4 +1,4 @@
-package settings.user;
+package settings.user.score;
 
 import com.opencsv.bean.AbstractCsvConverter;
 import settings.user.score.UserScore;

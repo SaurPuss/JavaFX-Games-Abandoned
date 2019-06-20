@@ -33,8 +33,6 @@ import settings.user.UserManager;
 public class Main extends Application {
     // This is the main Pane
     private static Scoreboard scoreboard = new Scoreboard();
-    private HBox gamePane;
-
 
     /**
      * Start the application with javafx.
@@ -81,19 +79,6 @@ public class Main extends Application {
             System.out.println("MAIN: Starting with a blank slate: new LoginPane()");
             Session.pane.setCenter(new LoginPane());
         }
-
-
-
-        // TODO At the top of the pane display current username, a button for scores and a button for settings
-
-
-
-
-
-        // Set up basic panes
-        gamePane = new HBox();
-        gamePane.setAlignment(Pos.CENTER);
-
 
         // Put it all together in a neat little package
         primaryStage.setTitle("Let's Play a Game");

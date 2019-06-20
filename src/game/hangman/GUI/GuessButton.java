@@ -10,7 +10,7 @@ public interface GuessButton {
     default Button guessButton() {
         Button button = new Button("Guess");
         button.setDefaultButton(true);
-        // TODO a lot more functionality
+
         button.setOnAction(e -> {
             guessLetterInput();
             GameDiagram.addToDiagram(Hangman.getGameWord().getMistakes());
@@ -21,7 +21,6 @@ public interface GuessButton {
             }
         });
 
-        button.setDisable(false);
         return button;
     }
 

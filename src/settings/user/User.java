@@ -31,7 +31,6 @@ public class User implements Serializable {
     @CsvBindByName(column = "highestStreak")
     private int highestStreak;
     private int currentStreak;
-
     private static String[] anonymousName = {
             "Anonymous Badger", "Anonymous Llama", "Anonymous Gopher",
             "Anonymous Giraffe", "Anonymous Dolphin", "Anonymous Horse",
@@ -72,20 +71,14 @@ public class User implements Serializable {
         currentStreak = 0;
     }
 
-    /* Getters and Setters */
+    /* Getters and Setters - OpenCSV requires them to be public */
     public String getUserName() { return this.userName; }
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    // TODO figure this out - getUserPassword() obfuscate
+    public void setUserName(String userName) { this.userName = userName; }
     public String getUserPassword() {
-        // Do stuff
-        return userPassword;
-    }
-
-//    UserScore getUserScore() { return userScore; }
-//    void setUserScore(UserScore userScore) { this.userScore = userScore; }
+        // TODO hashing or something
+        return userPassword; }
+//    public UserScore getUserScore() { return userScore; }
+//    public void setUserScore(UserScore userScore) { this.userScore = userScore; }
     public void setUserPassword(String userPassword) { this.userPassword = userPassword; }
     public boolean isRememberPassword() { return rememberPassword; }
     public void setRememberPassword(boolean rememberPassword) { this.rememberPassword = rememberPassword; }
@@ -98,6 +91,7 @@ public class User implements Serializable {
     public int getCurrentStreak() { return currentStreak; }
     public void setCurrentStreak(int currentStreak) { this.currentStreak = currentStreak; }
 
+    /* Other methods */
     /**
      * Static method to check if Session User is default
      * @return boolean default username
@@ -107,15 +101,16 @@ public class User implements Serializable {
             System.out.println("USER: Checking for default user");
             return user.getUserName().contains("Anonymous ");
         } catch (NullPointerException e) {
-            System.out.println("USER: NullPointerException in isDefaultUser");
+            System.out.println("USER: Session User cannot be null!");
         }
 
+        // fallback because the method requires it
         return true;
     }
 
     /**
      * Choose a random username.
-     * @return random word from anonymousName String array.
+     * @return random word from String[] anonymousName.
      */
     private String randomName() {
         Random r = new Random();

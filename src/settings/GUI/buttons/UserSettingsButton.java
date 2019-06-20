@@ -13,11 +13,11 @@ public interface UserSettingsButton {
      * @return Button
      */
     default Button userSettingsButton() {
-        // TODO if default user defer to sign up screen
         Button button = new Button();
         button.setGraphic(new ImageView(new Image("assets/icons/icons-settings_24.png")));
 
-        // TODO make this only a visual thing, maybe on top? So that you can flip back to an existing game
+        // TODO stop it from making infinite "new" panes
+        // TODO if default user make this a sign up pane
         button.setOnAction(e -> Session.pane.setCenter(new UserSettingsPane()));
 
         return button;

@@ -15,6 +15,8 @@ public class Hangman extends Game implements GameResetButton {
     private GameDiagram hangmanView;
     private GameFields hangmanFields;
 
+    // TODO add difficulty setting (also make that use a different dictionary, maybe as enums?
+
     public Hangman() {
         // init new game
         gameWord = new GameWord();
@@ -35,11 +37,12 @@ public class Hangman extends Game implements GameResetButton {
         // TODO on win add the full word length to the score before sending it to userScore
     }
 
-    Hangman(String word) {
+    /*Hangman(String word) {
+        // TODO Make this a thing for multiplayer
         gameWord = new GameWord(word);
         hangmanView = new GameDiagram();
         hangmanFields = new GameFields();
-    }
+    }*/
 
     public static GameWord getGameWord() {
         return gameWord;
