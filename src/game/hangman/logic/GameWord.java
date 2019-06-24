@@ -8,11 +8,12 @@ import java.util.LinkedHashMap;
 import java.util.Random;
 import java.util.Scanner;
 
+import static game.hangman.logic.GameSession.mistakes;
+
 public class GameWord {
     private ArrayList<Character> gameWord = new ArrayList<>();
     private ArrayList<Character> hiddenWord = new ArrayList<>();
     private LinkedHashMap<Character, Boolean> guesses = new LinkedHashMap<>();
-    private int mistakes = 0; // TODO Move to GameSession
 
 
     public GameWord() {
@@ -146,12 +147,14 @@ public class GameWord {
      * On the 9th day SaurPuss remembered the word should be stored in a
      * Character Array, so mote it be.
      */
+    // TODO Choose dictionary based on difficulty
     private void setWord() {
         String s = "";
         try {
             Random random = new Random();
             int n = 0;
 
+            // TODO choose based on difficulty settings
             for (Scanner input = new Scanner(GameSession.HANGMAN_DICTIONARY); input.hasNextLine(); ) {
                 ++n;
                 String line = input.nextLine();

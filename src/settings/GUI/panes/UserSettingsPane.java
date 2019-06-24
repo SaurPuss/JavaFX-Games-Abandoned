@@ -15,6 +15,8 @@ public class UserSettingsPane extends Pane {
         togglePassword.setSelected(Session.user.isRememberPassword());
 
 
+        // Game difficulty toggle button
+
         getChildren().addAll(toggleUser, togglePassword);
 
 

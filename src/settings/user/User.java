@@ -1,7 +1,7 @@
 package settings.user;
 
 import com.opencsv.bean.*;
-import settings.user.score.UserScore;
+import settings.user.settings.GameDifficulty;
 
 import java.io.*;
 import java.util.Random;
@@ -18,12 +18,12 @@ public class User implements Serializable {
     private String userName;
     @CsvBindByName(column = "password")
     private String userPassword;
-    // TODO move to User Settings
-    // TODO add toggle button with light/dark mode << style sheets <3
     @CsvBindByName(column = "rememberPassword")
     private boolean rememberPassword;
     @CsvBindByName(column = "rememberUser")
     private boolean rememberUser;
+
+    // This would work much better in UserScore Bean
 //    @CsvCustomBindByName(column = "scores", converter = UserScoreToBean.class)
 //    private UserScore userScore;
     @CsvBindByName(column = "totalScore")
@@ -31,14 +31,13 @@ public class User implements Serializable {
     @CsvBindByName(column = "highestStreak")
     private int highestStreak;
     private int currentStreak;
-    private static String[] anonymousName = {
-            "Anonymous Badger", "Anonymous Llama", "Anonymous Gopher",
-            "Anonymous Giraffe", "Anonymous Dolphin", "Anonymous Horse",
-            "Anonymous Zebra", "Anonymous Lion", "Anonymous Bear",
-            "Anonymous Koala", "Anonymous Tit", "Anonymous Cat",
-            "Anonymous Dog", "Anonymous Ferret", "Anonymous Panther",
-            "Anonymous Tiger", "Anonymous Raven", "Anonymous Crow",
-            "Anonymous Dinosaur", "Anonymous Potato"};
+
+    // This all should probably be moved to UserSettings Bean
+    // TODO move to User Settings: add toggle button with light/dark mode << style sheets <3
+    @CsvBindByName(column = "gameDifficulty")
+    private GameDifficulty gameDifficulty;
+
+
 
     /* Constructors */
     /**
@@ -53,6 +52,7 @@ public class User implements Serializable {
         totalScore = 0;
         highestStreak = 0;
         currentStreak = 0;
+        gameDifficulty = GameDifficulty.NORMAL;
     }
 
     /**
@@ -69,6 +69,7 @@ public class User implements Serializable {
         totalScore = 0;
         highestStreak = 0;
         currentStreak = 0;
+        gameDifficulty = GameDifficulty.NORMAL;
     }
 
     /* Getters and Setters - OpenCSV requires them to be public */
@@ -90,8 +91,20 @@ public class User implements Serializable {
     public void setHighestStreak(int highestStreak) { this.highestStreak = highestStreak; }
     public int getCurrentStreak() { return currentStreak; }
     public void setCurrentStreak(int currentStreak) { this.currentStreak = currentStreak; }
+    public GameDifficulty getGameDifficulty() { return gameDifficulty; }
+    public void setGameDifficulty(GameDifficulty gameDifficulty) { this.gameDifficulty = gameDifficulty; }
 
     /* Other methods */
+    // Moved this down because of   A E S T H E T I C S
+    private static String[] anonymousName = {
+            "Anonymous Badger", "Anonymous Llama", "Anonymous Gopher",
+            "Anonymous Giraffe", "Anonymous Dolphin", "Anonymous Horse",
+            "Anonymous Zebra", "Anonymous Lion", "Anonymous Bear",
+            "Anonymous Koala", "Anonymous Tit", "Anonymous Cat",
+            "Anonymous Dog", "Anonymous Ferret", "Anonymous Panther",
+            "Anonymous Tiger", "Anonymous Raven", "Anonymous Crow",
+            "Anonymous Dinosaur", "Anonymous Potato"};
+
     /**
      * Static method to check if Session User is default
      * @return boolean default username

@@ -1,3 +1,5 @@
 package game.hangman.logic;
 
-public class GameScores {}
+public class GameScores {
+
+}

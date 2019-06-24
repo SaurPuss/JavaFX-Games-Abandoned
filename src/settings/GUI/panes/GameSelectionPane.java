@@ -7,12 +7,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import settings.GUI.buttons.GameSelectionButton;
+import settings.Session;
 
 import java.util.ArrayList;
 
 public class GameSelectionPane extends VBox implements GameSelectionButton {
 
     public GameSelectionPane() {
+        // TODO On first session maybe give a reminder to check their settings for difficulty etc?
+
         HBox box = new HBox(0);
         box.setAlignment(Pos.CENTER);
 
@@ -27,6 +30,12 @@ public class GameSelectionPane extends VBox implements GameSelectionButton {
 
         this.setAlignment(Pos.CENTER);
         this.getChildren().addAll(intro, box);
+
+        // Fallback to make sure there is no bottom bar in case I forgot
+        if (Session.pane.getBottom() != null) {
+            System.out.println("GAME SELECTION PANE: Yo moron, you forgot to disable to bottom bar");
+            Session.pane.setBottom(null);
+        }
     }
 
 
@@ -35,6 +44,7 @@ public class GameSelectionPane extends VBox implements GameSelectionButton {
      * @return ArrayList of hard coded game names
      */
     private ArrayList<String> gameSelectionList() {
+        // TODO aggregate this list from available games instead
         ArrayList<String> gameList = new ArrayList<>();
 
         gameList.add("Hangman");

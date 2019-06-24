@@ -15,6 +15,7 @@ public class Session {
     public static User user;
     public static Scene scene = new Scene(pane, 500, 800);
     public static Game game;
+    public static boolean activeGame;
 
     public static final long SERIAL_VERSION_UID = 7L;
     public static final String CURRENT_USER_FILE = "src/assets/userdata/currentUser.dat";
@@ -53,6 +54,10 @@ public class Session {
         // pull up a user to start with
         System.out.println("SESSION: Getting current user");
         user = UserManager.getCurrentUser();
+
+        // init game activity
+        // TODO allow a user to save a game in mid session upon exit?
+        activeGame = false;
     }
 
     /**
