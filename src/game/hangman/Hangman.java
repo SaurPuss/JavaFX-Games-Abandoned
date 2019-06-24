@@ -1,16 +1,22 @@
 package game.hangman;
 
+import game.GUI.panes.BottomBarPane;
 import game.Game;
-import game.hangman.GUI.GameResetButton;
+import game.GUI.buttons.GameResetButton;
 import game.hangman.GUI.GameFields;
 import game.hangman.GUI.GameDiagram;
 import game.hangman.logic.GameSession;
 import game.hangman.logic.GameWord;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import game.GUI.buttons.GameAbandonButton;
+import game.GUI.buttons.GameNewButton;
+import settings.Session;
 
-public class Hangman extends Game implements GameResetButton {
+public class Hangman extends Game {
     private static GameWord gameWord;
     private GameDiagram hangmanView;
     private GameFields hangmanFields;
@@ -30,12 +36,28 @@ public class Hangman extends Game implements GameResetButton {
         view.getChildren().addAll(hangmanView, hangmanFields);
         getChildren().add(view);
 
+        // Create a bottom Pane for session
+        Session.pane.setBottom(new BottomBarPane());
+
         // Set initial score as a negative of the gameWord length
         GameSession.gameScore -= gameWord.gameWordLength();
         // if letter is guessed correct add it back to the score
 
         // TODO on win add the full word length to the score before sending it to userScore
     }
+
+
+    /*@Override
+    public Button newGame() {
+        Button button = new Button("New Game");
+
+        button.setOnAction(e -> {
+            System.out.println("HANGMAN: Do Score stuff here");
+            Session.pane.setCenter(new Hangman());
+        });
+
+        return button;
+    }*/
 
     /*Hangman(String word) {
         // TODO Make this a thing for multiplayer

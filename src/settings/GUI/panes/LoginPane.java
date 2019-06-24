@@ -104,10 +104,12 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
             // Login mismatch
             case "UserDoesNotExist": fields.add(errUser, 0, 1, 3, 1);
                 errUser.setText("* Username does not exist.");
+                tfUserName.selectAll();
 //                System.out.println("LOGIN PANE: User does not exist in database.");
                 break;
             case "PasswordNoMatch": fields.add(errPassword, 0, 3, 3, 1);
                 errPassword.setText("* Password does not match.");
+                tfUserPassword.selectAll();
                 System.out.println("LOGIN PANE: Password does not match username."); break;
             // Username errors
             case "UsernameEmpty": fields.add(errUser, 0, 1, 3, 1);

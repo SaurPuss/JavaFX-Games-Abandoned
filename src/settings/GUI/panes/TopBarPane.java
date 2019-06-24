@@ -4,7 +4,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import settings.GUI.buttons.GamePaneButton;
+import game.GUI.buttons.GamePaneButton;
 import settings.GUI.buttons.UserScoreButton;
 import settings.GUI.buttons.UserSettingsButton;
 import settings.Session;

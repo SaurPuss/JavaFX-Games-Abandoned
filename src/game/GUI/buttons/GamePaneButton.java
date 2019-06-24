@@ -1,4 +1,4 @@
-package settings.GUI.buttons;
+package game.GUI.buttons;
 
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -13,6 +13,7 @@ public interface GamePaneButton {
 
         button.setOnAction(e -> {
             // TODO Make it so that it goes to the game selection pane if game is current pane
+            // Maybe not since we can have an abandon game button at the bottom
             Session.pane.setCenter(Session.game);
         });
 
