@@ -11,19 +11,7 @@ public interface GameSelectionButton {
         Button btnSelect = new Button("Play!");
         btnSelect.setDefaultButton(true);
 
-        btnSelect.setOnAction(e -> {
-            switch (selection) {
-                case "Hangman":
-                    Session.game = new Hangman(); break;
-                case "Minesweeper":
-                    Session.game = new Minesweeper(); break;
-                default:
-                    System.out.println("GAME SELECTION BUTTON: Default case. Nothing happens.");
-                    Session.game = new Hangman(); // default hangman to make sure that there is *something*
-            }
-
-            Session.pane.setCenter(Session.game);
-        });
+        btnSelect.setOnAction(e -> Session.gameSelection(selection));
 
         return btnSelect;
     }

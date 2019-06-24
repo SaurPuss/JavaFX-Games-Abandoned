@@ -14,8 +14,6 @@
 import game.Game;
 import settings.GUI.panes.GameSelectionPane;
 import javafx.application.Application;
-import javafx.geometry.Pos;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import settings.GUI.panes.TopBarPane;
@@ -28,7 +26,7 @@ import settings.user.UserManager;
 /**
  * Welcome to a set of games made in javafx to entertain you for a hot minute.
  */
-// TODO make real and functional Javadoc
+// TODO make real and functional and most of all useful Javadoc
 // TODO Make user of OpenCSV I guess
 public class Main extends Application {
     // This is the main Pane

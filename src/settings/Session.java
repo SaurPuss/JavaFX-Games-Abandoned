@@ -1,9 +1,8 @@
 package settings;
 
-import com.opencsv.bean.HeaderColumnNameMappingStrategy;
-import com.opencsv.bean.MappingStrategy;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import game.Game;
+import game.hangman.Hangman;
+import game.minesweeper.Minesweeper;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import settings.user.User;
@@ -36,6 +35,7 @@ public class Session {
                 UserManager.saveCurrentUser(new User());
             }
 
+            // TODO Make this all a local sql database to start
             File allUsersFile = new File(ALL_USER_FILE);
             // try to create users.csv
             allUsersFile.createNewFile();
@@ -53,6 +53,26 @@ public class Session {
         // pull up a user to start with
         System.out.println("SESSION: Getting current user");
         user = UserManager.getCurrentUser();
+    }
+
+    /**
+     * Create a new Game based on user interaction.
+     * @param selection String retrieved from either the Game Selection Pane or straight up
+     *                  from the Session game with a getClass() instance.
+     */
+    public static void gameSelection(String selection) {
+        // TODO Can I auto populate this to reduce human error?
+        switch (selection) {
+            case "Hangman":
+                Session.game = new Hangman(); break;
+            case "Minesweeper":
+                Session.game = new Minesweeper(); break;
+            default:
+                System.out.println("GAME SELECTION BUTTON: Default case. Nothing happens.");
+                Session.game = new Hangman(); // default hangman to make sure that there is *something*
+        }
+
+        Session.pane.setCenter(Session.game);
     }
 
     public static void printSessionUser() {
