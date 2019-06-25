@@ -12,16 +12,20 @@
 // You know what this is, why are you reading this comment?
 
 import game.Game;
+import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
+import settings.AppSettings;
 import settings.GUI.panes.GameSelectionPane;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 import settings.GUI.panes.TopBarPane;
-import settings.Session;
 import settings.user.score.Scoreboard;
 import settings.GUI.panes.LoginPane;
 import settings.user.User;
 import settings.user.UserManager;
+
+import java.util.Set;
 
 /**
  * Welcome to a set of games made in javafx to entertain you for a hot minute.
@@ -40,7 +44,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         // Make sure all things are working on launch
         try {
-            Session.initSession();
+            AppSettings.initSession();
         } catch (Exception e) {
             System.out.println("MAIN: Exception caught in session initialization.");
         }
@@ -49,7 +53,7 @@ public class Main extends Application {
         if (User.isDefaultUser()) {
             System.out.println("MAIN: Default User detected");
 
-            Session.pane.setCenter(new LoginPane());
+            AppSettings.pane.setCenter(new LoginPane());
             LoginPane.cbRememberUser.setSelected(false);
 
 
@@ -59,28 +63,28 @@ public class Main extends Application {
             // TODO if current user is not saved in the db reset to default
 
             // Password auto login?
-            if (!Session.user.isRememberPassword()) {
+            if (!AppSettings.user.isRememberPassword()) {
                 System.out.println("MAIN: User Password required.");
-                Session.pane.setCenter(new LoginPane(Session.user));
+                AppSettings.pane.setCenter(new LoginPane(AppSettings.user));
 
 
             } else { // Auto login, update scoreboard and go to game selection screen
 
-                Session.pane.setTop(new TopBarPane());
-                Session.pane.setCenter(new GameSelectionPane());
+                AppSettings.pane.setTop(new TopBarPane());
+                AppSettings.pane.setCenter(new GameSelectionPane());
 
                 // Fill Scores and UserSettings for this user profile
-                scoreboard.updateUserScoreboard(Session.user);
+                scoreboard.updateUserScoreboard(AppSettings.user);
             }
         } else {
             // fallback just in case
             System.out.println("MAIN: Starting with a blank slate: new LoginPane()");
-            Session.pane.setCenter(new LoginPane());
+            AppSettings.pane.setCenter(new LoginPane());
         }
 
         // Put it all together in a neat little package
         primaryStage.setTitle("Let's Play a Game");
-        primaryStage.setScene(Session.scene);
+        primaryStage.setScene(AppSettings.scene);
         primaryStage.show();
 
         primaryStage.setResizable(false); // No resize for you!
@@ -91,12 +95,12 @@ public class Main extends Application {
         System.out.println("MAIN: Stopping application");
         // TODO Save session user updates to db
 
-        if (!Session.user.isRememberUser()) {
+        if (!AppSettings.user.isRememberUser()) {
             System.out.println("MAIN: Saving default user to currentUser.dat");
             UserManager.saveCurrentUser(new User());
         }
-        Session.printSessionUser();
-        Session.printSavedUser();
+        AppSettings.printSessionUser();
+        AppSettings.printSavedUser();
     }
     /**
      * Adding a main, because technically you're supposed to do that

@@ -1,8 +1,8 @@
 package game.hangman.GUI;
 
+import game.hangman.logic.GameSession;
 import javafx.animation.Animation;
 import javafx.animation.PathTransition;
-import javafx.geometry.Insets;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
@@ -39,25 +39,11 @@ public class GameDiagram extends Pane {
 
     // Methods
     /**
-     * Refresh this object with a clear pane.
-     * Making a Dude diagram = new Dude(); doesn't seem to do the trick :(
-     *//*
-    public static void newHangmanDiagram() {
-        diagram = new Pane();
-        arms = new Pane();
-        legs = new Pane();
-
-        diagram.getChildren().addAll(arms, legs);
-    }*/
-
-    /**
      * Add body parts based on the mistake counter received from the Word.
      * Ignore body parts if they are already added to the Pane.
-     * // TODO Maybe change diagram parts to static so there can only be 1?
-     * @param n Wrong guess counter
      */
-    public static void addToDiagram(int n) {
-        switch(n) {
+    public static void addToDiagram() {
+        switch(GameSession.mistakes) {
             case 1:
                 if (!diagram.getChildren().contains(noose))
                     drawNoose();
@@ -87,7 +73,7 @@ public class GameDiagram extends Pane {
                     drawRightLeg();
                 swingAnimation();
                 System.out.println("HANGMAN: End Game, loss");
-                // TODO subtract from score
+                // TODO score this game
                 break;
             default:
                 resetDiagram();

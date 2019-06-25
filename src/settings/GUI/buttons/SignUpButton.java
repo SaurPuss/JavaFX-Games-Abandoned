@@ -1,10 +1,10 @@
 package settings.GUI.buttons;
 
 import javafx.scene.control.Button;
+import settings.AppSettings;
 import settings.GUI.panes.GameSelectionPane;
 import settings.GUI.panes.LoginPane;
 import settings.GUI.panes.TopBarPane;
-import settings.Session;
 import settings.user.User;
 import settings.user.UserManager;
 
@@ -57,12 +57,12 @@ public interface SignUpButton {
         }
         // Invoke
         else {
-            // Save new user to database & set Session.user & currentUser.dat
+            // Save new user to database & set AppSettings.user & currentUser.dat
             UserManager.saveUser(new User(username, password, cbRememberUser.isSelected()));
 
             // Continue to game selection pane
-            Session.pane.setTop(new TopBarPane());
-            Session.pane.setCenter(new GameSelectionPane());
+            AppSettings.pane.setTop(new TopBarPane());
+            AppSettings.pane.setCenter(new GameSelectionPane());
         }
     }
 }

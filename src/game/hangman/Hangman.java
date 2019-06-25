@@ -8,14 +8,15 @@ import game.hangman.logic.GameWord;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
-import settings.Session;
+import settings.AppSettings;
 
 public class Hangman extends Game {
     private static GameWord gameWord;
 
     public Hangman() {
         // A new game is active
-        Session.activeGame = true;
+        AppSettings.activeGame = true;
+        System.out.println("STARTING HANGMAN");
 
         // init new game
         gameWord = new GameWord();
@@ -30,7 +31,7 @@ public class Hangman extends Game {
         getChildren().add(view);
 
         // Create a bottom Pane for session
-        Session.pane.setBottom(new BottomBarPane());
+        AppSettings.pane.setBottom(new BottomBarPane());
 
         // TODO Implement game score stuff depending on difficulty
         // On win add the full word length to the score before sending it to userScore

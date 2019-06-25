@@ -11,11 +11,12 @@ import java.util.Scanner;
 import static game.hangman.logic.GameSession.mistakes;
 
 public class GameWord {
+    /* Datafields */
     private ArrayList<Character> gameWord = new ArrayList<>();
     private ArrayList<Character> hiddenWord = new ArrayList<>();
     private LinkedHashMap<Character, Boolean> guesses = new LinkedHashMap<>();
 
-
+    /* Constructors */
     public GameWord() {
         // pick word from dictionary
         setWord();
@@ -28,8 +29,7 @@ public class GameWord {
         mistakes = 0;
     }
 
-
-
+    /* Methods */
     /**
      * Word, word, baby!
      * @return gameWord This is the word the whole game is based on. Kinda important.
@@ -63,7 +63,8 @@ public class GameWord {
                 guesses.put(c, true);
             else {
                 guesses.put(c, false);
-                GameDiagram.addToDiagram(++mistakes);
+                mistakes++;
+                GameDiagram.addToDiagram();
             }
         }
 //        System.out.println(guesses.values().toString());

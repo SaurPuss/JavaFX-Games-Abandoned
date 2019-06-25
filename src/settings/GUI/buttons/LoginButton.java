@@ -6,7 +6,7 @@ import settings.GUI.panes.TopBarPane;
 import settings.user.UserManager;
 
 import static settings.GUI.panes.LoginPane.*;
-import static settings.Session.*;
+import static settings.AppSettings.*;
 
 public interface LoginButton {
     // TODO learn more about this::blabla

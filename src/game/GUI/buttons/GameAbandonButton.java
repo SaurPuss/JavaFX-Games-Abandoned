@@ -1,8 +1,8 @@
 package game.GUI.buttons;
 
 import javafx.scene.control.Button;
+import settings.AppSettings;
 import settings.GUI.panes.GameSelectionPane;
-import settings.Session;
 
 public interface GameAbandonButton {
 
@@ -10,9 +10,9 @@ public interface GameAbandonButton {
         Button button = new Button("Abandon");
 
         button.setOnAction(e -> {
-            Session.pane.setCenter(new GameSelectionPane());
+            AppSettings.pane.setCenter(new GameSelectionPane());
             System.out.println("ABANDON GAME BUTTON: Please add score integration, possibly in override");
-            Session.pane.setBottom(null);
+            AppSettings.pane.setBottom(null);
         });
 
         return button;

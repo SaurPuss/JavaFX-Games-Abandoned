@@ -1,23 +1,25 @@
 package settings;
 
 import game.Game;
-import game.hangman.Hangman;
-import game.minesweeper.Minesweeper;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import org.apache.commons.lang3.StringUtils;
+import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
 import settings.user.User;
 import settings.user.UserManager;
 
 import java.io.*;
+import java.util.Set;
 
-public class Session {
+public class AppSettings {
     public static BorderPane pane = new BorderPane();
     public static User user;
     public static Scene scene = new Scene(pane, 500, 800);
     public static Game game;
     public static boolean activeGame;
 
-    public static final long SERIAL_VERSION_UID = 7L;
+    public static final long SERIAL_VERSION_UID = 8L;
     public static final String CURRENT_USER_FILE = "src/assets/userdata/currentUser.dat";
     public static final String ALL_USER_FILE = "src/assets/userdata/users.csv";
 
@@ -40,13 +42,13 @@ public class Session {
             File allUsersFile = new File(ALL_USER_FILE);
             // try to create users.csv
             allUsersFile.createNewFile();
-            if (allUsersFile.length() == 0) {
-                // add header to the file
-                System.out.println("SESSION: Generating new Header");
-                FileWriter fileWriter = new FileWriter(Session.ALL_USER_FILE);
-                fileWriter.append("\"USERNAME\",\"PASSWORD\",\"REMEMBERPASSWORD\",\"REMEMBERUSER\",\"TOTALSCORE\",\"HIGHESTSTREAK\"\n");
-                fileWriter.close();
-            }
+//            if (allUsersFile.length() == 0) {
+//                // add header to the file
+//                System.out.println("SESSION: Generating new Header");
+//                FileWriter fileWriter = new FileWriter(AppSettings.ALL_USER_FILE);
+//                fileWriter.append("\"USERNAME\",\"PASSWORD\",\"REMEMBERPASSWORD\",\"REMEMBERUSER\",\"TOTALSCORE\",\"HIGHESTSTREAK\",\"GAMEDIFFICULTY\"\n");
+//                fileWriter.close();
+//            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -61,23 +63,24 @@ public class Session {
     }
 
     /**
-     * Create a new Game based on user interaction.
-     * @param selection String retrieved from either the Game Selection Pane or straight up
-     *                  from the Session game with a getClass() instance.
+     * Create new Game instance and place it in the center pane.
+     * @param selection String matching one of the available Classes
+     *                  extending game.Game
      */
     public static void gameSelection(String selection) {
-        // TODO Can I auto populate this to reduce human error?
-        switch (selection) {
-            case "Hangman":
-                Session.game = new Hangman(); break;
-            case "Minesweeper":
-                Session.game = new Minesweeper(); break;
-            default:
-                System.out.println("GAME SELECTION BUTTON: Default case. Nothing happens.");
-                Session.game = new Hangman(); // default hangman to make sure that there is *something*
+        try {
+            Set<Class<? extends Game>> classes = new Reflections(ClasspathHelper
+                    .forPackage("game")).getSubTypesOf(Game.class);
+
+            for (Class<? extends Game> c : classes) {
+                if (selection.equalsIgnoreCase(StringUtils.substringAfterLast(c.getName(), ".")))
+                    game = c.newInstance();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        Session.pane.setCenter(Session.game);
+        pane.setCenter(game);
     }
 
     public static void printSessionUser() {

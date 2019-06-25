@@ -2,7 +2,7 @@ package game.GUI.buttons;
 
 import javafx.scene.control.Button;
 import org.apache.commons.lang3.StringUtils;
-import settings.Session;
+import settings.AppSettings;
 
 public interface GameNewButton {
 
@@ -11,14 +11,14 @@ public interface GameNewButton {
      * as the main view pane. This will not influence the user scores
      * as that is handled by the game. Should only be used if there is
      * no current game in progress.
-     * @return Button that hooks into Session Game Selection
+     * @return Button that hooks into AppSettings Game Selection
      */
     default Button newGame() {
         Button button = new Button("New Game");
 
         button.setOnAction(e -> {
-            String selection = StringUtils.substringAfterLast(Session.game.getClass().getName(), ".");
-            Session.gameSelection(selection);
+            String selection = StringUtils.substringAfterLast(AppSettings.game.getClass().getName(), ".");
+            AppSettings.gameSelection(selection);
         });
 
         return button;

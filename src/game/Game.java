@@ -9,7 +9,7 @@ public abstract class Game extends Pane /*implements GameAbandonButton, GameNewB
     protected int gameScore;
 
     // TODO add settings.user.score stuff
-    protected Game() { /* Session.activeGame = true; */ }
+    protected Game() { /* AppSettings.activeGame = true; */ }
 
     public int getGameScore() {
         return gameScore;

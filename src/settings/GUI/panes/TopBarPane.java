@@ -7,11 +7,11 @@ import javafx.scene.layout.HBox;
 import game.GUI.buttons.GamePaneButton;
 import settings.GUI.buttons.UserScoreButton;
 import settings.GUI.buttons.UserSettingsButton;
-import settings.Session;
+import settings.AppSettings;
 
 public class TopBarPane extends BorderPane implements UserSettingsButton, UserScoreButton, GamePaneButton {
     public TopBarPane() {
-        Label userName = new Label("Hi, " + Session.user.getUserName());
+        Label userName = new Label("Hi, " + AppSettings.user.getUserName());
         userName.setPadding(new Insets(7));
 
         // Add the buttons in their own box

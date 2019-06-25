@@ -1,40 +1,45 @@
 package settings.GUI.panes;
 
+import game.Game;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.apache.commons.lang3.StringUtils;
+import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
+import settings.AppSettings;
 import settings.GUI.buttons.GameSelectionButton;
-import settings.Session;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Set;
 
 public class GameSelectionPane extends VBox implements GameSelectionButton {
-
+    public static ComboBox<String> dropdown;
     public GameSelectionPane() {
         // TODO On first session maybe give a reminder to check their settings for difficulty etc?
 
         HBox box = new HBox(0);
         box.setAlignment(Pos.CENTER);
 
-        ComboBox<String> dropdown = new ComboBox<>();
+        dropdown = new ComboBox<>();
         dropdown.getItems().addAll(gameSelectionList());
         dropdown.getSelectionModel().selectFirst();
 
-        Button button = gameSelectionButton(dropdown.getSelectionModel().getSelectedItem());
         Text intro = new Text("This is where stuff goes to choose a game");
 
-        box.getChildren().addAll(dropdown, button);
+        box.getChildren().addAll(dropdown, gameSelectionButton());
 
         this.setAlignment(Pos.CENTER);
         this.getChildren().addAll(intro, box);
 
         // Fallback to make sure there is no bottom bar in case I forgot
-        if (Session.pane.getBottom() != null) {
+        if (AppSettings.pane.getBottom() != null) {
             System.out.println("GAME SELECTION PANE: Yo moron, you forgot to disable to bottom bar");
-            Session.pane.setBottom(null);
+            AppSettings.pane.setBottom(null);
         }
     }
 
@@ -44,11 +49,15 @@ public class GameSelectionPane extends VBox implements GameSelectionButton {
      * @return ArrayList of hard coded game names
      */
     private ArrayList<String> gameSelectionList() {
-        // TODO aggregate this list from available games instead
+        Reflections reflections = new Reflections(ClasspathHelper.forPackage("game"));
+        Set<Class<? extends Game>> classes = reflections.getSubTypesOf(Game.class);
         ArrayList<String> gameList = new ArrayList<>();
 
-        gameList.add("Hangman");
-        gameList.add("Minesweeper");
+        for (Class<? extends Game> aClass : classes) {
+            gameList.add(StringUtils.substringAfterLast(aClass.getName(),"."));
+        }
+
+        Collections.sort(gameList);
 
         return gameList;
     }

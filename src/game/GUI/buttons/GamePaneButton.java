@@ -3,7 +3,7 @@ package game.GUI.buttons;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import settings.Session;
+import settings.AppSettings;
 
 public interface GamePaneButton {
 
@@ -14,7 +14,7 @@ public interface GamePaneButton {
         button.setOnAction(e -> {
             // TODO Make it so that it goes to the game selection pane if game is current pane
             // Maybe not since we can have an abandon game button at the bottom
-            Session.pane.setCenter(Session.game);
+            AppSettings.pane.setCenter(AppSettings.game);
         });
 
         return button;

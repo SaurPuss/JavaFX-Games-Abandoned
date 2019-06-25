@@ -11,7 +11,7 @@ import settings.GUI.buttons.SignUpButton;
 import settings.user.User;
 
 import static org.controlsfx.control.textfield.TextFields.*;
-import static settings.Session.*;
+import static settings.AppSettings.*;
 
 public class LoginPane extends VBox implements LoginButton, SignUpButton {
     private static Text welcome;
@@ -47,8 +47,8 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
      */
     public LoginPane() {
         printSessionUser();
-        getChildren().add(welcome);
         welcome = new Text("Welcome " + user.getUserName());
+        getChildren().add(welcome);
         if (User.isDefaultUser()) {
             Text chooseAction = new Text("Unless you want to remain anonymous" +
                     "\nyou should log in or sign up.");

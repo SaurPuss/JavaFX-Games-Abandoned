@@ -4,7 +4,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import settings.GUI.panes.UserSettingsPane;
-import settings.Session;
+import settings.AppSettings;
 
 public interface UserSettingsButton {
 
@@ -18,7 +18,7 @@ public interface UserSettingsButton {
 
         // TODO stop it from making infinite "new" panes
         // TODO if default user make this a sign up pane
-        button.setOnAction(e -> Session.pane.setCenter(new UserSettingsPane()));
+        button.setOnAction(e -> AppSettings.pane.setCenter(new UserSettingsPane()));
 
         return button;
     }

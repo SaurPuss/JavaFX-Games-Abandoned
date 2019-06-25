@@ -1,12 +1,11 @@
 package settings.user;
 
-import com.opencsv.bean.*;
 import settings.user.settings.GameDifficulty;
 
 import java.io.*;
 import java.util.Random;
 
-import static settings.Session.*;
+import static settings.AppSettings.*;
 
 /**
  * User specific settings and saved info go here
@@ -14,30 +13,19 @@ import static settings.Session.*;
 public class User implements Serializable {
     private static final long serialVersionUID = SERIAL_VERSION_UID;
     /* Data fields */
-    @CsvBindByName(column = "username", required = true)
     private String userName;
-    @CsvBindByName(column = "password")
     private String userPassword;
-    @CsvBindByName(column = "rememberPassword")
     private boolean rememberPassword;
-    @CsvBindByName(column = "rememberUser")
     private boolean rememberUser;
-
-    // This would work much better in UserScore Bean
 //    @CsvCustomBindByName(column = "scores", converter = UserScoreToBean.class)
 //    private UserScore userScore;
-    @CsvBindByName(column = "totalScore")
     private int totalScore;
-    @CsvBindByName(column = "highestStreak")
     private int highestStreak;
     private int currentStreak;
 
     // This all should probably be moved to UserSettings Bean
     // TODO move to User Settings: add toggle button with light/dark mode << style sheets <3
-    @CsvBindByName(column = "gameDifficulty")
     private GameDifficulty gameDifficulty;
-
-
 
     /* Constructors */
     /**
@@ -106,7 +94,7 @@ public class User implements Serializable {
             "Anonymous Dinosaur", "Anonymous Potato"};
 
     /**
-     * Static method to check if Session User is default
+     * Static method to check if AppSettings User is default
      * @return boolean default username
      */
     public static boolean isDefaultUser() {
@@ -114,7 +102,7 @@ public class User implements Serializable {
             System.out.println("USER: Checking for default user");
             return user.getUserName().contains("Anonymous ");
         } catch (NullPointerException e) {
-            System.out.println("USER: Session User cannot be null!");
+            System.out.println("USER: AppSettings User cannot be null!");
         }
 
         // fallback because the method requires it
@@ -152,9 +140,13 @@ public class User implements Serializable {
      */
     @Override
     public String toString() {
-        return "Name: " + this.userName + "\nTotal Score: " + this.totalScore +
-        "\nCurrent Score: " + this.currentStreak + "\nHighest Score Streak: " +
-        this.highestStreak;
+        return  "Name: " + this.userName +
+                "\nTotal Score: " + this.totalScore +
+                "\nCurrent Score: " + this.currentStreak +
+                "\nHighest Score Streak: " + this.highestStreak +
+                "\nRemember User: " + this.rememberUser +
+                "\nRemember Password: " + this.rememberPassword +
+                "\nGame Difficulty: " + this.gameDifficulty;
     }
 
     /**

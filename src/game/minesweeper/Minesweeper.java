@@ -1,13 +1,19 @@
 package game.minesweeper;
 
 import game.Game;
-import settings.Session;
+import javafx.scene.control.Button;
+import settings.AppSettings;
+import settings.GUI.panes.GameSelectionPane;
 
 public class Minesweeper extends Game {
 
     public Minesweeper() {
         // Let the program know a game is active
-        Session.activeGame = true;
+        AppSettings.activeGame = true;
+
+        Button button = new Button("Go Back");
+        button.setOnAction(e -> AppSettings.pane.setCenter(new GameSelectionPane()));
+        getChildren().add(button);
 
 
     }

@@ -2,18 +2,15 @@ package settings.user;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import com.opencsv.bean.HeaderColumnNameMappingStrategy;
-import com.opencsv.bean.MappingStrategy;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
-import settings.Session;
-import settings.user.score.UserScore;
+import settings.AppSettings;
+import settings.user.settings.GameDifficulty;
 
 import java.io.*;
 
 // TODO password hashing and encryption
+// TODO change the CSV database to (embedded) SQL database
 public class UserManager implements Serializable {
-    private static final long serialVersionUID = Session.SERIAL_VERSION_UID;
+    private static final long serialVersionUID = AppSettings.SERIAL_VERSION_UID;
 
     /**
      * Match current User to database.
@@ -21,19 +18,16 @@ public class UserManager implements Serializable {
      */
     public static boolean matchCurrentUser() { return findUserName(getCurrentUser().getUserName()); }
 
-
     public static boolean matchPassword(String username, String password) {
         try {
             return password.equals(getUserPassword(username));
         } catch (NullPointerException e) {
-            e.printStackTrace();
             System.out.println("USER MANAGER: matchPassword caused a NullPointerException");
             return false;
         }
     }
 
     /**
-     * // TODO this one assumes you have the password, which is not necessarily useful when trying to log in
      * Attempt to retrieve a saved User from users.csv
      * @param userName User input to verify
      * @param userPassword User input to verify
@@ -46,13 +40,11 @@ public class UserManager implements Serializable {
                 System.out.println("USER MANAGER: Retrieving user from database");
                 return retrieveUser(userName, userPassword);
             } else {
-                System.out.println("USER MANAGER: Password mismatch, can't retrieve user from csv.");
-                return new User();
+                System.out.println("USER MANAGER: Password mismatch, can't retrieve user from database.");
             }
         }
-
-        System.out.println("USER MANAGER: Username doesn't exist in the database. Returning default user");
-        return new User(); // Bad default
+        System.out.println("USER MANAGER: Returning default user");
+        return new User();
     }
 
     /**
@@ -62,11 +54,12 @@ public class UserManager implements Serializable {
      */
     public static boolean findUserName(String userName) {
         try {
-            CSVReader reader = new CSVReader(new FileReader(Session.ALL_USER_FILE));
+            CSVReader reader = new CSVReader(new FileReader(AppSettings.ALL_USER_FILE));
 
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
                 if (nextLine[0].toLowerCase().equals(userName.toLowerCase())) {
+                    System.out.println("USER MANAGER: Found userName in database");
                     return true;
                 }
             }
@@ -87,7 +80,7 @@ public class UserManager implements Serializable {
         // TODO Make this return the hashed password and make a (de)hashing method
         // TODO make this called from the public boolean matchPassword ?
         try {
-            CSVReader reader = new CSVReader(new FileReader(Session.ALL_USER_FILE));
+            CSVReader reader = new CSVReader(new FileReader(AppSettings.ALL_USER_FILE));
 
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
@@ -111,46 +104,39 @@ public class UserManager implements Serializable {
      * @return if match return user, else return default
      */
     private static User retrieveUser(String userName, String userPassword) {
-        // TODO OPENCSV TO (NESTED)BEAN PLS
         try {
-            CSVReader reader = new CSVReader(new FileReader(Session.ALL_USER_FILE));
+            CSVReader reader = new CSVReader(new FileReader(AppSettings.ALL_USER_FILE));
 
-            User temp = new User();
-            UserScore score = new UserScore();
+            User user = new User();
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
                 if ((nextLine[0].toLowerCase().equals(userName.toLowerCase())) &&
                         (nextLine[1].equals(userPassword))) {
                     // USERNAME
-                    temp.setUserName(nextLine[0]);
+                    user.setUserName(nextLine[0]);
                     // PASSWORD
-                    temp.setUserPassword(nextLine[1]);
-                    // REMEMBERPASSWORD
-                    temp.setRememberPassword(Boolean.valueOf(nextLine[2]));
-                    // REMEMBERUSER
-                    temp.setRememberUser(Boolean.valueOf(nextLine[3]));
+                    user.setUserPassword(nextLine[1]);
+                    // REMEMBER PASSWORD
+                    user.setRememberPassword(Boolean.valueOf(nextLine[2]));
+                    // REMEMBER USER
+                    user.setRememberUser(Boolean.valueOf(nextLine[3]));
+//                    temp.setUserScore(new UserScore(Integer.valueOf(nextLine[4]), Integer.valueOf(nextLine[5])));
+                    // TOTAL SCORE
+                    user.setTotalScore(Integer.valueOf(nextLine[5]));
+                    // HIGHEST STREAK
+                    user.setHighestStreak(Integer.valueOf(nextLine[4]));
+                    // CURRENT STREAK
+                    user.setCurrentStreak(0);
+                    // GAME DIFFICULTY
+                    user.setGameDifficulty(GameDifficulty.fromString(nextLine[6]));
 
-                    // CURRENTSTREAK
-//                    score.setCurrentStreak(Integer.valueOf(nextLine[4]));
-                    temp.setCurrentStreak(0);
-                    // HIGHESTSTREAK
-//                    score.setHighestStreak(Integer.valueOf(nextLine[5]));
-                    temp.setHighestStreak(Integer.valueOf(nextLine[4]));
-                    // TOTALSCORE
-                    temp.setTotalScore(Integer.valueOf(nextLine[5]));
-//                    score.setTotalScore(Integer.valueOf(nextLine[6]));
-
-//                    temp.setUserScore(score);
-
-                    return temp;
+                    System.out.println(user.toString());
+                    return user;
                 }
             }
-
         } catch (IOException e) {
-
             e.printStackTrace();
         }
-
         System.out.println("USER MANAGER: retrieve user failed to get the bean");
         return new User();
     }
@@ -162,17 +148,13 @@ public class UserManager implements Serializable {
      */
     public static User getCurrentUser() {
         try {
-            FileInputStream f = new FileInputStream(Session.CURRENT_USER_FILE);
-            ObjectInputStream o = new ObjectInputStream(f);
-
-            Session.user = (User) o.readObject();
-
+            ObjectInputStream o = new ObjectInputStream(new FileInputStream(AppSettings.CURRENT_USER_FILE));
+            AppSettings.user = (User) o.readObject();
             o.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return Session.user;
+        return AppSettings.user;
     }
 
     /**
@@ -182,9 +164,8 @@ public class UserManager implements Serializable {
     public static void saveCurrentUser(User user) {
         System.out.println("USER MANAGER: Saving current user");
         try {
-            FileOutputStream f = new FileOutputStream(Session.CURRENT_USER_FILE, false);
-            ObjectOutputStream o = new ObjectOutputStream(f);
-
+            ObjectOutputStream o = new ObjectOutputStream(new FileOutputStream(
+                    AppSettings.CURRENT_USER_FILE, false));
             o.writeObject(user);
         } catch (Exception e) {
             e.printStackTrace();
@@ -198,16 +179,12 @@ public class UserManager implements Serializable {
         } else {
             System.out.println("USER MANAGER: Invoke saveNewUser(user)");
             saveNewUser(user);
-            Session.user = user;
-            Session.printSessionUser();
-            if (user.isRememberUser()) {
-                saveCurrentUser(user);
-                Session.printSavedUser();
-            }
+            AppSettings.user = user;
         }
     }
 
     private static void updateUser(User user) {
+        // Read whole csv
 
 
     }
@@ -218,22 +195,7 @@ public class UserManager implements Serializable {
      */
     private static void saveNewUser(User user) {
         try {
-           /* Writer writer = new FileWriter(Session.ALL_USER_FILE, true);
-
-//            MappingStrategy<UserScore> scoreStrategy = new HeaderColumnNameMappingStrategy<>();
-//            scoreStrategy.setType(UserScore.class);
-
-            MappingStrategy<User> userStrategy = new HeaderColumnNameMappingStrategy<>();
-            userStrategy.setType(User.class);
-            userStrategy.captureHeader(new CSVReader(new FileReader(Session.ALL_USER_FILE)));
-
-            StatefulBeanToCsvBuilder<User> beanBuilder = new StatefulBeanToCsvBuilder<>(writer);
-
-            StatefulBeanToCsv<User> beanToCsv = beanBuilder.withMappingStrategy(userStrategy).build();
-            beanToCsv.write(user);
-            writer.close();*/
-
-            CSVWriter writer = new CSVWriter(new FileWriter(Session.ALL_USER_FILE, true));
+            CSVWriter writer = new CSVWriter(new FileWriter(AppSettings.ALL_USER_FILE, true));
 
             String[] record = {
                     user.getUserName(),
@@ -242,8 +204,8 @@ public class UserManager implements Serializable {
                     String.valueOf(user.isRememberUser()),
                     String.valueOf(user.getTotalScore()),
                     String.valueOf(user.getHighestStreak()),
+                    user.getGameDifficulty().toString()
             };
-
             writer.writeNext(record);
             writer.close();
         } catch (Exception e) {
@@ -261,4 +223,29 @@ public class UserManager implements Serializable {
     private void readObjectNoData() throws ObjectStreamException {
         System.out.println("USER MANAGER: no object data");
     }
+
+
+
+
+
+
+
+
+
+
+
+    /* Writer writer = new FileWriter(AppSettings.ALL_USER_FILE, true);
+
+//            MappingStrategy<UserScore> scoreStrategy = new HeaderColumnNameMappingStrategy<>();
+//            scoreStrategy.setType(UserScore.class);
+
+            MappingStrategy<User> userStrategy = new HeaderColumnNameMappingStrategy<>();
+            userStrategy.setType(User.class);
+            userStrategy.captureHeader(new CSVReader(new FileReader(AppSettings.ALL_USER_FILE)));
+
+            StatefulBeanToCsvBuilder<User> beanBuilder = new StatefulBeanToCsvBuilder<>(writer);
+
+            StatefulBeanToCsv<User> beanToCsv = beanBuilder.withMappingStrategy(userStrategy).build();
+            beanToCsv.write(user);
+            writer.close();*/
 }

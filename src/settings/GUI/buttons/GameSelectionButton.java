@@ -1,17 +1,19 @@
 package settings.GUI.buttons;
 
-import game.hangman.Hangman;
-import game.minesweeper.Minesweeper;
 import javafx.scene.control.Button;
-import settings.Session;
+import settings.AppSettings;
+import settings.GUI.panes.GameSelectionPane;
 
 public interface GameSelectionButton {
 
-    default Button gameSelectionButton(String selection) {
+    default Button gameSelectionButton() {
         Button btnSelect = new Button("Play!");
         btnSelect.setDefaultButton(true);
 
-        btnSelect.setOnAction(e -> Session.gameSelection(selection));
+        btnSelect.setOnAction(e -> {
+            String selection = GameSelectionPane.dropdown.getSelectionModel().getSelectedItem();
+            AppSettings.gameSelection(selection);
+        });
 
         return btnSelect;
     }

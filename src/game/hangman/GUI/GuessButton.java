@@ -1,6 +1,7 @@
 package game.hangman.GUI;
 
 import game.hangman.Hangman;
+import game.hangman.logic.GameSession;
 import javafx.scene.control.Button;
 
 import static game.hangman.GUI.GameFields.*;
@@ -13,8 +14,8 @@ public interface GuessButton {
 
         button.setOnAction(e -> {
             guessLetterInput();
-            GameDiagram.addToDiagram(Hangman.getGameWord().getMistakes());
-            if (Hangman.getGameWord().getMistakes() >= 7) {
+            GameDiagram.addToDiagram();
+            if (GameSession.mistakes >= 7) {
                 tfGuess.setText("");
                 button.setDisable(true);
                 tfGuess.setEditable(false);
