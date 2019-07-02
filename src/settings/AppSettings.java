@@ -6,7 +6,7 @@ import javafx.scene.layout.BorderPane;
 import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
-import settings.user.User;
+import settings.user.user.User;
 import settings.user.UserManager;
 
 import java.io.*;

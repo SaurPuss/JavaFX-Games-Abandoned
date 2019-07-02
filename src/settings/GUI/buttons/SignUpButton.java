@@ -5,7 +5,7 @@ import settings.AppSettings;
 import settings.GUI.panes.GameSelectionPane;
 import settings.GUI.panes.LoginPane;
 import settings.GUI.panes.TopBarPane;
-import settings.user.User;
+import settings.user.user.User;
 import settings.user.UserManager;
 
 import static settings.GUI.panes.LoginPane.cbRememberUser;

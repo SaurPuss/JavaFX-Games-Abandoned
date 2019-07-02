@@ -11,21 +11,17 @@
 
 // You know what this is, why are you reading this comment?
 
-import game.Game;
-import org.reflections.Reflections;
-import org.reflections.util.ClasspathHelper;
 import settings.AppSettings;
 import settings.GUI.panes.GameSelectionPane;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 import settings.GUI.panes.TopBarPane;
+import settings.user.UserDatabase;
 import settings.user.score.Scoreboard;
 import settings.GUI.panes.LoginPane;
-import settings.user.User;
+import settings.user.user.User;
 import settings.user.UserManager;
-
-import java.util.Set;
 
 /**
  * Welcome to a set of games made in javafx to entertain you for a hot minute.
@@ -45,6 +41,7 @@ public class Main extends Application {
         // Make sure all things are working on launch
         try {
             AppSettings.initSession();
+            UserDatabase.makeDatabase();
         } catch (Exception e) {
             System.out.println("MAIN: Exception caught in session initialization.");
         }

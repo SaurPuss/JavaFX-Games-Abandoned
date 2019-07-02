@@ -8,7 +8,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import settings.GUI.buttons.LoginButton;
 import settings.GUI.buttons.SignUpButton;
-import settings.user.User;
+import settings.user.user.User;
 
 import static org.controlsfx.control.textfield.TextFields.*;
 import static settings.AppSettings.*;
@@ -47,7 +47,7 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
      */
     public LoginPane() {
         printSessionUser();
-        welcome = new Text("Welcome " + user.getUserName());
+        welcome = new Text("Welcome " + user.getName());
         getChildren().add(welcome);
         if (User.isDefaultUser()) {
             Text chooseAction = new Text("Unless you want to remain anonymous" +
@@ -73,10 +73,10 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
      * @param user non default user saved in currentUser.dat
      */
     public LoginPane(User user) {
-        welcome = new Text("Welcome " + user.getUserName());
+        welcome = new Text("Welcome " + user.getName());
         welcome.setFont(Font.font(18));
         cbRememberUser.setSelected(user.isRememberUser());
-        tfUserName.setText(user.getUserName());
+        tfUserName.setText(user.getName());
 
         buttons.getChildren().addAll(login(), signUp());
 

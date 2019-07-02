@@ -11,7 +11,7 @@ import settings.AppSettings;
 
 public class TopBarPane extends BorderPane implements UserSettingsButton, UserScoreButton, GamePaneButton {
     public TopBarPane() {
-        Label userName = new Label("Hi, " + AppSettings.user.getUserName());
+        Label userName = new Label("Hi, " + AppSettings.user.getName());
         userName.setPadding(new Insets(7));
 
         // Add the buttons in their own box

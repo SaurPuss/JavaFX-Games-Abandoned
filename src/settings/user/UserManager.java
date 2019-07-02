@@ -3,12 +3,11 @@ package settings.user;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import settings.AppSettings;
-import settings.user.settings.GameDifficulty;
+import settings.user.user.User;
 
 import java.io.*;
 
 // TODO password hashing and encryption
-// TODO change the CSV database to (embedded) SQL database
 public class UserManager implements Serializable {
     private static final long serialVersionUID = AppSettings.SERIAL_VERSION_UID;
 
@@ -16,7 +15,7 @@ public class UserManager implements Serializable {
      * Match current User to database.
      * @return Saved user in currentUser.dat matches one of the users in users.csv
      */
-    public static boolean matchCurrentUser() { return findUserName(getCurrentUser().getUserName()); }
+    public static boolean matchCurrentUser() { return findUserName(getCurrentUser().getName()); }
 
     public static boolean matchPassword(String username, String password) {
         try {
@@ -112,8 +111,8 @@ public class UserManager implements Serializable {
             while ((nextLine = reader.readNext()) != null) {
                 if ((nextLine[0].toLowerCase().equals(userName.toLowerCase())) &&
                         (nextLine[1].equals(userPassword))) {
-                    // USERNAME
-                    user.setUserName(nextLine[0]);
+                    /*// USERNAME
+                    user.setName(nextLine[0]);
                     // PASSWORD
                     user.setUserPassword(nextLine[1]);
                     // REMEMBER PASSWORD
@@ -124,11 +123,11 @@ public class UserManager implements Serializable {
                     // TOTAL SCORE
                     user.setTotalScore(Integer.valueOf(nextLine[5]));
                     // HIGHEST STREAK
-                    user.setHighestStreak(Integer.valueOf(nextLine[4]));
+                    user.setHighestStreakScore(Integer.valueOf(nextLine[4]));
                     // CURRENT STREAK
                     user.setCurrentStreak(0);
                     // GAME DIFFICULTY
-                    user.setGameDifficulty(GameDifficulty.fromString(nextLine[6]));
+                    user.setGameDifficulty(GameDifficulty.fromString(nextLine[6]));*/
 
                     System.out.println(user.toString());
                     return user;
@@ -174,7 +173,7 @@ public class UserManager implements Serializable {
 
 
     public static void saveUser(User user) {
-        if (findUserName(user.getUserName())) {
+        if (findUserName(user.getName())) {
             updateUser(user);
         } else {
             System.out.println("USER MANAGER: Invoke saveNewUser(user)");
@@ -198,13 +197,13 @@ public class UserManager implements Serializable {
             CSVWriter writer = new CSVWriter(new FileWriter(AppSettings.ALL_USER_FILE, true));
 
             String[] record = {
-                    user.getUserName(),
-                    user.getUserPassword(),
-                    String.valueOf(user.isRememberPassword()),
+                    user.getName(),
+                    user.getPassword(),
+                    /*String.valueOf(user.isRememberPassword()),
                     String.valueOf(user.isRememberUser()),
                     String.valueOf(user.getTotalScore()),
-                    String.valueOf(user.getHighestStreak()),
-                    user.getGameDifficulty().toString()
+                    String.valueOf(user.getHighestStreakScore()),
+                    user.getGameDifficulty().toString()*/
             };
             writer.writeNext(record);
             writer.close();
@@ -223,29 +222,4 @@ public class UserManager implements Serializable {
     private void readObjectNoData() throws ObjectStreamException {
         System.out.println("USER MANAGER: no object data");
     }
-
-
-
-
-
-
-
-
-
-
-
-    /* Writer writer = new FileWriter(AppSettings.ALL_USER_FILE, true);
-
-//            MappingStrategy<UserScore> scoreStrategy = new HeaderColumnNameMappingStrategy<>();
-//            scoreStrategy.setType(UserScore.class);
-
-            MappingStrategy<User> userStrategy = new HeaderColumnNameMappingStrategy<>();
-            userStrategy.setType(User.class);
-            userStrategy.captureHeader(new CSVReader(new FileReader(AppSettings.ALL_USER_FILE)));
-
-            StatefulBeanToCsvBuilder<User> beanBuilder = new StatefulBeanToCsvBuilder<>(writer);
-
-            StatefulBeanToCsv<User> beanToCsv = beanBuilder.withMappingStrategy(userStrategy).build();
-            beanToCsv.write(user);
-            writer.close();*/
 }

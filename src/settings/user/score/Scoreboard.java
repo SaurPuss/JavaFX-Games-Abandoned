@@ -1,7 +1,8 @@
 package settings.user.score;
 
 import javafx.scene.layout.BorderPane;
-import settings.user.User;
+import settings.user.user.User;
+import settings.user.user.UserScore;
 
 import java.util.HashMap;
 

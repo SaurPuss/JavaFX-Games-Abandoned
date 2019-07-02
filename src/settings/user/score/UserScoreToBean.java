@@ -3,7 +3,7 @@ package settings.user.score;
 import com.opencsv.bean.AbstractBeanField;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
-import settings.user.score.UserScore;
+import settings.user.user.UserScore;
 
 public abstract class UserScoreToBean extends AbstractBeanField<UserScore> {
     public UserScoreToBean() {}
@@ -15,7 +15,7 @@ public abstract class UserScoreToBean extends AbstractBeanField<UserScore> {
         String[] split = s.split(".", 3);
         score.setTotalScore(Integer.valueOf(split[0]));
         score.setCurrentStreak(Integer.valueOf(split[1]));
-        score.setHighestStreak(Integer.valueOf(split[2]));
+        score.setHighestStreakScore(Integer.valueOf(split[2]));
         return score;
 //        return null;
     }
@@ -24,7 +24,7 @@ public abstract class UserScoreToBean extends AbstractBeanField<UserScore> {
     protected String convertToWrite(Object value) throws CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
         UserScore score = (UserScore) value;
 
-        return "\"" + score.getTotalScore() + "\",\"" + score.getCurrentStreak() + "\",\"" + score.getHighestStreak() + "\"";
+        return "\"" + score.getTotalScore() + "\",\"" + score.getCurrentStreak() + "\",\"" + score.getHighestStreakScore() + "\"";
 //        return super.convertToWrite(value);
     }
 }
