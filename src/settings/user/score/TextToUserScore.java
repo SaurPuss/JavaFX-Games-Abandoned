@@ -8,9 +8,9 @@ public class TextToUserScore extends AbstractCsvConverter {
     public Object convertToRead(String value) {
         UserScore score = new UserScore();
         String[] split = value.split("\\.", 3);
-        score.setTotalScore(Integer.valueOf(split[0]));
-        score.setCurrentStreak(Integer.valueOf(split[1]));
-        score.setHighestStreakScore(Integer.valueOf(split[2]));
+//        score.setTotalScore(Integer.valueOf(split[0]));
+//        score.setCurrentStreak(Integer.valueOf(split[1]));
+//        score.setHighestStreakScore(Integer.valueOf(split[2]));
         return score;
     }
 

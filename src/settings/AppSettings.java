@@ -6,6 +6,7 @@ import javafx.scene.layout.BorderPane;
 import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
+import settings.user.UserDatabase;
 import settings.user.user.User;
 import settings.user.UserManager;
 
@@ -21,7 +22,7 @@ public class AppSettings {
 
     public static final long SERIAL_VERSION_UID = 8L;
     public static final String CURRENT_USER_FILE = "src/assets/userdata/currentUser.dat";
-    public static final String ALL_USER_FILE = "src/assets/userdata/users.csv";
+    public static final String ALL_USER_FILE = "src/assets/userdata/userDatabase.mv.db";
 
     /**
      * Making sure all assets are in order and loaded up on start.
@@ -40,15 +41,8 @@ public class AppSettings {
 
             // TODO Make this all a local sql database to start
             File allUsersFile = new File(ALL_USER_FILE);
-            // try to create users.csv
-            allUsersFile.createNewFile();
-//            if (allUsersFile.length() == 0) {
-//                // add header to the file
-//                System.out.println("SESSION: Generating new Header");
-//                FileWriter fileWriter = new FileWriter(AppSettings.ALL_USER_FILE);
-//                fileWriter.append("\"USERNAME\",\"PASSWORD\",\"REMEMBERPASSWORD\",\"REMEMBERUSER\",\"TOTALSCORE\",\"HIGHESTSTREAK\",\"GAMEDIFFICULTY\"\n");
-//                fileWriter.close();
-//            }
+            if (!allUsersFile.exists())
+                UserDatabase.makeDatabase();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -25,8 +25,8 @@ public class UserSettingsPane extends VBox implements UpdateSettingsButton {
         pRememberPassword.getChildren().addAll(tRememberPassword, togglePassword);
 
         // Adjust to current preferences
-        toggleUser.setSelected(user.isRememberUser());
-        togglePassword.setSelected(user.isRememberPassword());
+        toggleUser.setSelected(user.userSettings.isRememberUser());
+        togglePassword.setSelected(user.userSettings.isRememberPassword());
 
 
         // Game difficulty toggle button

@@ -28,11 +28,12 @@ public class UserScore implements Serializable {
         streak = 0;
 
         // Session Streak Scores
-        // TODO add for game difficulties
+        // TODO add for game difficulties, map Sets?
         hangman = 0;
         minesweeper = 0;
 
         // Total Scores
+        // TODO Make these flexible depending on the available games? This can be a hashmap
         hangmanTotal = 0;
         minesweeperTotal = 0;
     }

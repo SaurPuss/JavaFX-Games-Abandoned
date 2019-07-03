@@ -1,5 +1,6 @@
 package settings.user.user;
 
+import settings.user.settings.ColorMode;
 import settings.user.settings.GameDifficulty;
 
 import java.io.*;
@@ -12,18 +13,22 @@ public class UserSettings implements Serializable {
     /* Object Data Fields */
     private boolean rememberPassword;
     private boolean rememberUser;
+    private ColorMode colorMode;
     private GameDifficulty gameDifficulty;
 
     /* Constructors */
     UserSettings() {
         rememberPassword = false;
         rememberUser = false;
+        colorMode = ColorMode.LIGHT;
         gameDifficulty = GameDifficulty.NORMAL;
     }
 
+    // TODO I can probably kill this one and use setRememberUser() instead
     UserSettings(boolean rememberUser) {
         rememberPassword = false;
         this.rememberUser = rememberUser;
+        colorMode = ColorMode.LIGHT;
         gameDifficulty = GameDifficulty.NORMAL;
     }
 
@@ -32,6 +37,8 @@ public class UserSettings implements Serializable {
     public void setRememberPassword(boolean rememberPassword) { this.rememberPassword = rememberPassword; }
     public boolean isRememberUser() { return rememberUser; }
     public void setRememberUser(boolean rememberUser) { this.rememberUser = rememberUser; }
+    public ColorMode getColorMode() { return this.colorMode; }
+    public void setColorMode(ColorMode colorMode) { this.colorMode = colorMode; }
     public GameDifficulty getGameDifficulty() { return gameDifficulty; }
     public void setGameDifficulty(GameDifficulty gameDifficulty) { this.gameDifficulty = gameDifficulty; }
 

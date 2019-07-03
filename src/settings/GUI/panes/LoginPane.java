@@ -57,7 +57,7 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
         }
 
         welcome.setFont(Font.font(18));
-        cbRememberUser.setSelected(user.isRememberUser());
+        cbRememberUser.setSelected(user.userSettings.isRememberUser());
 
         buttons.getChildren().addAll(login(), signUp());
 
@@ -75,7 +75,7 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
     public LoginPane(User user) {
         welcome = new Text("Welcome " + user.getName());
         welcome.setFont(Font.font(18));
-        cbRememberUser.setSelected(user.isRememberUser());
+        cbRememberUser.setSelected(user.userSettings.isRememberUser());
         tfUserName.setText(user.getName());
 
         buttons.getChildren().addAll(login(), signUp());

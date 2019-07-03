@@ -40,7 +40,7 @@ public interface LoginButton {
             if (UserManager.matchPassword(username, password)) {
                 // Set user as user
                 user = UserManager.getUserProfile(username, password);
-                user.setRememberUser(rememberUser);
+                user.userSettings.setRememberUser(rememberUser);
 
                 printSessionUser();
 //                UserManager.saveExistingUser(UserManager.getUserProfile(username, password));
