@@ -4,6 +4,8 @@ import javafx.scene.control.Button;
 import settings.GUI.panes.GameSelectionPane;
 import settings.GUI.panes.TopBarPane;
 import settings.user.UserManager;
+import settings.user.user.UserScore;
+import settings.user.user.UserSettings;
 
 import static settings.GUI.panes.LoginPane.*;
 import static settings.AppSettings.*;
@@ -40,10 +42,8 @@ public interface LoginButton {
             if (UserManager.matchPassword(username, password)) {
                 // Set user as user
                 user = UserManager.getUserProfile(username, password);
-                user.userSettings.setRememberUser(rememberUser);
+                user.getUserSettings().setRememberUser(rememberUser);
 
-                printSessionUser();
-//                UserManager.saveExistingUser(UserManager.getUserProfile(username, password));
                 // Continue to game selection screen
                 pane.setTop(new TopBarPane());
                 pane.setCenter(new GameSelectionPane());

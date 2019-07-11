@@ -6,7 +6,7 @@ import javafx.scene.layout.BorderPane;
 import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
-import settings.user.UserDatabase;
+import settings.user.DatabaseManager;
 import settings.user.user.User;
 import settings.user.UserManager;
 
@@ -22,34 +22,35 @@ public class AppSettings {
 
     public static final long SERIAL_VERSION_UID = 8L;
     public static final String CURRENT_USER_FILE = "src/assets/userdata/currentUser.dat";
-    public static final String ALL_USER_FILE = "src/assets/userdata/userDatabase.mv.db";
 
     /**
      * Making sure all assets are in order and loaded up on start.
      */
     public static void initSession() {
-        // If files don't exist, generate them
         try {
+            // If files don't exist, generate them
             File currentUserFile = new File(CURRENT_USER_FILE);
-            // try to create new currentUser.dat
+            File allUsersFile = new File("src/assets/userdata/userDatabase.mv.db");
+
             currentUserFile.createNewFile();
-            // Save a default user to the new file
             if (currentUserFile.length() == 0) {
                 System.out.println("SESSION: Creating new currentUser.dat");
                 UserManager.saveCurrentUser(new User());
             }
-
-            // TODO Make this all a local sql database to start
-            File allUsersFile = new File(ALL_USER_FILE);
             if (!allUsersFile.exists())
-                UserDatabase.makeDatabase();
+                DatabaseManager.makeDatabase();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        // pull up a user to start with
-        System.out.println("SESSION: Getting current user");
-        user = UserManager.getCurrentUser();
+        // Check if current user wants to be remembered and set a Session User
+        if (UserManager.getCurrentUser().getUserSettings().isRememberUser()) {
+            System.out.println("SESSION: Getting current user");
+            user = UserManager.getCurrentUser();
+        } else {
+            System.out.println("SESSION: Setting new current user");
+            user = new User();
+        }
 
         // init game activity
         // TODO allow a user to save a game in mid session upon exit?

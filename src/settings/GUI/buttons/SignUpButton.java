@@ -58,11 +58,14 @@ public interface SignUpButton {
         // Invoke
         else {
             // Save new user to database & set AppSettings.user & currentUser.dat
-            UserManager.saveUser(new User(username, password, cbRememberUser.isSelected()));
+            User user = UserManager.saveUser(username, password, cbRememberUser.isSelected());
+            if (user != null) {
+                AppSettings.user = user;
 
-            // Continue to game selection pane
-            AppSettings.pane.setTop(new TopBarPane());
-            AppSettings.pane.setCenter(new GameSelectionPane());
+                // Continue to game selection pane
+                AppSettings.pane.setTop(new TopBarPane());
+                AppSettings.pane.setCenter(new GameSelectionPane());
+            }
         }
     }
 }

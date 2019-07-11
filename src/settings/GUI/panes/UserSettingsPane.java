@@ -16,27 +16,35 @@ public class UserSettingsPane extends VBox implements UpdateSettingsButton {
         toggleUser = new ToggleSwitch();
         togglePassword = new ToggleSwitch();
 
-        HBox pRememberUser = new HBox(5);
-        Text tRememberUser = new Text("Remember User: ");
-        pRememberUser.getChildren().addAll(tRememberUser, toggleUser);
-
-        HBox pRememberPassword = new HBox(5);
-        Text tRememberPassword = new Text("Remember Password: ");
-        pRememberPassword.getChildren().addAll(tRememberPassword, togglePassword);
-
-        // Adjust to current preferences
-        toggleUser.setSelected(user.userSettings.isRememberUser());
-        togglePassword.setSelected(user.userSettings.isRememberPassword());
+        // Adjust to user preferences
+        toggleUser.setSelected(user.getUserSettings().isRememberUser());
+        togglePassword.setSelected(user.getUserSettings().isRememberPassword());
 
 
         // Game difficulty toggle button
         // TODO You can't change your difficulty while a game is active
 
-        getChildren().addAll(pRememberUser, pRememberPassword,updateSettings());
-
-        // Give the Option to save
-//        getChildren().add();
+        getChildren().addAll(
+                rememberUserBox(),
+                rememberPasswordBox(),
+                updateSettings());
 
         // TODO if default user, Sign up Button
+    }
+
+    private HBox rememberUserBox() {
+        HBox box = new HBox(5);
+        Text tRememberUser = new Text("Remember User: ");
+        box.getChildren().addAll(tRememberUser, toggleUser);
+
+        return box;
+    }
+
+    private HBox rememberPasswordBox() {
+        HBox box = new HBox(5);
+        Text tRememberPassword = new Text("Remember Password: ");
+        box.getChildren().addAll(tRememberPassword, togglePassword);
+
+        return box;
     }
 }

@@ -1,7 +1,5 @@
 package settings.user;
 
-import com.opencsv.CSVReader;
-import com.opencsv.CSVWriter;
 import settings.AppSettings;
 import settings.user.user.User;
 
@@ -12,128 +10,77 @@ public class UserManager implements Serializable {
     private static final long serialVersionUID = AppSettings.SERIAL_VERSION_UID;
 
     /**
+     * Check if a user already exists in user database
+     * @param userName String to search for in the database
+     * @return Yay or Nay
+     */
+    public static boolean findUserName(String userName) {
+        return DatabaseManager.findUser(userName);
+    }
+
+    /**
      * Match current User to database.
-     * @return Saved user in currentUser.dat matches one of the users in users.csv
+     * @return boolean match
      */
     public static boolean matchCurrentUser() { return findUserName(getCurrentUser().getName()); }
 
-    public static boolean matchPassword(String username, String password) {
-        try {
-            return password.equals(getUserPassword(username));
-        } catch (NullPointerException e) {
-            System.out.println("USER MANAGER: matchPassword caused a NullPointerException");
-            return false;
+    /**
+     * Check if the input password matches the stuff in the database, case sensitive
+     * @param name you know what this is
+     * @param password you also know what this is
+     * @return you also know what this does
+     */
+    public static boolean matchPassword(String name, String password) {
+        return password.equals(DatabaseManager.getUserPassword(name));
+    }
+
+    /**
+     * Save a user to the database
+     * @param name username
+     * @param password user password
+     * @param rememberUser save this preference to the db too
+     * @return User to be set for the session
+     */
+    public static User saveUser(String name, String password, boolean rememberUser) {
+        if (!findUserName(name)) {
+            User user = DatabaseManager.saveUser(name, password, rememberUser);
+            saveCurrentUser(user);
+            return user;
+        } else {
+            return null;
         }
     }
 
     /**
-     * Attempt to retrieve a saved User from users.csv
+     * Attempt to retrieve a saved User from database
      * @param userName User input to verify
      * @param userPassword User input to verify
      * @return verified User profile, or bad default
      */
     public static User getUserProfile(String userName, String userPassword) {
-        if (findUserName(userName)) { // verify userName
+        // TODO simplify this, should be in sql/db side
+        if (findUserName(userName)) {
             // TODO hash password input
             if (matchPassword(userName, userPassword)) {
                 System.out.println("USER MANAGER: Retrieving user from database");
-                return retrieveUser(userName, userPassword);
-            } else {
-                System.out.println("USER MANAGER: Password mismatch, can't retrieve user from database.");
+                return DatabaseManager.retrieveUser(userName, userPassword);
             }
         }
-        System.out.println("USER MANAGER: Returning default user");
-        return new User();
-    }
-
-    /**
-     * Check if a user already exists in the users.csv
-     * @param userName String to search for in the database
-     * @return Yay or Nay
-     */
-    public static boolean findUserName(String userName) {
-        try {
-            CSVReader reader = new CSVReader(new FileReader(AppSettings.ALL_USER_FILE));
-
-            String[] nextLine;
-            while ((nextLine = reader.readNext()) != null) {
-                if (nextLine[0].toLowerCase().equals(userName.toLowerCase())) {
-                    System.out.println("USER MANAGER: Found userName in database");
-                    return true;
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("USER MANAGER: " + userName + " not found in csv.");
-        return false;
-    }
-
-    /**
-     * Get user from database
-     * @param userName Check this user
-     * @return password
-     */
-    private static String getUserPassword(String userName) {
-        // TODO Make this return the hashed password and make a (de)hashing method
-        // TODO make this called from the public boolean matchPassword ?
-        try {
-            CSVReader reader = new CSVReader(new FileReader(AppSettings.ALL_USER_FILE));
-
-            String[] nextLine;
-            while ((nextLine = reader.readNext()) != null) {
-                if (nextLine[0].toLowerCase().equals(userName.toLowerCase())) {
-                    return nextLine[1];
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // if that didn't work return nothing
+        System.out.println("USER MANAGER: Returning null");
         return null;
     }
 
     /**
      * Private method that is called once username and password are verified
      * to match. This pulls the User from the database.
-     * @param userName Verified input to function as a db key
-     * @param userPassword Verified input to double check before retrieving User
+     * @param name Verified input to function as a db key
+     * @param password Verified input to double check before retrieving User
      * @return if match return user, else return default
      */
-    private static User retrieveUser(String userName, String userPassword) {
+    private static User retrieveUser(String name, String password) {
         try {
-            CSVReader reader = new CSVReader(new FileReader(AppSettings.ALL_USER_FILE));
 
-            User user = new User();
-            String[] nextLine;
-            while ((nextLine = reader.readNext()) != null) {
-                if ((nextLine[0].toLowerCase().equals(userName.toLowerCase())) &&
-                        (nextLine[1].equals(userPassword))) {
-                    /*// USERNAME
-                    user.setName(nextLine[0]);
-                    // PASSWORD
-                    user.setUserPassword(nextLine[1]);
-                    // REMEMBER PASSWORD
-                    user.setRememberPassword(Boolean.valueOf(nextLine[2]));
-                    // REMEMBER USER
-                    user.setRememberUser(Boolean.valueOf(nextLine[3]));
-//                    temp.setUserScore(new UserScore(Integer.valueOf(nextLine[4]), Integer.valueOf(nextLine[5])));
-                    // TOTAL SCORE
-                    user.setTotalScore(Integer.valueOf(nextLine[5]));
-                    // HIGHEST STREAK
-                    user.setHighestStreakScore(Integer.valueOf(nextLine[4]));
-                    // CURRENT STREAK
-                    user.setCurrentStreak(0);
-                    // GAME DIFFICULTY
-                    user.setGameDifficulty(GameDifficulty.fromString(nextLine[6]));*/
-
-                    System.out.println(user.toString());
-                    return user;
-                }
-            }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("USER MANAGER: retrieve user failed to get the bean");
@@ -163,53 +110,19 @@ public class UserManager implements Serializable {
     public static void saveCurrentUser(User user) {
         System.out.println("USER MANAGER: Saving current user");
         try {
-            ObjectOutputStream o = new ObjectOutputStream(new FileOutputStream(
-                    AppSettings.CURRENT_USER_FILE, false));
+            ObjectOutputStream o = new ObjectOutputStream(
+                    new FileOutputStream(AppSettings.CURRENT_USER_FILE, false));
             o.writeObject(user);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
-    public static void saveUser(User user) {
-        if (findUserName(user.getName())) {
-            updateUser(user);
-        } else {
+    public static void saveNewUser(User user) {
+        if (!findUserName(user.getName())) {
             System.out.println("USER MANAGER: Invoke saveNewUser(user)");
-            saveNewUser(user);
+            DatabaseManager.saveUser(user.getName(), user.getPassword(), user.getUserSettings().isRememberUser());
             AppSettings.user = user;
-        }
-    }
-
-    private static void updateUser(User user) {
-        // Read whole csv
-
-
-    }
-
-    /**
-     * Save NEW user to users.csv
-     * @param user User information to append to users.csv
-     */
-    private static void saveNewUser(User user) {
-        try {
-            CSVWriter writer = new CSVWriter(new FileWriter(AppSettings.ALL_USER_FILE, true));
-
-            String[] record = {
-                    user.getName(),
-                    user.getPassword(),
-                    /*String.valueOf(user.isRememberPassword()),
-                    String.valueOf(user.isRememberUser()),
-                    String.valueOf(user.getTotalScore()),
-                    String.valueOf(user.getHighestStreakScore()),
-                    user.getGameDifficulty().toString()*/
-            };
-            writer.writeNext(record);
-            writer.close();
-        } catch (Exception e) {
-            System.out.println("USER MANAGER: failed saveNewUser(user)!");
-            e.printStackTrace();
         }
     }
 

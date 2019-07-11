@@ -15,8 +15,8 @@ public class User implements Serializable {
     private long id; // Primary Key, created on sql insert
     private String name;
     private String password;
-    public UserScore userScore;
-    public UserSettings userSettings;
+    private UserSettings userSettings;
+    private UserScore userScore;
 
     /* Constructors */
     /**
@@ -26,38 +26,40 @@ public class User implements Serializable {
         id = 0;
         name = randomName();
         password = null;
-        userScore = new UserScore();
         userSettings = new UserSettings();
-    }
-
-    /**
-     * Create a User object with a specified name and password.
-     * @param name String for username
-     * @param password String for password
-     * @param rememberUser boolean save current user
-     */
-    public User(String name, String password, boolean rememberUser) {
-        id = 0;
-        this.name = name;
-        this.password = password;
         userScore = new UserScore();
-        userSettings = new UserSettings(rememberUser);
     }
 
     /**
-     * Full User object. Created for retrieval from the database.
-     * @param id database Primary Key
-     * @param name user name
-     * @param password user password
-     * @param userScore user scores object
-     * @param userSettings user settings object
+     * Create a User object based on a known id, generally one that will
+     * match a username and password combination stored in the database.
+     * @param id retrieved from database
+     * @param name user input for the purpose of retrieval
+     * @param password user input for the purpose of retrieval
+     * @param rememberUser this user will be called on next program start
      */
-    public User(long id, String name, String password, UserScore userScore, UserSettings userSettings) {
+    public User(long id, String name, String password, boolean rememberUser) {
         this.id = id;
         this.name = name;
         this.password = password;
-        this.userScore = userScore;
+        userSettings = new UserSettings(rememberUser);
+        userScore = new UserScore();
+    }
+
+    /**
+     * Create a User object from database retrieval.
+     * @param id retrieved from database
+     * @param name retrieved from database
+     * @param password retrieved from database
+     * @param userSettings compiled from database
+     * @param userScore compiled from database
+     */
+    public User(long id, String name, String password, UserSettings userSettings, UserScore userScore) {
+        this.id = id;
+        this.name = name;
+        this.password = password;
         this.userSettings = userSettings;
+        this.userScore = userScore;
     }
 
     /* Getters and Setters */
@@ -65,10 +67,12 @@ public class User implements Serializable {
     public void setId(long id) { this.id = id; }
     public String getName() { return this.name; }
     public void setName(String name) { this.name = name; }
-
-    // TODO Password hashing
-    public void setPassword(String password) { this.password = password; }
+    public void setPassword(String password) { this.password = password; } // TODO Password hashing
     public String getPassword() { return password; }
+    public UserSettings getUserSettings() { return userSettings; }
+    public void setUserSettings(UserSettings userSettings) { this.userSettings = userSettings; }
+    public UserScore getUserScore() { return userScore; }
+    public void setUserScore(UserScore userScore) { this.userScore = userScore; }
 
     /* Other methods */
     /**
@@ -88,7 +92,7 @@ public class User implements Serializable {
     }
 
     /**
-     * Choose a random username.
+     * Choose a random prefab username.
      * @return random word from String[] anonymousName.
      */
     private String randomName() {
@@ -108,12 +112,12 @@ public class User implements Serializable {
 
     /**
      * Check if a name matches any entries in the anonymousName String array.
-     * @param userName String to match with the array
+     * @param name String to match with the array
      * @return boolean is a match or not
      */
-    public static boolean isRandomName(String userName) {
+    public static boolean isRandomName(String name) {
         for (String s : anonymousName) {
-            if (s.toLowerCase().equals(userName.toLowerCase()))
+            if (s.toLowerCase().equals(name.toLowerCase()))
                 return true;
         }
 

@@ -17,8 +17,6 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 import settings.GUI.panes.TopBarPane;
-import settings.user.UserDatabase;
-import settings.user.score.Scoreboard;
 import settings.GUI.panes.LoginPane;
 import settings.user.user.User;
 import settings.user.UserManager;
@@ -30,7 +28,7 @@ import settings.user.UserManager;
 // TODO Make user of OpenCSV I guess
 public class Main extends Application {
     // This is the main Pane
-    private static Scoreboard scoreboard = new Scoreboard();
+//    private static Scoreboard scoreboard = new Scoreboard();
 
     /**
      * Start the application with javafx.
@@ -70,7 +68,7 @@ public class Main extends Application {
                 AppSettings.pane.setCenter(new GameSelectionPane());
 
                 // Fill Scores and UserSettings for this user profile
-                scoreboard.updateUserScoreboard(AppSettings.user);
+//                scoreboard.updateUserScoreboard(AppSettings.user);
             }
         } else {
             // fallback just in case
