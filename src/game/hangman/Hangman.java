@@ -2,11 +2,9 @@ package game.hangman;
 
 import game.GUI.panes.BottomBarPane;
 import game.Game;
-import game.hangman.GUI.GameFields;
-import game.hangman.GUI.GameDiagram;
+import game.hangman.GUI.*;
 import game.hangman.logic.GameWord;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.geometry.*;
 import javafx.scene.layout.VBox;
 import settings.AppSettings;
 

@@ -2,10 +2,8 @@ package settings.GUI.panes;
 
 import game.Game;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
@@ -13,9 +11,7 @@ import org.reflections.util.ClasspathHelper;
 import settings.AppSettings;
 import settings.GUI.buttons.GameSelectionButton;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 
 public class GameSelectionPane extends VBox implements GameSelectionButton {
     public static ComboBox<String> dropdown;

@@ -4,8 +4,6 @@ import javafx.scene.control.Button;
 import settings.GUI.panes.GameSelectionPane;
 import settings.GUI.panes.TopBarPane;
 import settings.user.UserManager;
-import settings.user.user.UserScore;
-import settings.user.user.UserSettings;
 
 import static settings.GUI.panes.LoginPane.*;
 import static settings.AppSettings.*;
@@ -14,8 +12,6 @@ public interface LoginButton {
     // TODO learn more about this::blabla
     // example from https://code.makery.ch/blog/javafx-8-event-handling-examples
     // btnSignUp.setOnAction(this::signUpButton);
-
-    // TODO Do this for the hangman fields <3
 
     /**
      * Default login button, does a clicky-click to try and log in

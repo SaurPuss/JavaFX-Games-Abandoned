@@ -1,27 +1,16 @@
 package game.hangman.GUI;
 
 import game.hangman.logic.GameSession;
-import javafx.animation.Animation;
-import javafx.animation.PathTransition;
+import javafx.animation.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Arc;
-import javafx.scene.shape.ArcType;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
+import javafx.scene.shape.*;
 import javafx.util.Duration;
 
 public class GameDiagram extends Pane {
-    private static Pane diagram;
-    private static Pane arms;
-    private static Pane legs;
-    private static Line noose;
+    private static Pane diagram, arms, legs;
     private static Circle head;
-    private static Line body;
-    private static Line leftArm;
-    private static Line rightArm;
-    private static Line leftLeg;
-    private static Line rightLeg;
+    private static Line noose, body, leftArm, rightArm, leftLeg, rightLeg;
 
     // Constructor
     /**
@@ -161,14 +150,12 @@ public class GameDiagram extends Pane {
      */
     private Pane buildGallows() {
         Pane gallowsPane = new Pane();
-
         Arc standArc = new Arc(60, 400, 45, 30, 0, 180);
         standArc.setType(ArcType.OPEN);
         standArc.setStroke(Color.BLACK);
         standArc.setFill(null);
 
         Line standVertical = new Line(60, 30, 60, 370);
-
         Line standHorizontal = new Line(60, 30, 230, 30);
 
         gallowsPane.getChildren().addAll(standArc, standHorizontal, standVertical, diagram);

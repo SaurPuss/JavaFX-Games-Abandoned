@@ -12,20 +12,23 @@ import static game.hangman.logic.GameSession.mistakes;
 
 public class GameWord {
     /* Datafields */
-    private ArrayList<Character> gameWord = new ArrayList<>();
-    private ArrayList<Character> hiddenWord = new ArrayList<>();
+    private ArrayList<Character> gameWord, hiddenWord;
     private LinkedHashMap<Character, Boolean> guesses = new LinkedHashMap<>();
 
     /* Constructors */
     public GameWord() {
         // pick word from dictionary
+        gameWord = new ArrayList<>();
+        hiddenWord = new ArrayList<>();
         setWord();
         mistakes = 0;
     }
 
-    public GameWord(String gameWord) {
+    public GameWord(String customWord) {
         // pick custom word
-        setWord(gameWord);
+        gameWord = new ArrayList<>();
+        hiddenWord = new ArrayList<>();
+        setWord(customWord);
         mistakes = 0;
     }
 
@@ -67,13 +70,11 @@ public class GameWord {
                 GameDiagram.addToDiagram();
             }
         }
-//        System.out.println(guesses.values().toString());
     }
 
     public int getMistakes() {
         return mistakes;
     }
-
 
     LinkedHashMap<Character, Boolean> getGuesses() {
         return guesses;
@@ -81,7 +82,6 @@ public class GameWord {
 
     public String getGuessesString() {
         StringBuilder s = new StringBuilder();
-
         int i = 0;
         for (char c : guesses.keySet()) {
             if (!guesses.get(c)) {
@@ -94,7 +94,6 @@ public class GameWord {
                 s.append(", ");
             }
         }
-
         return s.toString();
     }
 
@@ -109,16 +108,13 @@ public class GameWord {
                 if (c == g) {
                     hiddenWord.add(c);
                     guessed = true;
-//                    System.out.println("added: '" + c + "' (" + c + ")");
                     break;
                 } else
                     guessed = false;
             }
 
-            if (!guessed) {
+            if (!guessed)
                 hiddenWord.add('*');
-//                System.out.println("added: '*' (" + g + ")");
-            }
         }
     }
 
@@ -166,25 +162,19 @@ public class GameWord {
 
                 if (random.nextInt(n) == 0)
                     s = line;
-//                System.out.println(s);
             }
-
-
         } catch (FileNotFoundException ex) {
             System.out.println("HANGMAN WORD: dictionary.txt not found, using backup words");
-
             String[] word = {"rerouted", "pistache", "subtransverse",
                     "hesiodus", "unbrushable", "wayne", "jebusite",
                     "dutiful", "nonappendant", "araeostyle"};
             int n = (int) (Math.random() * word.length);
-
             s = word[n];
         } finally {
             ArrayList<Character> chars = new ArrayList<>();
             for (char c : s.toCharArray()) {
                 chars.add(c);
             }
-
             gameWord = chars;
         }
     }
@@ -198,7 +188,6 @@ public class GameWord {
         for (char c : gameWord.toCharArray()) {
             chars.add(c);
         }
-
         this.gameWord = chars;
     }
 }
