@@ -13,10 +13,6 @@ public class UserScore implements Serializable {
     /* Object Data Fields */
     private int total;
     private int streak;
-    private int hangman;
-    private int hangmanTotal;
-    private int minesweeper;
-    private int minesweeperTotal;
 
     /* Constructors */
     /**
@@ -24,40 +20,18 @@ public class UserScore implements Serializable {
      */
     public UserScore() {
         // Cumulative Scores
-        total = 0;
-        streak = 0;
-
-        // Session Streak Scores
-        // TODO add for game difficulties, map Sets?
-        hangman = 0;
-        minesweeper = 0;
-
-        // Total Scores
-        // TODO Make these flexible depending on the available games? This can be a hashmap
-        hangmanTotal = 0;
-        minesweeperTotal = 0;
+        total = 0; // lifetime scores
+        streak = 0; // this is what is copied to the game score tables on save
     }
 
     /**
      * UserScore preferably restored from Database or currentUserSave
      * @param total
      * @param streak
-     * @param hangman
-     * @param minesweeper
-     * @param hangmanTotal
-     * @param minesweeper
-     * @param minesweeperTotal
      */
-    public UserScore(int total, int streak, int hangman, int minesweeper, int hangmanTotal, int minesweeperTotal) {
-        // Session Streak Scores
-        this.streak = streak;
-        this.hangman = hangman;
-        this.minesweeper = minesweeper;
-
-        // Cumulative Scores
+    public UserScore(int total, int streak) {
         this.total = total;
-        this.hangmanTotal = hangmanTotal;
-        this.minesweeperTotal = minesweeperTotal;
+        this.streak = streak;
     }
 
     /* Getters and Setters */
@@ -65,14 +39,6 @@ public class UserScore implements Serializable {
     public void setTotal(int total) { this.total = total; }
     public int getStreak() { return streak; }
     public void setStreak(int streak) { this.streak = streak; }
-    public int getHangman() { return hangman; }
-    public void setHangman(int hangman) { this.hangman = hangman; }
-    public int getHangmanTotal() { return hangmanTotal; }
-    public void setHangmanTotal(int hangmanTotal) { this.hangmanTotal = hangmanTotal; }
-    public int getMinesweeper() { return minesweeper; }
-    public void setMinesweeper(int minesweeper) { this.minesweeper = minesweeper; }
-    public int getMinesweeperTotal() { return minesweeperTotal; }
-    public void setMinesweeperTotal(int minesweeperTotal) { this.minesweeperTotal = minesweeperTotal; }
 
     /**
      * Run through the scores and add or subtract the totals.

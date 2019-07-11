@@ -10,43 +10,19 @@ public class DatabaseManager {
     private static String dbUser = "admin";
     private static String dbPassword = "admin";
 
+    // User Tables
     private static String tUsers = "Users";
     private static String tUserScore = "UserScore";
     private static String tUserSettings = "UserSettings";
 
-    public static void makeDatabase() {
-        try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-            Statement statement = connection.createStatement();
-            // TODO Add scores columns to UserScore in the Game
-            String sql = "CREATE TABLE IF NOT EXISTS " + tUsers + " ("
-                    + " id int AUTO_INCREMENT PRIMARY KEY,"
-                    + "	username varchar(50) UNIQUE NOT NULL,"
-                    + "	password varchar(50) NOT NULL"
-                    + ");"
-                    + "CREATE TABLE IF NOT EXISTS " + tUserScore + " ("
-                    + " id int NOT NULL," // Both Primary and Foreign Key
-                    + " total int DEFAULT 0,"
-                    + " streak int DEFAULT 0,"
-                    + " hangman int DEFAULT 0,"
-                    + " hangmanTOTAL int DEFAULT 0,"
-                    + " minesweeper int DEFAULT 0,"
-                    + " minesweeperTOTAL int DEFAULT 0,"
-                    + " PRIMARY KEY (id),"
-                    + " FOREIGN KEY (id) REFERENCES " + tUsers + "(id) ON DELETE CASCADE,"
-                    + ");"
-                    + "CREATE TABLE IF NOT EXISTS " + tUserSettings + " ("
-                    + " id int NOT NULL," // Both Primary and Foreign Key
-                    + " rememberUser bit DEFAULT 'false',"
-                    + " rememberPassword bit DEFAULT 'false',"
-                    + " gameDifficulty varchar(16) DEFAULT 'Normal',"
-                    + " PRIMARY KEY (id),"
-                    + " FOREIGN KEY (id) REFERENCES " + tUsers + "(id) ON DELETE CASCADE,"
-                    + ");";
-            statement.executeUpdate(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+    // HighScore Tables
+    private static String tScores = "Scores"; // personal high scores tied to ID
+    private static String tHangmanScores = "HangmenScores"; // session streak per name & game mode
+    private static String tMastermindScores = "MasterMindScores";
+    private static String tMinesweeperScores = "MineSweeperScores";
+    private static String tSnakeScores = "SnakeScores";
+
+
 
     static boolean findUser(String name) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
@@ -111,7 +87,7 @@ public class DatabaseManager {
         }
     }
 
-    static User retrieveUser(String name, String password) {
+    private static long retrieveID(String name, String password) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             // get matching user id assuming name and password are valid
             String getID = "SELECT (id) FROM " + tUsers
@@ -122,9 +98,19 @@ public class DatabaseManager {
             sID.setString(2, password);
             ResultSet rs = sID.executeQuery();
             rs.next();
-            long id = rs.getLong(1);
 
-            // retrieve user profile based on id
+            return rs.getLong(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    static User retrieveUser(String name, String password) {
+        long id = retrieveID(name, password);
+
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+            // retrieve user profile based on ID
             String getData = "SELECT * FROM " + tUsers + "\n"
                     + "INNER JOIN " + tUserSettings
                     + " ON " + tUserSettings + ".id = " + tUsers + ".id\n"
@@ -133,10 +119,10 @@ public class DatabaseManager {
                     + "WHERE " + tUsers + ".id = ?;";
             PreparedStatement sDATA = connection.prepareStatement(getData);
             sDATA.setLong(1, id);
-            rs = sDATA.executeQuery();
+            ResultSet rs = sDATA.executeQuery();
             rs.next();
 
-            // Populate user
+            // Populate User
             UserSettings userSettings = new UserSettings(
                     rs.getBoolean("REMEMBERUSER"),
                     rs.getBoolean("REMEMBERPASSWORD"),
@@ -144,12 +130,7 @@ public class DatabaseManager {
             );
             UserScore userScore = new UserScore(
                     rs.getInt("TOTAL"),
-                    rs.getInt("STREAK"),
-                    rs.getInt("HANGMAN"),
-                    rs.getInt("HANGMANTOTAL"),
-                    rs.getInt("MINESWEEPER"),
-                    rs.getInt("MINESWEEPERTOTAL")
-                    // insert more on game expansion
+                    rs.getInt("STREAK")
             );
             return new User(
                     rs.getLong(1),
@@ -164,7 +145,7 @@ public class DatabaseManager {
     }
 
     static boolean deleteUser(long id) {
-        // copy user scores to Anonymous default user
+        // rename user to anonymous in scores table?
         System.out.println("DB MANAGER: Copied records to anonymous: "
                 + retainUserScores(id));
 
@@ -192,5 +173,73 @@ public class DatabaseManager {
 
 
         return false;
+    }
+
+
+
+    public static void makeDatabase() {
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+            Statement statement = connection.createStatement();
+            // TODO Add scores columns to UserScore in the Game
+            String sql = "CREATE TABLE IF NOT EXISTS " + tUsers + " ("
+                    + " id int AUTO_INCREMENT PRIMARY KEY,"
+                    + "	username varchar(50) UNIQUE NOT NULL,"
+                    + "	password varchar(50) NOT NULL"
+                    + ");"
+                    + "CREATE TABLE IF NOT EXISTS " + tUserScore + " ("
+                    + " id int NOT NULL," // Both Primary and Foreign Key
+                    + " total int DEFAULT 0," // All time across games
+                    + " streak int DEFAULT 0," // Reset to 0 after a loss or end game
+                    + " PRIMARY KEY (id),"
+                    + " FOREIGN KEY (id) REFERENCES " + tUsers + "(id) ON DELETE CASCADE,"
+                    + ");"
+                    + "CREATE TABLE IF NOT EXISTS " + tUserSettings + " ("
+                    + " id int NOT NULL," // Both Primary and Foreign Key
+                    + " rememberUser bit DEFAULT 'false',"
+                    + " rememberPassword bit DEFAULT 'false',"
+                    + " gameDifficulty varchar(16) DEFAULT 'Normal',"
+                    + " PRIMARY KEY (id),"
+                    + " FOREIGN KEY (id) REFERENCES " + tUsers + "(id) ON DELETE CASCADE,"
+                    + ");"
+                    + "CREATE TABLE IF NOT EXISTS " + tScores + " ("
+                    + " id int PRIMARY KEY NOT NULL,"
+                    + " name varchar(50) DEFAULT 'Anonymous',"
+                    + " hangmanEASY int DEFAULT 0,"
+                    + " hangmanNORMAL int DEFAULT 0,"
+                    + " hangmanHARD int DEFAULT 0,"
+                    + " mastermindEASY int DEFAULT 0,"
+                    + " mastermindNORMAL int DEFAULT 0,"
+                    + " mastermindHARD int DEFAULT 0,"
+                    + " minesweeperEASY int DEFAULT 0,"
+                    + " minesweeperNORMAL int DEFAULT 0,"
+                    + " minesweeperHARD int DEFAULT 0,"
+                    + " snakeEASY int DEFAULT 0,"
+                    + " snakeNORMAL int DEFAULT 0,"
+                    + " snakeHARD int DEFAULT 0,"
+                    + ");"
+                    + "CREATE TABLE IF NOT EXISTS " + tHangmanScores + " ("
+                    + " name varchar(50) DEFAULT 'Anonymous',"
+                    + " mode varchar(10) DEFAULT 'NORMAL',"
+                    + " score int DEFAULT 0,"
+                    + ");"
+                    + "CREATE TABLE IF NOT EXISTS " + tMastermindScores + " ("
+                    + " name varchar(50) DEFAULT 'Anonymous',"
+                    + " mode varchar(10) DEFAULT 'NORMAL',"
+                    + " score int DEFAULT 0,"
+                    + ");"
+                    + "CREATE TABLE IF NOT EXISTS " + tMinesweeperScores + " ("
+                    + " name varchar(50) DEFAULT 'Anonymous',"
+                    + " mode varchar(10) DEFAULT 'NORMAL',"
+                    + " score int DEFAULT 0,"
+                    + ");"
+                    + "CREATE TABLE IF NOT EXISTS " + tSnakeScores + " ("
+                    + " name varchar(50) DEFAULT 'Anonymous',"
+                    + " mode varchar(10) DEFAULT 'NORMAL',"
+                    + " score int DEFAULT 0,"
+                    + ");";
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
