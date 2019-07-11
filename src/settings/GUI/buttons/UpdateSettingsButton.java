@@ -13,8 +13,8 @@ public interface UpdateSettingsButton {
 
         button.setOnAction(e -> {
             // Update the settings to the current session user
-            user.userSettings.setRememberUser(toggleUser.isSelected());
-            user.userSettings.setRememberPassword(togglePassword.isSelected());
+            user.getUserSettings().setRememberUser(toggleUser.isSelected());
+            user.getUserSettings().setRememberPassword(togglePassword.isSelected());
 
             // Save to current user.dat
             UserManager.saveCurrentUser(user);

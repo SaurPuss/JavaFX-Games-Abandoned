@@ -50,14 +50,14 @@ public class DatabaseManager {
 
     static boolean findUser(String name) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-            Statement statement = connection.createStatement();
             String input = "SELECT CASE WHEN EXISTS ("
                     + " SELECT TOP 1 * FROM " + tUsers
-                    + " WHERE username = '" + name + "')"
+                    + " WHERE username = ?)"
                     + " THEN CAST (1 AS BIT)"
                     + " ELSE CAST (0 AS BIT) END";
-
-            ResultSet rs = statement.executeQuery(input);
+            PreparedStatement statement = connection.prepareStatement(input);
+            statement.setString(1, name);
+            ResultSet rs = statement.executeQuery();
             rs.next();
 
             return rs.getBoolean(1);
@@ -70,9 +70,10 @@ public class DatabaseManager {
     static String getUserPassword(String name) {
         // TODO when the password is hashed, hash input and compare server side
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-            Statement statement = connection.createStatement();
-            String output = "SELECT (password) FROM " + tUsers + " WHERE username = '" + name + "';";
-            ResultSet rs = statement.executeQuery(output);
+            String input = "SELECT (password) FROM " + tUsers + " WHERE username = ?;";
+            PreparedStatement statement = connection.prepareStatement(input);
+            statement.setString(1, name);
+            ResultSet rs = statement.executeQuery();
             rs.next();
 
             return rs.getString(1);
@@ -83,19 +84,24 @@ public class DatabaseManager {
     }
 
     static User saveUser(String name, String password, boolean rememberUser) {
-        try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)){
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             // Insert new user into database
-            Statement statement = connection.createStatement();
             String input = "INSERT INTO " + tUsers + " (username,password)"
-                    + " VALUES ('" + name + "','" + password + "');"
+                    + " VALUES (?,?);"
                     + "INSERT INTO " + tUserScore + " (id) VALUES (LAST_INSERT_ID());"
                     + "INSERT INTO " + tUserSettings + " (id,rememberUser)"
-                    + " VALUES (LAST_INSERT_ID(), '" + rememberUser + "');";
-            statement.executeUpdate(input);
+                    + " VALUES (LAST_INSERT_ID(), ?);";
+            PreparedStatement sIN = connection.prepareStatement(input);
+            sIN.setString(1, name);
+            sIN.setString(2, password);
+            sIN.setString(3, String.valueOf(rememberUser));
+            sIN.executeUpdate(input);
 
             // retrieve user ID
-            String output = "SELECT (id) FROM " + tUsers + " WHERE username = '" + name + "';";
-            ResultSet rs = statement.executeQuery(output);
+            String output = "SELECT (id) FROM " + tUsers + " WHERE username = ?;";
+            PreparedStatement sOUT = connection.prepareStatement(output);
+            sOUT.setString(1, name);
+            ResultSet rs = sOUT.executeQuery();
             rs.next();
 
             return new User(rs.getLong(1), name, password, rememberUser);
@@ -107,13 +113,14 @@ public class DatabaseManager {
 
     static User retrieveUser(String name, String password) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-            Statement statement = connection.createStatement();
-
             // get matching user id assuming name and password are valid
             String getID = "SELECT (id) FROM " + tUsers
-                    + " WHERE username = '" + name + "'"
-                    + " AND password = '" + password + "';";
-            ResultSet rs = statement.executeQuery(getID);
+                    + " WHERE username = ?"
+                    + " AND password = ?;";
+            PreparedStatement sID = connection.prepareStatement(getID);
+            sID.setString(1, name);
+            sID.setString(2, password);
+            ResultSet rs = sID.executeQuery();
             rs.next();
             long id = rs.getLong(1);
 
@@ -123,8 +130,10 @@ public class DatabaseManager {
                     + " ON " + tUserSettings + ".id = " + tUsers + ".id\n"
                     + "INNER JOIN " + tUserScore
                     + " ON " + tUserScore + ".id = " + tUsers + ".id\n"
-                    + "WHERE " + tUsers + ".id = " + id + ";";
-            rs = statement.executeQuery(getData);
+                    + "WHERE " + tUsers + ".id = ?;";
+            PreparedStatement sDATA = connection.prepareStatement(getData);
+            sDATA.setLong(1, id);
+            rs = sDATA.executeQuery();
             rs.next();
 
             // Populate user
@@ -140,7 +149,7 @@ public class DatabaseManager {
                     rs.getInt("HANGMANTOTAL"),
                     rs.getInt("MINESWEEPER"),
                     rs.getInt("MINESWEEPERTOTAL")
-
+                    // insert more on game expansion
             );
             return new User(
                     rs.getLong(1),

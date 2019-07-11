@@ -57,7 +57,7 @@ public class Main extends Application {
             // TODO if current user is not saved in the db reset to default
 
             // Password auto login?
-            if (!AppSettings.user.userSettings.isRememberPassword()) {
+            if (!AppSettings.user.getUserSettings().isRememberPassword()) {
                 System.out.println("MAIN: User Password required.");
                 AppSettings.pane.setCenter(new LoginPane(AppSettings.user));
 
@@ -89,7 +89,7 @@ public class Main extends Application {
         System.out.println("MAIN: Stopping application");
         // TODO Save session user updates to db
 
-        if (!AppSettings.user.userSettings.isRememberUser()) {
+        if (!AppSettings.user.getUserSettings().isRememberUser()) {
             System.out.println("MAIN: Saving default user to currentUser.dat");
             UserManager.saveCurrentUser(new User());
         }
