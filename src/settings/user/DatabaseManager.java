@@ -14,9 +14,9 @@ public class DatabaseManager {
     private static String tUsers = "Users";
     private static String tUserScore = "UserScore";
     private static String tUserSettings = "UserSettings";
+    private static String tScores = "Scores"; // personal high scores tied to ID
 
     // HighScore Tables
-    private static String tScores = "Scores"; // personal high scores tied to ID
     private static String tHangmanScores = "HangmenScores"; // session streak per name & game mode
     private static String tMastermindScores = "MasterMindScores";
     private static String tMinesweeperScores = "MineSweeperScores";
@@ -59,6 +59,14 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Create new user in tables: Users, UserSettings, UserScores, Scores
+     * @param name user name
+     * @param password user password
+     * @param rememberUser user remember
+     * @return User object with relevant data that mirrors what was inserted
+     *              into the database.
+     */
     static User saveUser(String name, String password, boolean rememberUser) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             // Insert new user into database
@@ -66,11 +74,14 @@ public class DatabaseManager {
                     + " VALUES (?,?);"
                     + "INSERT INTO " + tUserScore + " (id) VALUES (LAST_INSERT_ID());"
                     + "INSERT INTO " + tUserSettings + " (id,rememberUser)"
-                    + " VALUES (LAST_INSERT_ID(), ?);";
+                    + " VALUES (LAST_INSERT_ID(),?);"
+                    + "INSERT INTO " + tScores + "(id,name)"
+                    + " VALUES (LAST_INSERT_ID(),?);";
             PreparedStatement sIN = connection.prepareStatement(input);
             sIN.setString(1, name);
             sIN.setString(2, password);
             sIN.setString(3, String.valueOf(rememberUser));
+            sIN.setString(4, name);
             sIN.executeUpdate(input);
 
             // retrieve user ID
@@ -91,8 +102,7 @@ public class DatabaseManager {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             // get matching user id assuming name and password are valid
             String getID = "SELECT (id) FROM " + tUsers
-                    + " WHERE username = ?"
-                    + " AND password = ?;";
+                    + " WHERE username = ? AND password = ?;";
             PreparedStatement sID = connection.prepareStatement(getID);
             sID.setString(1, name);
             sID.setString(2, password);
@@ -103,6 +113,21 @@ public class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
             return 0;
+        }
+    }
+
+    private static String retrieveName(long id) {
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+            String input = "SELECT (name) FROM " + tUsers + " WHERE id = ?;";
+            PreparedStatement statement = connection.prepareStatement(input);
+            statement.setLong(1, id);
+            ResultSet rs = statement.executeQuery();
+            rs.next();
+
+            return rs.getString(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -145,20 +170,94 @@ public class DatabaseManager {
     }
 
     static boolean deleteUser(long id) {
-        // rename user to anonymous in scores table?
-        System.out.println("DB MANAGER: Copied records to anonymous: "
-                + retainUserScores(id));
+        // TODO Maybe make this a toggle option, remove or anonymize your scores? or only remove account?
+        // input id, return username for renaming in scores
+        String name = retrieveName(id);
+        boolean rename = renameUserScores(name);
+        boolean remove = removeUser(id);
 
-        // remove user from the database
-
-
-        return false;
+        // rename user to anonymous in scores table
+        if (!rename) {
+            System.out.println("DB MANAGER: Failed to rename records to anonymous");
+            return false;
+        } else if (!remove) {
+            System.out.println("DB MANAGER: Failed to remove records from database");
+            return false;
+        } else
+            return true;
     }
 
-    private static boolean retainUserScores(long id) {
-        // Make a copy of the scores records to anonymous/unknown
+    private static boolean renameUserScores(String name) {
+        // Return true if no records (false on search) are found
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+            String input = "UPDATE " + tHangmanScores
+                    + " SET name = 'Anonymous'"
+                    + " WHERE name = ?;"
+                    + "UPDATE " + tMastermindScores
+                    + " SET name = 'Anonymous'"
+                    + " WHERE name = ?;"
+                    + "UPDATE " + tMinesweeperScores
+                    + " SET name = 'Anonymous'"
+                    + " WHERE name = ?;"
+                    + "UPDATE " + tSnakeScores
+                    + " SET name = 'Anonymous'"
+                    + " WHERE name = ?;";
 
-        return false;
+            PreparedStatement sDEL = connection.prepareStatement(input);
+            sDEL.setString(1, name); // TODO Can I turn this into a single statement?
+            sDEL.setString(1, name);
+            sDEL.setString(1, name);
+            sDEL.setString(1, name);
+            ResultSet rs = sDEL.executeQuery();
+            rs.next();
+
+            // Check with scores tables
+            String[] tables = {tHangmanScores, tMastermindScores,
+                    tMinesweeperScores, tSnakeScores};
+            for (String s : tables) {
+                String output = "SELECT CASE WHEN EXISTS ("
+                        + " SELECT TOP 1 * FROM " + s
+                        + " WHERE username = ?)"
+                        + " THEN CAST (1 AS BIT)"
+                        + " ELSE CAST (0 AS BIT) END";
+                PreparedStatement sCHECK = connection.prepareStatement(output);
+                sCHECK.setString(1, name);
+                rs = sCHECK.executeQuery();
+                rs.next();
+
+                // Break loop if anything returns true
+                if (rs.getBoolean(1)) {
+                    // flip bool if something is found return false
+                    return !rs.getBoolean(1);
+                }
+            }
+
+            // flip the bool
+            return !rs.getBoolean(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private static boolean removeUser(long id) {
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+            String delete = "DELETE FROM ("
+                    + " SELECT * FROM " + tUsers
+                    + " WHERE id = ?)"
+                    + " THEN CAST (1 AS BIT)"
+                    + " ELSE CAST (0 AS BIT) END";
+            PreparedStatement statement = connection.prepareStatement(delete);
+            statement.setLong(1, id);
+            ResultSet rs = statement.executeQuery();
+            rs.next();
+
+            return rs.getBoolean(1);
+            // return sql on removal boolean
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     static boolean updateUserSettings(long id, UserSettings userSettings) {
@@ -166,7 +265,7 @@ public class DatabaseManager {
         return false;
     }
 
-    static boolean updateUserScore(String game, long id, int score) {
+    static boolean updateUserScore(long id, String game, String mode, int score) {
         // switch statement
 
 
@@ -202,8 +301,8 @@ public class DatabaseManager {
                     + " FOREIGN KEY (id) REFERENCES " + tUsers + "(id) ON DELETE CASCADE,"
                     + ");"
                     + "CREATE TABLE IF NOT EXISTS " + tScores + " ("
-                    + " id int PRIMARY KEY NOT NULL,"
-                    + " name varchar(50) DEFAULT 'Anonymous',"
+                    + " id int PRIMARY KEY NOT NULL," // Both Primary and Foreign Key
+                    + " name varchar(50) DEFAULT 'Anonymous'," // TODO maybe get rid of this
                     + " hangmanEASY int DEFAULT 0,"
                     + " hangmanNORMAL int DEFAULT 0,"
                     + " hangmanHARD int DEFAULT 0,"
@@ -216,25 +315,27 @@ public class DatabaseManager {
                     + " snakeEASY int DEFAULT 0,"
                     + " snakeNORMAL int DEFAULT 0,"
                     + " snakeHARD int DEFAULT 0,"
+                    + " PRIMARY KEY (id),"
+                    + " FOREIGN KEY (id) REFERENCES " + tUsers + "(id) ON DELETE CASCADE,"
                     + ");"
                     + "CREATE TABLE IF NOT EXISTS " + tHangmanScores + " ("
                     + " name varchar(50) DEFAULT 'Anonymous',"
-                    + " mode varchar(10) DEFAULT 'NORMAL',"
+                    + " mode varchar(10) DEFAULT 'Normal',"
                     + " score int DEFAULT 0,"
                     + ");"
                     + "CREATE TABLE IF NOT EXISTS " + tMastermindScores + " ("
                     + " name varchar(50) DEFAULT 'Anonymous',"
-                    + " mode varchar(10) DEFAULT 'NORMAL',"
+                    + " mode varchar(10) DEFAULT 'Normal',"
                     + " score int DEFAULT 0,"
                     + ");"
                     + "CREATE TABLE IF NOT EXISTS " + tMinesweeperScores + " ("
                     + " name varchar(50) DEFAULT 'Anonymous',"
-                    + " mode varchar(10) DEFAULT 'NORMAL',"
+                    + " mode varchar(10) DEFAULT 'Normal',"
                     + " score int DEFAULT 0,"
                     + ");"
                     + "CREATE TABLE IF NOT EXISTS " + tSnakeScores + " ("
                     + " name varchar(50) DEFAULT 'Anonymous',"
-                    + " mode varchar(10) DEFAULT 'NORMAL',"
+                    + " mode varchar(10) DEFAULT 'Normal',"
                     + " score int DEFAULT 0,"
                     + ");";
             statement.executeUpdate(sql);

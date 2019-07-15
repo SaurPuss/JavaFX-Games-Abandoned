@@ -1,6 +1,9 @@
 package settings.user.user;
 
+import settings.user.settings.GameDifficulty;
+
 import java.io.*;
+import java.util.HashMap;
 
 import static settings.AppSettings.*;
 
@@ -13,15 +16,25 @@ public class UserScore implements Serializable {
     /* Object Data Fields */
     private int total;
     private int streak;
+    private String streakGame;
+    private GameDifficulty streakDifficulty;
+    private int[] hangman , mastermind, minesweeper, snake;
 
     /* Constructors */
     /**
      * Default Constructor
      */
     public UserScore() {
-        // Cumulative Scores
-        total = 0; // lifetime scores
-        streak = 0; // this is what is copied to the game score tables on save
+        total = 0; // cumulative score across all games and difficulties
+        streak = 0; // current streak save, reset to 0 on game switch or lose
+        streakGame = ""; // indicator which game the streak belongs to
+        streakDifficulty = GameDifficulty.fromString("Normal"); // indicator for current game difficulty
+
+        // Individual high scores for each game (difficulty) {EASY, NORMAL, HARD}
+        hangman = new int[] {0, 0, 0};
+        mastermind = new int[] {0, 0, 0};
+        minesweeper = new int[] {0, 0, 0};
+        snake = new int[] {0, 0, 0};
     }
 
     /**
