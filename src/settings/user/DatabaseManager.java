@@ -1,5 +1,6 @@
 package settings.user;
 
+import settings.user.settings.GameDifficulty;
 import settings.user.user.*;
 
 import java.sql.*;
@@ -12,9 +13,8 @@ public class DatabaseManager {
 
     // User Tables
     private static String tUsers = "Users";
-    private static String tUserScore = "UserScore";
     private static String tUserSettings = "UserSettings";
-    private static String tScores = "Scores"; // personal high scores tied to ID
+    private static String tUserScore = "UserScore";
 
     // HighScore Tables
     private static String tHangmanScores = "HangmenScores"; // session streak per name & game mode
@@ -28,7 +28,7 @@ public class DatabaseManager {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             String input = "SELECT CASE WHEN EXISTS ("
                     + " SELECT TOP 1 * FROM " + tUsers
-                    + " WHERE username = ?)"
+                    + " WHERE name = ?)"
                     + " THEN CAST (1 AS BIT)"
                     + " ELSE CAST (0 AS BIT) END";
             PreparedStatement statement = connection.prepareStatement(input);
@@ -46,7 +46,7 @@ public class DatabaseManager {
     static String getUserPassword(String name) {
         // TODO when the password is hashed, hash input and compare server side
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-            String input = "SELECT (password) FROM " + tUsers + " WHERE username = ?;";
+            String input = "SELECT (password) FROM " + tUsers + " WHERE name = ?;";
             PreparedStatement statement = connection.prepareStatement(input);
             statement.setString(1, name);
             ResultSet rs = statement.executeQuery();
@@ -70,22 +70,19 @@ public class DatabaseManager {
     static User saveUser(String name, String password, boolean rememberUser) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             // Insert new user into database
-            String input = "INSERT INTO " + tUsers + " (username,password)"
+            String input = "INSERT INTO " + tUsers + " (name,password)"
                     + " VALUES (?,?);"
-                    + "INSERT INTO " + tUserScore + " (id) VALUES (LAST_INSERT_ID());"
-                    + "INSERT INTO " + tUserSettings + " (id,rememberUser)"
+                    + "INSERT INTO " + tUserSettings + " (id,remember_User)"
                     + " VALUES (LAST_INSERT_ID(),?);"
-                    + "INSERT INTO " + tScores + "(id,name)"
-                    + " VALUES (LAST_INSERT_ID(),?);";
+                    + "INSERT INTO " + tUserScore + " (id) VALUES (LAST_INSERT_ID());";
             PreparedStatement sIN = connection.prepareStatement(input);
             sIN.setString(1, name);
             sIN.setString(2, password);
             sIN.setString(3, String.valueOf(rememberUser));
-            sIN.setString(4, name);
             sIN.executeUpdate(input);
 
             // retrieve user ID
-            String output = "SELECT (id) FROM " + tUsers + " WHERE username = ?;";
+            String output = "SELECT (id) FROM " + tUsers + " WHERE name = ?;";
             PreparedStatement sOUT = connection.prepareStatement(output);
             sOUT.setString(1, name);
             ResultSet rs = sOUT.executeQuery();
@@ -102,7 +99,7 @@ public class DatabaseManager {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             // get matching user id assuming name and password are valid
             String getID = "SELECT (id) FROM " + tUsers
-                    + " WHERE username = ? AND password = ?;";
+                    + " WHERE name = ? AND password = ?;";
             PreparedStatement sID = connection.prepareStatement(getID);
             sID.setString(1, name);
             sID.setString(2, password);
@@ -149,17 +146,31 @@ public class DatabaseManager {
 
             // Populate User
             UserSettings userSettings = new UserSettings(
-                    rs.getBoolean("REMEMBERUSER"),
-                    rs.getBoolean("REMEMBERPASSWORD"),
-                    rs.getString("GAMEDIFFICULTY")
+                    rs.getBoolean("REMEMBER_USER"),
+                    rs.getBoolean("REMEMBER_PASSWORD"),
+                    rs.getString("GAME_DIFFICULTY")
             );
             UserScore userScore = new UserScore(
                     rs.getInt("TOTAL"),
-                    rs.getInt("STREAK")
+                    rs.getInt("STREAK"),
+                    rs.getString("STREAK_GAME"),
+                    GameDifficulty.fromString(rs.getString("STREAK_DIFFICULTY")),
+                    new int[] {rs.getInt("HANGMAN_EASY"),
+                            rs.getInt("HANGMAN_NORMAL"),
+                            rs.getInt("HANGMAN_HARD")},
+                    new int[] {rs.getInt("MASTERMIND_EASY"),
+                            rs.getInt("MASTERMIND_NORMAL"),
+                            rs.getInt("MASTERMIND_HARD")},
+                    new int[] {rs.getInt("MINESWEEPER_EASY"),
+                            rs.getInt("MINESWEEPER_NORMAL"),
+                            rs.getInt("MINESWEEPER_HARD")},
+                    new int[] {rs.getInt("SNAKE_EASY"),
+                            rs.getInt("SNAKE_NORMAL"),
+                            rs.getInt("SNAKE_HARD")}
             );
             return new User(
                     rs.getLong(1),
-                    rs.getString("USERNAME"),
+                    rs.getString("NAME"),
                     rs.getString("PASSWORD"),
                     userSettings,
                     userScore);
@@ -217,7 +228,7 @@ public class DatabaseManager {
             for (String s : tables) {
                 String output = "SELECT CASE WHEN EXISTS ("
                         + " SELECT TOP 1 * FROM " + s
-                        + " WHERE username = ?)"
+                        + " WHERE name = ?)"
                         + " THEN CAST (1 AS BIT)"
                         + " ELSE CAST (0 AS BIT) END";
                 PreparedStatement sCHECK = connection.prepareStatement(output);
@@ -262,10 +273,11 @@ public class DatabaseManager {
 
     static boolean updateUserSettings(long id, UserSettings userSettings) {
 
+
         return false;
     }
 
-    static boolean updateUserScore(long id, String game, String mode, int score) {
+    static boolean updateUserScore(long id, UserScore userScore) {
         // switch statement
 
 
@@ -282,39 +294,35 @@ public class DatabaseManager {
             // TODO Add scores columns to UserScore in the Game
             String sql = "CREATE TABLE IF NOT EXISTS " + tUsers + " ("
                     + " id int AUTO_INCREMENT PRIMARY KEY,"
-                    + "	username varchar(50) UNIQUE NOT NULL,"
+                    + "	name varchar(50) UNIQUE NOT NULL,"
                     + "	password varchar(50) NOT NULL"
                     + ");"
                     + "CREATE TABLE IF NOT EXISTS " + tUserScore + " ("
                     + " id int NOT NULL," // Both Primary and Foreign Key
                     + " total int DEFAULT 0," // All time across games
                     + " streak int DEFAULT 0," // Reset to 0 after a loss or end game
+                    + " streak_Game varchar(50) DEFAULT 'hangman'"
+                    + " streak_Difficulty varchar(10) DEFAULT 'Normal'"
+                    + " hangman_EASY int DEFAULT 0,"
+                    + " hangman_NORMAL int DEFAULT 0,"
+                    + " hangman_HARD int DEFAULT 0,"
+                    + " mastermind_EASY int DEFAULT 0,"
+                    + " mastermind_NORMAL int DEFAULT 0,"
+                    + " mastermind_HARD int DEFAULT 0,"
+                    + " minesweeper_EASY int DEFAULT 0,"
+                    + " minesweeper_NORMAL int DEFAULT 0,"
+                    + " minesweeper_HARD int DEFAULT 0,"
+                    + " snake_EASY int DEFAULT 0,"
+                    + " snake_NORMAL int DEFAULT 0,"
+                    + " snake_HARD int DEFAULT 0,"
                     + " PRIMARY KEY (id),"
                     + " FOREIGN KEY (id) REFERENCES " + tUsers + "(id) ON DELETE CASCADE,"
                     + ");"
                     + "CREATE TABLE IF NOT EXISTS " + tUserSettings + " ("
                     + " id int NOT NULL," // Both Primary and Foreign Key
-                    + " rememberUser bit DEFAULT 'false',"
-                    + " rememberPassword bit DEFAULT 'false',"
-                    + " gameDifficulty varchar(16) DEFAULT 'Normal',"
-                    + " PRIMARY KEY (id),"
-                    + " FOREIGN KEY (id) REFERENCES " + tUsers + "(id) ON DELETE CASCADE,"
-                    + ");"
-                    + "CREATE TABLE IF NOT EXISTS " + tScores + " ("
-                    + " id int PRIMARY KEY NOT NULL," // Both Primary and Foreign Key
-                    + " name varchar(50) DEFAULT 'Anonymous'," // TODO maybe get rid of this
-                    + " hangmanEASY int DEFAULT 0,"
-                    + " hangmanNORMAL int DEFAULT 0,"
-                    + " hangmanHARD int DEFAULT 0,"
-                    + " mastermindEASY int DEFAULT 0,"
-                    + " mastermindNORMAL int DEFAULT 0,"
-                    + " mastermindHARD int DEFAULT 0,"
-                    + " minesweeperEASY int DEFAULT 0,"
-                    + " minesweeperNORMAL int DEFAULT 0,"
-                    + " minesweeperHARD int DEFAULT 0,"
-                    + " snakeEASY int DEFAULT 0,"
-                    + " snakeNORMAL int DEFAULT 0,"
-                    + " snakeHARD int DEFAULT 0,"
+                    + " remember_User bit DEFAULT 'false',"
+                    + " remember_Password bit DEFAULT 'false',"
+                    + " game_Difficulty varchar(16) DEFAULT 'Normal',"
                     + " PRIMARY KEY (id),"
                     + " FOREIGN KEY (id) REFERENCES " + tUsers + "(id) ON DELETE CASCADE,"
                     + ");"
