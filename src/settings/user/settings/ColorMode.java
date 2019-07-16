@@ -18,6 +18,6 @@ public enum ColorMode {
                 return b;
             }
         }
-        return null;
+        return LIGHT;
     }
 }

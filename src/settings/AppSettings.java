@@ -37,7 +37,7 @@ public class AppSettings {
                 System.out.println("SESSION: Creating new currentUser.dat");
                 UserManager.saveCurrentUser(new User());
             }
-            if (!allUsersFile.exists())
+            if (!allUsersFile.exists() || allUsersFile.length() == 0)
                 DatabaseManager.makeDatabase();
         } catch (IOException e) {
             e.printStackTrace();

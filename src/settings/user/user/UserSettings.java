@@ -49,6 +49,14 @@ public class UserSettings implements Serializable {
     public void setGameDifficulty(GameDifficulty gameDifficulty) { this.gameDifficulty = gameDifficulty; }
     public void setGameDifficulty(String gameDifficulty) { this.gameDifficulty = GameDifficulty.fromString(gameDifficulty);}
 
+    @Override
+    public String toString() {
+        return    "Remember User: " + this.rememberUser
+                + "\nRemember Password: " + this.rememberPassword
+                + "\nColor Mode: " + this.colorMode.toString()
+                + "\nGame Difficulty: " + this.gameDifficulty.toString();
+    }
+
     /**
      * Implement Serializable Interface methods
      */

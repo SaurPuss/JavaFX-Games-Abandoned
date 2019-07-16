@@ -130,16 +130,10 @@ public class User implements Serializable {
      */
     @Override
     public String toString() {
-        return  "Name: " + this.name +
-                "\nTotal Score: " + this.userScore.getTotal() +
-                "\nCurrent Streak: " + this.userScore.getStreak() +
-                "\nHangman Score Streak: " + this.userScore.getHangman() +
-                "\nHangman Score Total: " + this.userScore.getHangmanTotal() +
-                "\nMineSweeper Score Streak: " + this.userScore.getMinesweeper() +
-                "\nMineSweeper Score Total: " + this.userScore.getHangmanTotal() +
-                "\nRemember User: " + this.userSettings.isRememberUser() +
-                "\nRemember Password: " + this.userSettings.isRememberPassword() +
-                "\nGame Difficulty: " + this.userSettings.getGameDifficulty();
+        return    "ID: " + this.id
+                + "Name: " + this.name
+                + this.userSettings.toString()
+                + this.userScore.toString();
     }
 
     /**

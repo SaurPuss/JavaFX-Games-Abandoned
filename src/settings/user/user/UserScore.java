@@ -1,6 +1,5 @@
 package settings.user.user;
 
-import org.apache.commons.lang3.ObjectUtils;
 import settings.user.settings.GameDifficulty;
 
 import java.io.*;
@@ -18,7 +17,7 @@ public class UserScore implements Serializable {
     private int streak;
     private String streakGame;
     private GameDifficulty streakDifficulty;
-    private int[] hangman , mastermind, minesweeper, snake;
+    private int[] hangman, mastermind, minesweeper, snake;
 
     /* Constructors */
     /**
@@ -38,14 +37,15 @@ public class UserScore implements Serializable {
     }
 
     /**
-     *
-     * @param total
-     * @param streak
-     * @param streakDifficulty
-     * @param hangman
-     * @param mastermind
-     * @param minesweeper
-     * @param snake
+     * Constructor for use by the Database Manager I guess.
+     * @param total int
+     * @param streak int
+     * @param streakGame string
+     * @param streakDifficulty game difficulty
+     * @param hangman int[3] easy, normal, hard
+     * @param mastermind int[3] easy, normal, hard
+     * @param minesweeper int[3] easy, normal, hard
+     * @param snake int[3] easy, normal, hard
      */
     public UserScore(int total, int streak, String streakGame, GameDifficulty streakDifficulty,
                      int[] hangman, int[] mastermind, int[] minesweeper, int[] snake) {
@@ -83,12 +83,24 @@ public class UserScore implements Serializable {
      */
     public void breakStreak() {
         // TODO figure this out
+        System.out.println("USER SCORE: Streak broken, reset to 0");
+        this.streak = 0;
+    }
+
+    public void updateScore(String game, String difficulty, int score) {
+        switch(difficulty.toLowerCase()) {
+            case "easy"     :
+            case "normal"   :
+            case "hard"     : updateScore(game,
+                    GameDifficulty.fromString(difficulty), score); break;
+            default : updateScore(game, this.streakDifficulty, score);
+        }
     }
 
     private void updateScore(String game, GameDifficulty gameDifficulty, int score) {
-        int difficulty = 0; // default = GameDifficulty.EASY
+        int difficulty = 1; // default = GameDifficulty.NORMAL
         switch (gameDifficulty) {
-            case NORMAL : difficulty = 1; break;
+            case EASY : difficulty = 0; break;
             case HARD   : difficulty = 2;
         }
 
@@ -102,14 +114,16 @@ public class UserScore implements Serializable {
         // TODO update in database from here?
     }
 
-    public void updateScore(String game, String difficulty, int score) {
-        switch(difficulty.toLowerCase()) {
-            case "easy"     :
-            case "normal"   :
-            case "hard"     : updateScore(game,
-                    GameDifficulty.fromString(difficulty), score); break;
-            default : updateScore(game, this.streakDifficulty, score);
-        }
+    @Override
+    public String toString() {
+        return    "Total Score: " + this.total
+                + "\nCurrent Streak: " + this.streak
+                + "\nStreak Game: " + this.streakGame
+                + "\nStreak Difficulty: " + this.streakDifficulty.toString()
+                + "\nHangman: " + hangman[0] + " | " + hangman[1] + " | " + hangman[2]
+                + "\nMasterMind: " + mastermind[0] + " | " + mastermind[1] + " | " + mastermind[2]
+                + "\nMineSweeper: " + minesweeper[0] + " | " + minesweeper[1] + " | " + minesweeper[2]
+                + "\nSnake: " + snake[0] + " | " + snake[1] + " | " + snake[2];
     }
 
     /**

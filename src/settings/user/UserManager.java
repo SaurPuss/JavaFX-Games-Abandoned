@@ -3,6 +3,7 @@ package settings.user;
 import settings.AppSettings;
 import settings.user.user.User;
 
+import javax.xml.crypto.Data;
 import java.io.*;
 
 // TODO password hashing and encryption
@@ -47,8 +48,13 @@ public class UserManager implements Serializable {
             saveCurrentUser(user);
             return user;
         } else {
-            return null;
+            System.out.println("USER MANAGER: Can't save as new user, trying to retrieve user instead");
+            return retrieveUser(name, password);
         }
+    }
+
+    public static boolean updateUser(User user) {
+        return DatabaseManager.updateUser(user);
     }
 
     /**

@@ -12,12 +12,13 @@ public enum GameDifficulty {
     @Override
     public String toString() { return this.name; }
 
-    public static GameDifficulty fromString(String value) {
+    public static GameDifficulty fromString(String difficulty) {
         for (GameDifficulty b : GameDifficulty.values()) {
-            if (b.name.equalsIgnoreCase(value)) {
+            if (b.name.equalsIgnoreCase(difficulty)) {
                 return b;
             }
         }
-        return null;
+
+        return NORMAL;
     }
 }
