@@ -4,16 +4,14 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.geometry.*;
 import javafx.scene.text.*;
-import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
-import settings.GUI.buttons.LoginButton;
-import settings.GUI.buttons.SignUpButton;
+import settings.GUI.buttons.*;
 import settings.user.user.User;
 
 import static org.controlsfx.control.textfield.TextFields.*;
 import static settings.AppSettings.*;
 
-public class LoginPane extends VBox implements LoginButton, SignUpButton {
+public class LoginPane extends VBox implements LoginButton, SignUpButton, ContinueAnonymousButton {
     private static Text welcome;
     private static Text errUser = new Text("");
     private static Text errPassword = new Text("");
@@ -28,7 +26,6 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
     private static HBox buttons = new HBox(0);
 
     static { // Set this up for all LoginPane() objects
-
         fields.add(tUserName, 0, 0, 2, 1);
         fields.add(tfUserName, 2, 0, 2, 1);
         fields.add(tUserPassword, 0, 2, 2, 1);
@@ -46,7 +43,6 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
      * Default constructor for login/signup form
      */
     public LoginPane() {
-        printSessionUser();
         welcome = new Text("Welcome " + user.getName());
         getChildren().add(welcome);
         if (User.isDefaultUser()) {
@@ -55,17 +51,13 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
             chooseAction.setTextAlignment(TextAlignment.CENTER);
             // TODO add continue as default button
         }
-
         welcome.setFont(Font.font(18));
         cbRememberUser.setSelected(user.getUserSettings().isRememberUser());
-
-        buttons.getChildren().addAll(login(), signUp());
-
         setSpacing(5);
         setAlignment(Pos.CENTER);
-        getChildren().addAll(fields, buttons);
 
-//        textFieldLogin();
+        buttons.getChildren().addAll(login(), signUp());
+        getChildren().addAll(fields, buttons, continueAnonymous());
     }
 
     /**
@@ -77,14 +69,10 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
         welcome.setFont(Font.font(18));
         cbRememberUser.setSelected(user.getUserSettings().isRememberUser());
         tfUserName.setText(user.getName());
-
         buttons.getChildren().addAll(login(), signUp());
-
         setSpacing(5);
         setAlignment(Pos.CENTER);
         getChildren().addAll(welcome, fields, buttons);
-
-//        textFieldLogin();
     }
 
     /**
@@ -92,9 +80,7 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
      * @param err string for switch case
      */
     public static void loginError(String err) {
-        // Clear error messages from GridPane in case of multiple invocations
         fields.getChildren().removeAll(errUser, errPassword);
-
         errUser.setFill(Color.RED);
         errUser.setFont(Font.font(10));
         errPassword.setFill(Color.RED);
@@ -137,18 +123,5 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton {
             default: fields.add(errPassword, 0, 3, 3, 1);
                 errPassword.setText("* Username or Password can't be found.");
         }
-    }
-
-    /**
-     * Helper method that will try to log in a user that hits enter while
-     * in the password TextField.
-     */
-    private void textFieldLogin() {
-        tfUserPassword.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER)
-                loginAction(LoginPane.tfUserName.getText(),
-                        LoginPane.tfUserPassword.getText(),
-                        LoginPane.cbRememberUser.isSelected());
-        });
     }
 }

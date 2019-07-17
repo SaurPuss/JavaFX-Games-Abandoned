@@ -24,16 +24,16 @@ public class UserScore implements Serializable {
      * Default Constructor
      */
     public UserScore() {
-        total = 0; // cumulative score across all games and difficulties
-        streak = 0; // current streak save, reset to 0 on game switch or lose
-        streakGame = ""; // indicator which game the streak belongs to
-        streakDifficulty = GameDifficulty.NORMAL; // indicator for current game difficulty
+        total               = 0; // cumulative score across all games and difficulties
+        streak              = 0; // current streak save, reset to 0 on game switch or lose
+        streakGame          = ""; // indicator which game the streak belongs to
+        streakDifficulty    = GameDifficulty.NORMAL; // indicator for current game difficulty
 
         // Individual high scores for each game (difficulty) {EASY, NORMAL, HARD}
-        hangman = new int[] {0, 0, 0};
-        mastermind = new int[] {0, 0, 0};
+        hangman     = new int[] {0, 0, 0};
+        mastermind  = new int[] {0, 0, 0};
         minesweeper = new int[] {0, 0, 0};
-        snake = new int[] {0, 0, 0};
+        snake       = new int[] {0, 0, 0};
     }
 
     /**
@@ -47,16 +47,17 @@ public class UserScore implements Serializable {
      * @param minesweeper int[3] easy, normal, hard
      * @param snake int[3] easy, normal, hard
      */
-    public UserScore(int total, int streak, String streakGame, GameDifficulty streakDifficulty,
-                     int[] hangman, int[] mastermind, int[] minesweeper, int[] snake) {
-        this.total = total;
-        this.streak = streak;
-        this.streakGame = streakGame;
-        this.streakDifficulty = streakDifficulty;
-        this.hangman = hangman;
-        this.mastermind = mastermind;
-        this.minesweeper = minesweeper;
-        this.snake = snake;
+    public UserScore(int total, int streak, String streakGame,
+                     GameDifficulty streakDifficulty, int[] hangman,
+                     int[] mastermind, int[] minesweeper, int[] snake) {
+        this.total              = total;
+        this.streak             = streak;
+        this.streakGame         = streakGame;
+        this.streakDifficulty   = streakDifficulty;
+        this.hangman            = hangman;
+        this.mastermind         = mastermind;
+        this.minesweeper        = minesweeper;
+        this.snake              = snake;
     }
 
     /* Getters and Setters */
@@ -92,15 +93,16 @@ public class UserScore implements Serializable {
             case "easy"     :
             case "normal"   :
             case "hard"     : updateScore(game,
-                    GameDifficulty.fromString(difficulty), score); break;
-            default : updateScore(game, this.streakDifficulty, score);
+                    GameDifficulty.fromString(difficulty),
+                    score); break;
+            default         : updateScore(game, this.streakDifficulty, score);
         }
     }
 
     private void updateScore(String game, GameDifficulty gameDifficulty, int score) {
         int difficulty = 1; // default = GameDifficulty.NORMAL
         switch (gameDifficulty) {
-            case EASY : difficulty = 0; break;
+            case EASY   : difficulty = 0; break;
             case HARD   : difficulty = 2;
         }
 

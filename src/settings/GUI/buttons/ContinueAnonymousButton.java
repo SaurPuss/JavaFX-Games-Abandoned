@@ -1,6 +1,9 @@
 package settings.GUI.buttons;
 
 import javafx.scene.control.Button;
+import settings.GUI.panes.*;
+
+import static settings.AppSettings.pane;
 
 public interface ContinueAnonymousButton {
 
@@ -10,21 +13,13 @@ public interface ContinueAnonymousButton {
      * @return Button to skip the login/signup parts
      */
     default Button continueAnonymous() {
-        // Set session user to this rando from currentUser.dat
+        Button btnContinue = new Button("Remain Anonymous");
 
-        // Set currentUser.dat to random
+        btnContinue.setOnAction(e -> {
+            pane.setTop(new TopBarPane());
+            pane.setCenter(new GameSelectionPane());
+        });
 
-
-
-        // Go to game selection screen
-
-
-        // TODO add real functionality here
-        // Add Save User to Settings Pane
-
-        // Ask for save on window.close or whatever that is called
-
-
-        return new Button();
+        return btnContinue;
     }
 }

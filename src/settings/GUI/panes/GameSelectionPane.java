@@ -26,6 +26,7 @@ public class GameSelectionPane extends VBox implements GameSelectionButton {
         dropdown.getSelectionModel().selectFirst();
 
         Text intro = new Text("This is where stuff goes to choose a game");
+        // TODO BIG ICONS FOR GAME SELECTION OuO
 
         box.getChildren().addAll(dropdown, gameSelectionButton());
 
@@ -34,7 +35,6 @@ public class GameSelectionPane extends VBox implements GameSelectionButton {
 
         // Fallback to make sure there is no bottom bar in case I forgot
         if (AppSettings.pane.getBottom() != null) {
-            System.out.println("GAME SELECTION PANE: Yo moron, you forgot to disable to bottom bar");
             AppSettings.pane.setBottom(null);
         }
     }

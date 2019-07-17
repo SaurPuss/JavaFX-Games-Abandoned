@@ -4,6 +4,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import settings.AppSettings;
+import settings.GUI.panes.GameSelectionPane;
 
 public interface GamePaneButton {
 
@@ -12,9 +13,10 @@ public interface GamePaneButton {
         button.setGraphic(new ImageView(new Image("assets/icons/icons-game-controller_24.png")));
 
         button.setOnAction(e -> {
-            // TODO Make it so that it goes to the game selection pane if game is current pane
-            // Maybe not since we can have an abandon game button at the bottom
-            AppSettings.pane.setCenter(AppSettings.game);
+            if (AppSettings.activeGame) {
+                AppSettings.pane.setCenter(AppSettings.game);
+            } else
+                AppSettings.pane.setCenter(new GameSelectionPane());
         });
 
         return button;

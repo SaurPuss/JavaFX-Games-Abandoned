@@ -17,25 +17,25 @@ public class UserSettings implements Serializable {
     private GameDifficulty gameDifficulty;
 
     /* Constructors */
-    public UserSettings() {
-        rememberPassword = false;
-        rememberUser = false;
-        colorMode = ColorMode.LIGHT;
-        gameDifficulty = GameDifficulty.NORMAL;
+    UserSettings() {
+        rememberPassword    = false;
+        rememberUser        = false;
+        colorMode           = ColorMode.LIGHT;
+        gameDifficulty      = GameDifficulty.NORMAL;
     }
 
     // TODO I can probably kill this one and use setRememberUser() instead
-    public UserSettings(boolean rememberUser) {
-        rememberPassword = false;
-        this.rememberUser = rememberUser;
-        colorMode = ColorMode.LIGHT;
-        gameDifficulty = GameDifficulty.NORMAL;
+    UserSettings(boolean rememberUser) {
+        rememberPassword    = false;
+        this.rememberUser   = rememberUser;
+        colorMode           = ColorMode.LIGHT;
+        gameDifficulty      = GameDifficulty.NORMAL;
     }
 
-    public UserSettings(boolean rememberUser, boolean rememberPassword, String gamedifficulty) {
-        this.rememberUser = rememberUser;
-        this.rememberPassword = rememberPassword;
-        this.gameDifficulty = GameDifficulty.fromString(gamedifficulty);
+    public UserSettings(boolean rememberUser, boolean rememberPassword, String gameDifficulty) {
+        this.rememberUser       = rememberUser;
+        this.rememberPassword   = rememberPassword;
+        this.gameDifficulty     = GameDifficulty.fromString(gameDifficulty);
     }
 
     /* Getters and Setters */

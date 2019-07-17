@@ -13,6 +13,7 @@ public interface GameAbandonButton {
             AppSettings.pane.setCenter(new GameSelectionPane());
             System.out.println("ABANDON GAME BUTTON: Please add score integration, possibly in override");
             AppSettings.pane.setBottom(null);
+            AppSettings.activeGame = false;
         });
 
         return button;

@@ -3,21 +3,25 @@ package game.hangman;
 import game.GUI.panes.BottomBarPane;
 import game.Game;
 import game.hangman.GUI.*;
+import game.hangman.logic.GameSession;
 import game.hangman.logic.GameWord;
 import javafx.geometry.*;
 import javafx.scene.layout.VBox;
-import settings.AppSettings;
+import settings.user.settings.GameDifficulty;
+
+import static settings.AppSettings.*;
 
 public class Hangman extends Game {
-    private static GameWord gameWord;
+    private static GameDifficulty difficulty;
 
     public Hangman() {
         // A new game is active
-        AppSettings.activeGame = true;
-        System.out.println("STARTING HANGMAN");
+        activeGame = true;
+        difficulty = user.getUserSettings().getGameDifficulty();
+        System.out.println("HANGMAN: Starting new Game!");
 
         // init new game
-        gameWord = new GameWord();
+        GameSession.gameWord = new GameWord();
         GameDiagram hangmanView = new GameDiagram();
         GameFields hangmanFields = new GameFields();
 
@@ -29,7 +33,7 @@ public class Hangman extends Game {
         getChildren().add(view);
 
         // Create a bottom Pane for session
-        AppSettings.pane.setBottom(new BottomBarPane());
+        pane.setBottom(new BottomBarPane());
 
         // TODO Implement game score stuff depending on difficulty
         // On win add the full word length to the score before sending it to userScore
@@ -47,7 +51,5 @@ public class Hangman extends Game {
         hangmanFields = new GameFields();
     }*/
 
-    public static GameWord getGameWord() {
-        return gameWord;
-    }
+    public static GameDifficulty getGameDifficulty() { return difficulty;}
 }

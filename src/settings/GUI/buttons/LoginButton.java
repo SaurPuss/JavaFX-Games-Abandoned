@@ -50,6 +50,5 @@ public interface LoginButton {
         } else {
             loginError("UserDoesNotExist");
         }
-
     }
 }

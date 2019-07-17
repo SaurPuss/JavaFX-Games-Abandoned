@@ -20,7 +20,7 @@ public class AppSettings {
     public static Game game;
     public static boolean activeGame;
 
-    public static final long SERIAL_VERSION_UID = 8L;
+    public static final long SERIAL_VERSION_UID = 9L;
     public static final String CURRENT_USER_FILE = "src/assets/userdata/currentUser.dat";
 
     /**

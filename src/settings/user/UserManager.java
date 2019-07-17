@@ -3,7 +3,6 @@ package settings.user;
 import settings.AppSettings;
 import settings.user.user.User;
 
-import javax.xml.crypto.Data;
 import java.io.*;
 
 // TODO password hashing and encryption
@@ -49,7 +48,7 @@ public class UserManager implements Serializable {
             return user;
         } else {
             System.out.println("USER MANAGER: Can't save as new user, trying to retrieve user instead");
-            return retrieveUser(name, password);
+            return DatabaseManager.retrieveUser(name, password);
         }
     }
 
@@ -75,24 +74,6 @@ public class UserManager implements Serializable {
         System.out.println("USER MANAGER: Returning null");
         return null;
     }
-
-    /**
-     * Private method that is called once username and password are verified
-     * to match. This pulls the User from the database.
-     * @param name Verified input to function as a db key
-     * @param password Verified input to double check before retrieving User
-     * @return if match return user, else return default
-     */
-    private static User retrieveUser(String name, String password) {
-        try {
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("USER MANAGER: retrieve user failed to get the bean");
-        return new User();
-    }
-
 
     /**
      * Try to retrieve a user from currentUser.dat, if failed return default.
@@ -127,7 +108,8 @@ public class UserManager implements Serializable {
     public static void saveNewUser(User user) {
         if (!findUserName(user.getName())) {
             System.out.println("USER MANAGER: Invoke saveNewUser(user)");
-            DatabaseManager.saveUser(user.getName(), user.getPassword(), user.getUserSettings().isRememberUser());
+            DatabaseManager.saveUser(user.getName(), user.getPassword(),
+                    user.getUserSettings().isRememberUser());
             AppSettings.user = user;
         }
     }

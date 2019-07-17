@@ -27,9 +27,6 @@ import settings.user.UserManager;
 // TODO make real and functional and most of all useful Javadoc
 // TODO Make user of OpenCSV I guess
 public class Main extends Application {
-    // This is the main Pane
-//    private static Scoreboard scoreboard = new Scoreboard();
-
     /**
      * Start the application with javafx.
      * @param primaryStage default argument
@@ -49,29 +46,19 @@ public class Main extends Application {
 
             AppSettings.pane.setCenter(new LoginPane());
             LoginPane.cbRememberUser.setSelected(false);
-
-
         } // Check if there is a current user that's also saved to the database
         else if (UserManager.matchCurrentUser()) {
             System.out.println("MAIN: User exists.");
-            // TODO if current user is not saved in the db reset to default
 
             // Password auto login?
             if (!AppSettings.user.getUserSettings().isRememberPassword()) {
                 System.out.println("MAIN: User Password required.");
                 AppSettings.pane.setCenter(new LoginPane(AppSettings.user));
-
-
-            } else { // Auto login, update scoreboard and go to game selection screen
-
+            } else {
                 AppSettings.pane.setTop(new TopBarPane());
                 AppSettings.pane.setCenter(new GameSelectionPane());
-
-                // Fill Scores and UserSettings for this user profile
-//                scoreboard.updateUserScoreboard(AppSettings.user);
             }
         } else {
-            // fallback just in case
             System.out.println("MAIN: Starting with a blank slate: new LoginPane()");
             AppSettings.pane.setCenter(new LoginPane());
         }
@@ -84,7 +71,7 @@ public class Main extends Application {
         primaryStage.setResizable(false); // No resize for you!
     }
 
-    @Override
+    /*@Override
     public void stop() {
         System.out.println("MAIN: Stopping application");
         // TODO Save session user updates to db
@@ -95,7 +82,8 @@ public class Main extends Application {
         }
         AppSettings.printSessionUser();
         AppSettings.printSavedUser();
-    }
+    }*/
+
     /**
      * Adding a main, because technically you're supposed to do that
      */

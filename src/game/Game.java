@@ -1,5 +1,6 @@
 package game;
 
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 
 /**
@@ -7,6 +8,7 @@ import javafx.scene.layout.Pane;
  */
 public abstract class Game extends Pane /*implements GameAbandonButton, GameNewButton*/ {
     protected int gameScore;
+    protected Image gameIcon;
 
     // TODO add settings.user.score stuff
     protected Game() { /* AppSettings.activeGame = true; */ }

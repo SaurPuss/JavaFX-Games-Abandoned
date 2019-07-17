@@ -22,7 +22,7 @@ public class DatabaseManager {
 
     static boolean findUser(String name) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-            String input =    "SELECT CASE WHEN EXISTS ("
+            String input    = "SELECT CASE WHEN EXISTS ("
                             + " SELECT TOP 1 * FROM " + tUsers
                             + " WHERE name = ?) "
                             + "THEN CAST (1 AS BIT) "
@@ -70,7 +70,7 @@ public class DatabaseManager {
     static User saveUser(String name, String password, boolean rememberUser) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             // Insert new user into database
-            String input =    "INSERT INTO " + tUsers + " (name,password)"
+            String input    = "INSERT INTO " + tUsers + " (name,password)"
                             + " VALUES (?,?);"
                             + "INSERT INTO " + tUserSettings + " (id,remember_User)"
                             + " VALUES (LAST_INSERT_ID(),?);"
@@ -102,7 +102,7 @@ public class DatabaseManager {
     private static long retrieveID(String name, String password) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             // get matching user id assuming name and password are valid
-            String getID =    "SELECT (id) FROM " + tUsers
+            String getID    = "SELECT (id) FROM " + tUsers
                             + " WHERE name = ? AND password = ?;";
 
             PreparedStatement sID = connection.prepareStatement(getID);
@@ -141,7 +141,7 @@ public class DatabaseManager {
 
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             // retrieve user profile based on ID
-            String getData =  "SELECT * FROM " + tUsers + "\n"
+            String getData  = "SELECT * FROM " + tUsers + "\n"
                             + "INNER JOIN " + tUserSettings
                             + " ON " + tUserSettings + ".id = " + tUsers + ".id\n"
                             + "INNER JOIN " + tUserScore
@@ -213,23 +213,22 @@ public class DatabaseManager {
     private static boolean renameUserScores(String name) {
         // Return true if no records (false on search) are found
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-            String input =    "UPDATE " + tHangmanScores
+            String input    = "DECLARE @OldName varchar(50);"
+                            + "SET @OldName = ?;"
+                            + "UPDATE " + tHangmanScores
                             + " SET name = 'Anonymous'"
-                            + " WHERE name = ?;"
+                            + " WHERE name = @OldName;"
                             + "UPDATE " + tMastermindScores
                             + " SET name = 'Anonymous'"
-                            + " WHERE name = ?;"
+                            + " WHERE name = @OldName;"
                             + "UPDATE " + tMinesweeperScores
                             + " SET name = 'Anonymous'"
-                            + " WHERE name = ?;"
+                            + " WHERE name = @OldName;"
                             + "UPDATE " + tSnakeScores
                             + " SET name = 'Anonymous'"
-                            + " WHERE name = ?;";
+                            + " WHERE name = @OldName;";
 
             PreparedStatement sDEL = connection.prepareStatement(input);
-            sDEL.setString(1, name); // TODO Can I turn this into a single statement?
-            sDEL.setString(1, name);
-            sDEL.setString(1, name);
             sDEL.setString(1, name);
             ResultSet rs = sDEL.executeQuery();
             rs.next();
@@ -238,7 +237,7 @@ public class DatabaseManager {
             String[] tables = {tHangmanScores, tMastermindScores,
                     tMinesweeperScores, tSnakeScores};
             for (String s : tables) {
-                String output =   "SELECT CASE WHEN EXISTS ("
+                String output   = "SELECT CASE WHEN EXISTS ("
                                 + " SELECT TOP 1 * FROM " + s
                                 + " WHERE name = ?) "
                                 + "THEN CAST (1 AS BIT) "
@@ -267,7 +266,7 @@ public class DatabaseManager {
 
     private static boolean removeUser(long id) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-            String delete =   "DELETE FROM ("
+            String delete   = "DELETE FROM ("
                             + " SELECT * FROM " + tUsers
                             + " WHERE id = ?) "
                             + "THEN CAST (1 AS BIT) "
@@ -297,16 +296,10 @@ public class DatabaseManager {
             return false;
         }
 
-        try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-            // This assumes username and password remain the same
-            boolean score = updateUserScore(user.getId(), user.getUserScore());
-            boolean settings = updateUserSettings(user.getId(), user.getUserSettings());
+        boolean score = updateUserScore(user.getId(), user.getUserScore());
+        boolean settings = updateUserSettings(user.getId(), user.getUserSettings());
 
-            return score && settings;
-        } catch (SQLException  e) {
-            e.printStackTrace();
-            return false;
-        }
+        return score && settings;
     }
 
     static boolean updateUserName(long id, String name, String newName) {
@@ -316,7 +309,7 @@ public class DatabaseManager {
                 return false;
             }
 
-            String input =    "UPDATE " + tUsers + " SET name = ?"
+            String input    = "UPDATE " + tUsers + " SET name = ?"
                             + " WHERE id = ? AND name = ?";
             PreparedStatement statement = connection.prepareStatement(input);
             statement.setString(1, newName);
@@ -324,7 +317,7 @@ public class DatabaseManager {
             statement.setString(3, name);
             statement.executeQuery();
 
-            String output =   "SELECT CASE WHEN EXISTS ("
+            String output   = "SELECT CASE WHEN EXISTS ("
                             + " SELECT TOP 1 * FROM " + tUsers
                             + " WHERE name = ? AND id = ?) "
                             + "THEN CAST (1 AS BIT) "
@@ -345,7 +338,7 @@ public class DatabaseManager {
     static boolean updatePassword(long id, String password, String newPassword) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             // TODO the hashing stuff
-            String input =    "UPDATE " + tUsers + " SET password = ?"
+            String input    = "UPDATE " + tUsers + " SET password = ?"
                             + " WHERE id = ? AND password = ?";
             PreparedStatement statement = connection.prepareStatement(input);
             statement.setString(1, newPassword);
@@ -353,7 +346,7 @@ public class DatabaseManager {
             statement.setString(3, password);
             statement.executeQuery();
 
-            String output =   "SELECT CASE WHEN EXISTS ("
+            String output   = "SELECT CASE WHEN EXISTS ("
                             + " SELECT TOP 1 * FROM " + tUsers
                             + " WHERE password = ? AND id = ?) "
                             + "THEN CAST (1 AS BIT) "
@@ -379,7 +372,7 @@ public class DatabaseManager {
      */
     static boolean updateUserSettings(long id, UserSettings userSettings) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-            String input =    "UPDATE " + tUserSettings + " SET"
+            String input    = "UPDATE " + tUserSettings + " SET"
                             + " remember_user = ?, remember_password = ?,"
                             + " color_Mode = ?, game_Difficulty = ? "
                             + "WHERE id = ?";
@@ -389,7 +382,7 @@ public class DatabaseManager {
             statement.setString(3, userSettings.getColorMode().toString());
             statement.setString(4, userSettings.getGameDifficulty().toString());
             statement.setLong(5, id);
-            statement.executeQuery();
+            statement.executeUpdate();
 
             // TODO bool check?
             return true;
@@ -401,7 +394,7 @@ public class DatabaseManager {
 
     static boolean updateUserScore(long id, UserScore userScore) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-            String input =    "UPDATE " + tUserScore + " SET"
+            String input    = "UPDATE " + tUserScore + " SET"
                             + " total = ?, streak = ?, streak_Game = ?, streak_Difficulty = ?,"
                             + " hangman_EASY = ?, hangman_NORMAL = ?, hangman_HARD = ?,"
                             + " mastermind_EASY = ?, mastermind_NORMAL = ?, mastermind_HARD = ?,"
@@ -426,7 +419,7 @@ public class DatabaseManager {
             statement.setInt(15, userScore.getSnake()[1]);
             statement.setInt(16, userScore.getSnake()[2]);
             statement.setLong(17, id);
-            statement.executeQuery();
+            statement.executeUpdate();
 
             // TODO bool check?
             return true;
@@ -439,11 +432,11 @@ public class DatabaseManager {
 
     public static void makeDatabase() {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-            String sql =  "CREATE TABLE IF NOT EXISTS " + tUsers + " ("
+            String sql  = "CREATE TABLE IF NOT EXISTS " + tUsers + " ("
                         + " id int AUTO_INCREMENT PRIMARY KEY,"
                         + "	name varchar(50) UNIQUE NOT NULL,"
                         + "	password varchar(50) NOT NULL"
-                        + ");"
+                        + ");\n"
                         + "CREATE TABLE IF NOT EXISTS " + tUserSettings + " ("
                         + " id int NOT NULL," // Both Primary and Foreign Key
                         + " remember_User bit DEFAULT 'false',"
@@ -451,14 +444,14 @@ public class DatabaseManager {
                         + " color_Mode varchar(16) DEFAULT 'Light',"
                         + " game_Difficulty varchar(16) DEFAULT 'Normal',"
                         + " PRIMARY KEY (id),"
-                        + " FOREIGN KEY (id) REFERENCES " + tUsers + "(id) ON DELETE CASCADE,"
-                        + ");"
+                        + " FOREIGN KEY (id) REFERENCES " + tUsers + "(id) ON DELETE CASCADE"
+                        + ");\n"
                         + "CREATE TABLE IF NOT EXISTS " + tUserScore + " ("
                         + " id int NOT NULL," // Both Primary and Foreign Key
                         + " total int DEFAULT 0," // All time across games
                         + " streak int DEFAULT 0," // Reset to 0 after a loss or end game
-                        + " streak_Game varchar(50) DEFAULT 'hangman'"
-                        + " streak_Difficulty varchar(10) DEFAULT 'Normal'"
+                        + " streak_Game varchar(50) DEFAULT 'hangman',"
+                        + " streak_Difficulty varchar(16) DEFAULT 'Normal',"
                         + " hangman_EASY int DEFAULT 0,"
                         + " hangman_NORMAL int DEFAULT 0,"
                         + " hangman_HARD int DEFAULT 0,"
@@ -472,31 +465,31 @@ public class DatabaseManager {
                         + " snake_NORMAL int DEFAULT 0,"
                         + " snake_HARD int DEFAULT 0,"
                         + " PRIMARY KEY (id),"
-                        + " FOREIGN KEY (id) REFERENCES " + tUsers + "(id) ON DELETE CASCADE,"
-                        + ");"
+                        + " FOREIGN KEY (id) REFERENCES " + tUsers + "(id) ON DELETE CASCADE"
+                        + ");\n"
                         + "CREATE TABLE IF NOT EXISTS " + tHangmanScores + " ("
                         + " name varchar(50) DEFAULT 'Anonymous',"
-                        + " mode varchar(10) DEFAULT 'Normal',"
-                        + " score int DEFAULT 0,"
-                        + ");"
+                        + " mode varchar(16) DEFAULT 'Normal',"
+                        + " score int DEFAULT 0"
+                        + ");\n"
                         + "CREATE TABLE IF NOT EXISTS " + tMastermindScores + " ("
                         + " name varchar(50) DEFAULT 'Anonymous',"
-                        + " mode varchar(10) DEFAULT 'Normal',"
-                        + " score int DEFAULT 0,"
-                        + ");"
+                        + " mode varchar(16) DEFAULT 'Normal',"
+                        + " score int DEFAULT 0"
+                        + ");\n"
                         + "CREATE TABLE IF NOT EXISTS " + tMinesweeperScores + " ("
                         + " name varchar(50) DEFAULT 'Anonymous',"
-                        + " mode varchar(10) DEFAULT 'Normal',"
-                        + " score int DEFAULT 0,"
-                        + ");"
+                        + " mode varchar(16) DEFAULT 'Normal',"
+                        + " score int DEFAULT 0"
+                        + ");\n"
                         + "CREATE TABLE IF NOT EXISTS " + tSnakeScores + " ("
                         + " name varchar(50) DEFAULT 'Anonymous',"
-                        + " mode varchar(10) DEFAULT 'Normal',"
-                        + " score int DEFAULT 0,"
-                        + ");";
+                        + " mode varchar(16) DEFAULT 'Normal',"
+                        + " score int DEFAULT 0"
+                        + ");\n";
 
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.executeQuery();
+            statement.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();

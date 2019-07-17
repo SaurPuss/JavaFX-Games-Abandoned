@@ -80,15 +80,21 @@ public class User implements Serializable {
      * @return boolean default username
      */
     public static boolean isDefaultUser() {
-        try {
-            System.out.println("USER: Checking for default user");
-            return user.getName().contains("Anonymous ");
-        } catch (NullPointerException e) {
-            System.out.println("USER: AppSettings User cannot be null!");
+        return isRandomName(user.getName());
+    }
+    
+    /**
+     * Check if a name matches any entries in the anonymousName String array.
+     * @param name String to match with the array
+     * @return boolean is a match or not
+     */
+    public static boolean isRandomName(String name) {
+        for (String s : anonymousName) {
+            if (s.toLowerCase().equals(name.toLowerCase()))
+                return true;
         }
 
-        // fallback because the method requires it
-        return true;
+        return false;
     }
 
     /**
@@ -109,20 +115,6 @@ public class User implements Serializable {
             "Anonymous Dog", "Anonymous Ferret", "Anonymous Panther",
             "Anonymous Tiger", "Anonymous Raven", "Anonymous Crow",
             "Anonymous Dinosaur", "Anonymous Potato"};
-
-    /**
-     * Check if a name matches any entries in the anonymousName String array.
-     * @param name String to match with the array
-     * @return boolean is a match or not
-     */
-    public static boolean isRandomName(String name) {
-        for (String s : anonymousName) {
-            if (s.toLowerCase().equals(name.toLowerCase()))
-                return true;
-        }
-
-        return false;
-    }
 
     /**
      * Override toString to give a basic output with User info. Excluding the password.
