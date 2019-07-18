@@ -90,12 +90,9 @@ public class UserScore implements Serializable {
 
     public void updateScore(String game, String difficulty, int score) {
         switch(difficulty.toLowerCase()) {
-            case "easy"     :
-            case "normal"   :
-            case "hard"     : updateScore(game,
-                    GameDifficulty.fromString(difficulty),
-                    score); break;
-            default         : updateScore(game, this.streakDifficulty, score);
+            case "easy" : case "normal" : case "hard" :
+                updateScore(game, GameDifficulty.fromString(difficulty), score); break;
+            default : updateScore(game, this.streakDifficulty, score);
         }
     }
 

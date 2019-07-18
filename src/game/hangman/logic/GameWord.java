@@ -3,6 +3,7 @@ package game.hangman.logic;
 import game.hangman.GUI.GameDiagram;
 import game.hangman.Hangman;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -147,15 +148,14 @@ public class GameWord {
      */
     // TODO Choose dictionary based on difficulty
     private void setWord() {
+        File dictionary;
         switch(Hangman.getGameDifficulty()) {
-            case EASY   : setEasyWord(); break;
-            case HARD   : setHardWord(); break;
+            case EASY   : dictionary = GameSession.DICTIONARY_EASY; break;
+            case HARD   : dictionary = GameSession.DICTIONARY_HARD; break;
             case NORMAL :
-            default     : setNormalWord();
+            default     : dictionary = GameSession.DICTIONARY_NORMAL;
         }
-    }
 
-    private void setEasyWord() {
         System.out.println("GAME WORD: HARD WORD PLS DO DICTIONARY STUFF");
         String s = "";
         try {
@@ -163,7 +163,7 @@ public class GameWord {
             int n = 0;
 
             // TODO choose based on difficulty settings
-            for (Scanner input = new Scanner(GameSession.HANGMAN_DICTIONARY); input.hasNextLine(); ) {
+            for (Scanner input = new Scanner(dictionary); input.hasNextLine(); ) {
                 ++n;
                 String line = input.nextLine();
 
@@ -190,75 +190,6 @@ public class GameWord {
         }
     }
 
-    private void setNormalWord() {
-        System.out.println("GAME WORD: NORMAL WORD PLS DO DICTIONARY STUFF");
-        String s = "";
-        try {
-            Random random = new Random();
-            int n = 0;
-
-            // TODO choose based on difficulty settings
-            for (Scanner input = new Scanner(GameSession.HANGMAN_DICTIONARY); input.hasNextLine(); ) {
-                ++n;
-                String line = input.nextLine();
-
-                // skip short words and words containing a hyphen, a bracket, or a space
-                if (line.length() <= 4 || line.contains("-") || line.contains("(") || line.contains(" "))
-                    continue;
-
-                if (random.nextInt(n) == 0)
-                    s = line;
-            }
-        } catch (FileNotFoundException ex) {
-            System.out.println("HANGMAN WORD: dictionary.txt not found, using backup words");
-            String[] word = {"rerouted", "pistache", "subtransverse",
-                    "hesiodus", "unbrushable", "wayne", "jebusite",
-                    "dutiful", "nonappendant", "araeostyle"};
-            int n = (int) (Math.random() * word.length);
-            s = word[n];
-        } finally {
-            ArrayList<Character> chars = new ArrayList<>();
-            for (char c : s.toCharArray()) {
-                chars.add(c);
-            }
-            gameWord = chars;
-        }
-    }
-
-    private void setHardWord() {
-        System.out.println("GAME WORD: HARD WORD PLS DO DICTIONARY STUFF");
-        String s = "";
-        try {
-            Random random = new Random();
-            int n = 0;
-
-            // TODO choose based on difficulty settings
-            for (Scanner input = new Scanner(GameSession.HANGMAN_DICTIONARY); input.hasNextLine(); ) {
-                ++n;
-                String line = input.nextLine();
-
-                // skip short words and words containing a hyphen, a bracket, or a space
-                if (line.length() <= 4 || line.contains("-") || line.contains("(") || line.contains(" "))
-                    continue;
-
-                if (random.nextInt(n) == 0)
-                    s = line;
-            }
-        } catch (FileNotFoundException ex) {
-            System.out.println("HANGMAN WORD: dictionary.txt not found, using backup words");
-            String[] word = {"rerouted", "pistache", "subtransverse",
-                    "hesiodus", "unbrushable", "wayne", "jebusite",
-                    "dutiful", "nonappendant", "araeostyle"};
-            int n = (int) (Math.random() * word.length);
-            s = word[n];
-        } finally {
-            ArrayList<Character> chars = new ArrayList<>();
-            for (char c : s.toCharArray()) {
-                chars.add(c);
-            }
-            gameWord = chars;
-        }
-    }
 
     /**
      * Create a custom gameword for multiplayer hangman
