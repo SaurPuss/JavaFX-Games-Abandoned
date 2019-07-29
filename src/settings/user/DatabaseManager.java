@@ -34,7 +34,6 @@ public class DatabaseManager {
             rs.next();
 
             return rs.getBoolean(1);
-
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -194,7 +193,7 @@ public class DatabaseManager {
         // TODO Maybe make this a toggle option, remove or anonymize your scores? or only remove account?
         // input id, return username for renaming in scores
         String name    = retrieveName(id);
-        boolean rename = renameUserScores(name);
+        boolean rename = anonimizeUserScores(name);
         boolean remove = removeUser(id);
 
         // rename user to anonymous in scores table
@@ -210,7 +209,7 @@ public class DatabaseManager {
         }
     }
 
-    private static boolean renameUserScores(String name) {
+    private static boolean anonimizeUserScores(String name) {
         // Return true if no records (false on search) are found
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             String input    = "DECLARE @OldName varchar(50);"
@@ -296,8 +295,8 @@ public class DatabaseManager {
             return false;
         }
 
-        boolean score = updateUserScore(user.getId(), user.getUserScore());
-        boolean settings = updateUserSettings(user.getId(), user.getUserSettings());
+        boolean score       = updateUserScore(user.getId(), user.getUserScore());
+        boolean settings    = updateUserSettings(user.getId(), user.getUserSettings());
 
         return score && settings;
     }
@@ -338,6 +337,7 @@ public class DatabaseManager {
     static boolean updatePassword(long id, String password, String newPassword) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             // TODO the hashing stuff
+            // TODO validate old password?
             String input    = "UPDATE " + tUsers + " SET password = ?"
                             + " WHERE id = ? AND password = ?";
             PreparedStatement statement = connection.prepareStatement(input);
@@ -370,7 +370,7 @@ public class DatabaseManager {
      * @param userSettings
      * @return
      */
-    static boolean updateUserSettings(long id, UserSettings userSettings) {
+    private static boolean updateUserSettings(long id, UserSettings userSettings) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             String input    = "UPDATE " + tUserSettings + " SET"
                             + " remember_user = ?, remember_password = ?,"
@@ -392,7 +392,7 @@ public class DatabaseManager {
         }
     }
 
-    static boolean updateUserScore(long id, UserScore userScore) {
+    private static boolean updateUserScore(long id, UserScore userScore) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             String input    = "UPDATE " + tUserScore + " SET"
                             + " total = ?, streak = ?, streak_Game = ?, streak_Difficulty = ?,"
@@ -467,6 +467,7 @@ public class DatabaseManager {
                         + " PRIMARY KEY (id),"
                         + " FOREIGN KEY (id) REFERENCES " + tUsers + "(id) ON DELETE CASCADE"
                         + ");\n"
+                    // TODO check if seperate tables are necessary?
                         + "CREATE TABLE IF NOT EXISTS " + tHangmanScores + " ("
                         + " name varchar(50) DEFAULT 'Anonymous',"
                         + " mode varchar(16) DEFAULT 'Normal',"

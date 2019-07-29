@@ -3,12 +3,8 @@ package game.hangman.logic;
 import game.hangman.GUI.GameDiagram;
 import game.hangman.Hangman;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Random;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 import static game.hangman.logic.GameSession.mistakes;
 
@@ -47,7 +43,7 @@ public class GameWord {
         return gameWord;
     }
 
-    public Integer gameWordLength() {
+    Integer gameWordLength() {
         return gameWord.size();
     }
 
@@ -146,7 +142,6 @@ public class GameWord {
      * On the 9th day SaurPuss remembered the word should be stored in a
      * Character Array, so mote it be.
      */
-    // TODO Choose dictionary based on difficulty
     private void setWord() {
         File dictionary;
         switch(Hangman.getGameDifficulty()) {
@@ -156,13 +151,11 @@ public class GameWord {
             default     : dictionary = GameSession.DICTIONARY_NORMAL;
         }
 
-        System.out.println("GAME WORD: HARD WORD PLS DO DICTIONARY STUFF");
+        System.out.println("GAME WORD: PLS DO DICTIONARY STUFF");
         String s = "";
         try {
             Random random = new Random();
             int n = 0;
-
-            // TODO choose based on difficulty settings
             for (Scanner input = new Scanner(dictionary); input.hasNextLine(); ) {
                 ++n;
                 String line = input.nextLine();
@@ -193,7 +186,7 @@ public class GameWord {
 
     /**
      * Create a custom gameword for multiplayer hangman
-     * @param gameWord
+     * @param gameWord String with the word to be guessed
      */
     private void setWord(String gameWord) {
         ArrayList<Character> chars = new ArrayList<>();

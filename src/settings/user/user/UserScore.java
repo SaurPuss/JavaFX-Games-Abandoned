@@ -23,7 +23,7 @@ public class UserScore implements Serializable {
     /**
      * Default Constructor
      */
-    public UserScore() {
+    UserScore() {
         total               = 0; // cumulative score across all games and difficulties
         streak              = 0; // current streak save, reset to 0 on game switch or lose
         streakGame          = ""; // indicator which game the streak belongs to
@@ -83,20 +83,23 @@ public class UserScore implements Serializable {
      * Run through the scores and add or subtract the totals.
      */
     public void breakStreak() {
-        // TODO figure this out
+        // TODO Do I need this?
         System.out.println("USER SCORE: Streak broken, reset to 0");
         this.streak = 0;
     }
 
     public void updateScore(String game, String difficulty, int score) {
         switch(difficulty.toLowerCase()) {
-            case "easy" : case "normal" : case "hard" :
-                updateScore(game, GameDifficulty.fromString(difficulty), score); break;
-            default : updateScore(game, this.streakDifficulty, score);
+            case "easy"     :
+            case "normal"   :
+            case "hard"     : updateScore(game, GameDifficulty.fromString(difficulty),
+                    score); break;
+            default         : updateScore(game, this.streakDifficulty, score);
         }
     }
 
     private void updateScore(String game, GameDifficulty gameDifficulty, int score) {
+        // TODO check if it's higher than the current saved score?
         int difficulty = 1; // default = GameDifficulty.NORMAL
         switch (gameDifficulty) {
             case EASY   : difficulty = 0; break;
@@ -111,6 +114,7 @@ public class UserScore implements Serializable {
         }
 
         // TODO update in database from here?
+        // TODO Can I get the user ID in here to make this update work?
     }
 
     @Override

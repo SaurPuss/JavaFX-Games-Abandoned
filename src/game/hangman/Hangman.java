@@ -33,14 +33,6 @@ public class Hangman extends Game {
 
         // Create a bottom Pane for session
         pane.setBottom(new BottomBarPane());
-
-        // TODO Implement game score stuff depending on difficulty
-        // On win add the full word length to the score before sending it to userScore
-        // So basically keep track of the current game score and then add it to the user score
-        // once a game is completed or aborted. If the session is closed also save game score,
-        // like inside the stop method. Make it gather all current scores and do stuff with it.
-        // unless someone manages to save mid game in which case the score should just be saved
-        // until completion.
     }
 
     public Hangman(GameDifficulty gameDifficulty) {

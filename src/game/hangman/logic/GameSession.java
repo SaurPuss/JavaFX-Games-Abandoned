@@ -1,7 +1,7 @@
 package game.hangman.logic;
 
 import java.io.File;
-import java.util.LinkedHashMap;
+import java.util.*;
 
 public class GameSession {
     static final File DICTIONARY_HARD = new File("src/game/hangman/assets/dictionary.txt");
@@ -15,10 +15,9 @@ public class GameSession {
         LinkedHashMap<Character, Boolean> map = gameWord.getGuesses();
         int wrong = 0;
 
-        for (int i = 0; i < map.size(); i++) {
-            if (map.get(i) == map.containsValue(false))
+        for (Map.Entry<Character, Boolean> pair : map.entrySet()) {
+            if (!pair.getValue())
                 wrong++;
-
         }
 
         return wrong;
@@ -28,10 +27,9 @@ public class GameSession {
         LinkedHashMap<Character, Boolean> map = gameWord.getGuesses();
         int correct = 0;
 
-        for (int i = 0; i < map.size(); i++) {
-            if (map.get(i) == map.containsValue(true))
+        for (Map.Entry<Character, Boolean> pair : map.entrySet()) {
+            if (pair.getValue())
                 correct++;
-
         }
 
         return correct;
