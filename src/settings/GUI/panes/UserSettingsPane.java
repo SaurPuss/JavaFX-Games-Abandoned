@@ -1,15 +1,20 @@
 package settings.GUI.panes;
 
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.controlsfx.control.ToggleSwitch;
 import settings.GUI.buttons.UpdateSettingsButton;
+
+import static org.controlsfx.control.textfield.TextFields.*;
 import static settings.AppSettings.*;
 
 public class UserSettingsPane extends VBox implements UpdateSettingsButton {
     public static ToggleSwitch toggleUser;
     public static ToggleSwitch togglePassword;
+    public static TextField tfName = createClearableTextField();
+    public static TextField tfPassword = createClearablePasswordField();
 
     public UserSettingsPane() {
         // Set up GUI

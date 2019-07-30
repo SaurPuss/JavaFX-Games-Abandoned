@@ -2,70 +2,32 @@ package settings.GUI.buttons;
 
 import javafx.scene.control.Button;
 import settings.AppSettings;
-import settings.GUI.panes.GameSelectionPane;
-import settings.GUI.panes.LoginPane;
-import settings.GUI.panes.TopBarPane;
-import settings.user.user.User;
-import settings.user.UserManager;
-
-import static settings.GUI.panes.LoginPane.cbRememberUser;
+import settings.GUI.panes.*;
 
 public interface SignUpButton {
     /**
      * Default Sign Up Button that fetches information from
-     * LoginPane to handle the signUpAction method.
+     * LoginPane or UserSettingsPane to forward the info to
+     * CreateUserPane for formal sign up.
      */
     default Button signUp() {
         Button btnSignUp = new Button("Sign Up");
 
         btnSignUp.setOnAction(e -> {
-            // TODO Add password confirm field & errors
-            signUpAction(LoginPane.tfUserName.getText(), LoginPane.tfUserPassword.getText());
+            // Check which Pane the info comes from
+            if (AppSettings.pane.getCenter().getClass().isInstance(LoginPane.class))
+                AppSettings.pane.setCenter(new SignUpPane(
+                        LoginPane.tfUserName.getText(),
+                        LoginPane.tfUserPassword.getText(),
+                        LoginPane.cbRememberUser.isSelected()));
+            else if (AppSettings.pane.getCenter().getClass().isInstance(UserSettingsPane.class))
+                AppSettings.pane.setCenter(new SignUpPane(
+                        UserSettingsPane.tfName.getText(),
+                        UserSettingsPane.tfPassword.getText(),
+                        UserSettingsPane.toggleUser.isSelected(),
+                        UserSettingsPane.togglePassword.isSelected()));
         });
 
         return btnSignUp;
-    }
-
-    /**
-     * Convenience method that insures new information is
-     * pulled from the LoginPane Textfields every time the
-     * button is clicked.
-     * @param username String to verify for validity
-     * @param password String to verify for validity
-     */
-    default void signUpAction(String username, String password) {
-        // Errors cause by the username
-        if ((username == null) || (username.equals(""))) {
-            LoginPane.loginError("UsernameEmpty");
-        } else if (User.isRandomName(username)) {
-            LoginPane.loginError("DefaultUsername");
-        } else if (username.length() < 6) {
-            LoginPane.loginError("UsernameTooShort");
-        } else if (UserManager.findUserName(username)) {
-            LoginPane.loginError("UsernameAlreadyExists");
-        }
-        // Errors caused by the password
-        else if ((password == null) || (password.equals(""))) {
-            LoginPane.loginError("PasswordEmpty");
-        } else if (password.length() < 6) {
-            LoginPane.loginError("PasswordTooShort");
-        }
-        // Protected username
-        else if ((username.toLowerCase().contains("anonymous")) || (username.toLowerCase().contains("saurpuss")) ||
-                (username.toLowerCase().contains("battlecrow"))) {
-            LoginPane.loginError("ProtectedUsername");
-        }
-        // Invoke
-        else {
-            // Save new user to database & set AppSettings.user & currentUser.dat
-            User user = UserManager.saveUser(username, password, cbRememberUser.isSelected());
-            if (user != null) {
-                AppSettings.user = user;
-
-                // Continue to game selection pane
-                AppSettings.pane.setTop(new TopBarPane());
-                AppSettings.pane.setCenter(new GameSelectionPane());
-            }
-        }
     }
 }
