@@ -20,7 +20,7 @@ public interface UpdateSettingsButton {
             UserManager.saveCurrentUser(user);
             System.out.println("UPDATE SETTINGS BUTTON: This doesn't save to the db, so it only works this session");
             // TODO Save to database too, if not anonymous anyway
-            printSessionUser();
+            printUser();
         });
 
         return button;

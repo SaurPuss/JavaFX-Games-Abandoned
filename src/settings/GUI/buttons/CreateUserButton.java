@@ -2,26 +2,25 @@ package settings.GUI.buttons;
 
 import javafx.scene.control.Button;
 import settings.AppSettings;
-import settings.GUI.panes.GameSelectionPane;
-import settings.GUI.panes.LoginPane;
-import settings.GUI.panes.SignUpPane;
-import settings.GUI.panes.TopBarPane;
+import settings.GUI.panes.*;
 import settings.user.UserManager;
 import settings.user.user.User;
 
-import static settings.GUI.panes.LoginPane.cbRememberUser;
-
 public interface CreateUserButton {
 
-
-
-    default Button createNewUser() {
+    /**
+     * This is where legit magic happens. Worship the
+     * rabbit that lives in the drainpipe of your
+     * basement bathroom sink.
+     * @return button that will sign you up big time.
+     */
+    default Button createUserButton() {
         Button button = new Button("Sign Up");
+        button.setDefaultButton(true);
 
-        button.setOnAction(e -> {
-            if (SignUpPane.samePassword())
-                signUpAction(SignUpPane.tfName.getText(), SignUpPane.tfPassword.getText());
-        });
+        button.setOnAction(e -> signUpAction(
+                SignUpPane.tfName.getText(),
+                SignUpPane.tfPassword.getText()));
 
         return button;
     }
@@ -29,45 +28,49 @@ public interface CreateUserButton {
 
     /**
      * Convenience method that insures new information is
-     * pulled from the LoginPane Textfields every time the
-     * button is clicked.
+     * pulled from the SignUpPane TextFields every time
+     * the button is clicked.
      * @param username String to verify for validity
      * @param password String to verify for validity
      */
     default void signUpAction(String username, String password) {
-        // TODO check LOGIN PANE FOR ERRORS AND VALIDATE THESE FIELDS HERE INSTEAD OF IN LOGIN
         // Errors cause by the username
         if ((username == null) || (username.equals(""))) {
-            LoginPane.loginError("UsernameEmpty");
+            SignUpPane.signUpError("UsernameEmpty");
         } else if (User.isRandomName(username)) {
-            LoginPane.loginError("DefaultUsername");
+            SignUpPane.signUpError("DefaultUsername");
         } else if (username.length() < 6) {
-            LoginPane.loginError("UsernameTooShort");
+            SignUpPane.signUpError("UsernameTooShort");
         } else if (UserManager.findUserName(username)) {
-            LoginPane.loginError("UsernameAlreadyExists");
+            SignUpPane.signUpError("UsernameAlreadyExists");
         }
         // Errors caused by the password
         else if ((password == null) || (password.equals(""))) {
-            LoginPane.loginError("PasswordEmpty");
+            SignUpPane.signUpError("PasswordEmpty");
         } else if (password.length() < 6) {
-            LoginPane.loginError("PasswordTooShort");
+            SignUpPane.signUpError("PasswordTooShort");
+        } else if (!SignUpPane.samePassword()) {
+            SignUpPane.signUpError("PasswordNoMatch");
         }
         // Protected username
-        else if ((username.toLowerCase().contains("anonymous")) || (username.toLowerCase().contains("saurpuss")) ||
-                (username.toLowerCase().contains("battlecrow"))) {
-            LoginPane.loginError("ProtectedUsername");
+        else if   ((username.toLowerCase().contains("anonymous"))
+                || (username.toLowerCase().contains("saurpuss"))
+                || (username.toLowerCase().contains("battlecrow"))) {
+            SignUpPane.signUpError("ProtectedUsername");
         }
         // Invoke
         else {
-            // Save new user to database & set AppSettings.user & currentUser.dat
-            User user = UserManager.saveUser(username, password, cbRememberUser.isSelected());
-            if (user != null) {
-                AppSettings.user = user;
 
-                // Continue to game selection pane
-                AppSettings.pane.setTop(new TopBarPane());
-                AppSettings.pane.setCenter(new GameSelectionPane());
-            }
+            // TODO Save user in db and current User
+            // TODO Set this user to AppSettings
+
+            // Save new user to database & set AppSettings.user & currentUser.dat
+            User user = UserManager.saveUser(username, password, SignUpPane.cUser.isSelected(), SignUpPane.cPass.isSelected());
+            AppSettings.user = user;
+
+            // Continue to game selection pane
+            AppSettings.pane.setTop(new TopBarPane());
+            AppSettings.pane.setCenter(new GameSelectionPane());
         }
     }
 }

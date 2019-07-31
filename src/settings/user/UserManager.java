@@ -1,5 +1,6 @@
 package settings.user;
 
+import database.DatabaseManager;
 import settings.AppSettings;
 import settings.user.user.User;
 
@@ -50,6 +51,13 @@ public class UserManager implements Serializable {
             System.out.println("USER MANAGER: Can't save as new user, trying to retrieve user instead");
             return DatabaseManager.retrieveUser(name, password);
         }
+    }
+
+    public static User saveUser(String name, String password,
+                                boolean rememberUser, boolean rememberPassword) {
+        System.out.println("USER MANAGER: PLS MAKE THIS METHOD saveUser(4xStuff)");
+
+        return new User();
     }
 
     public static boolean updateUser(User user) {

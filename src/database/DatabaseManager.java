@@ -1,4 +1,4 @@
-package settings.user;
+package database;
 
 import settings.user.settings.GameDifficulty;
 import settings.user.user.*;
@@ -20,14 +20,13 @@ public class DatabaseManager {
     private static String tMinesweeperScores = "Score_MineSweeper";
     private static String tSnakeScores = "Score_Snake";
 
-    static boolean findUser(String name) {
+    public static boolean findUser(String name) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             String input    = "SELECT CASE WHEN EXISTS ("
                             + " SELECT TOP 1 * FROM " + tUsers
                             + " WHERE name = ?) "
                             + "THEN CAST (1 AS BIT) "
                             + "ELSE CAST (0 AS BIT) END";
-
             PreparedStatement statement = connection.prepareStatement(input);
             statement.setString(1, name);
             ResultSet rs = statement.executeQuery();
@@ -40,18 +39,16 @@ public class DatabaseManager {
         }
     }
 
-    static String getUserPassword(String name) {
+    public static String getUserPassword(String name) {
         // TODO when the password is hashed, hash input and compare server side
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             String input = "SELECT (password) FROM " + tUsers + " WHERE name = ?;";
-
             PreparedStatement statement = connection.prepareStatement(input);
             statement.setString(1, name);
             ResultSet rs = statement.executeQuery();
             rs.next();
 
             return rs.getString(1);
-
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -66,7 +63,7 @@ public class DatabaseManager {
      * @return User object with relevant data that mirrors what was inserted
      *              into the database.
      */
-    static User saveUser(String name, String password, boolean rememberUser) {
+    public static User saveUser(String name, String password, boolean rememberUser) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             // Insert new user into database
             String input    = "INSERT INTO " + tUsers + " (name,password)"
@@ -75,7 +72,6 @@ public class DatabaseManager {
                             + " VALUES (LAST_INSERT_ID(),?);"
                             + "INSERT INTO " + tUserScore + " (id)"
                             + " VALUES (LAST_INSERT_ID());";
-
             PreparedStatement sIN = connection.prepareStatement(input);
             sIN.setString(1, name);
             sIN.setString(2, password);
@@ -84,14 +80,12 @@ public class DatabaseManager {
 
             // retrieve user ID
             String output = "SELECT (id) FROM " + tUsers + " WHERE name = ?;";
-
             PreparedStatement sOUT = connection.prepareStatement(output);
             sOUT.setString(1, name);
             ResultSet rs = sOUT.executeQuery();
             rs.next();
 
             return new User(rs.getLong(1), name, password, rememberUser);
-
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -103,7 +97,6 @@ public class DatabaseManager {
             // get matching user id assuming name and password are valid
             String getID    = "SELECT (id) FROM " + tUsers
                             + " WHERE name = ? AND password = ?;";
-
             PreparedStatement sID = connection.prepareStatement(getID);
             sID.setString(1, name);
             sID.setString(2, password);
@@ -111,7 +104,6 @@ public class DatabaseManager {
             rs.next();
 
             return rs.getLong(1);
-
         } catch (SQLException e) {
             e.printStackTrace();
             return 0;
@@ -121,23 +113,20 @@ public class DatabaseManager {
     private static String retrieveName(long id) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             String input = "SELECT (name) FROM " + tUsers + " WHERE id = ?;";
-
             PreparedStatement statement = connection.prepareStatement(input);
             statement.setLong(1, id);
             ResultSet rs = statement.executeQuery();
             rs.next();
 
             return rs.getString(1);
-
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    static User retrieveUser(String name, String password) {
+    public static User retrieveUser(String name, String password) {
         long id = retrieveID(name, password);
-
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             // retrieve user profile based on ID
             String getData  = "SELECT * FROM " + tUsers + "\n"
@@ -146,7 +135,6 @@ public class DatabaseManager {
                             + "INNER JOIN " + tUserScore
                             + " ON " + tUserScore + ".id = " + tUsers + ".id\n"
                             + "WHERE " + tUsers + ".id = ?;";
-
             PreparedStatement sDATA = connection.prepareStatement(getData);
             sDATA.setLong(1, id);
             ResultSet rs = sDATA.executeQuery();
@@ -182,14 +170,13 @@ public class DatabaseManager {
                     rs.getString("PASSWORD"),
                     userSettings,
                     userScore);
-
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    static boolean deleteUser(long id) {
+    public static boolean deleteUser(long id) {
         // TODO Maybe make this a toggle option, remove or anonymize your scores? or only remove account?
         // input id, return username for renaming in scores
         String name    = retrieveName(id);
@@ -226,7 +213,6 @@ public class DatabaseManager {
                             + "UPDATE " + tSnakeScores
                             + " SET name = 'Anonymous'"
                             + " WHERE name = @OldName;";
-
             PreparedStatement sDEL = connection.prepareStatement(input);
             sDEL.setString(1, name);
             ResultSet rs = sDEL.executeQuery();
@@ -241,7 +227,6 @@ public class DatabaseManager {
                                 + " WHERE name = ?) "
                                 + "THEN CAST (1 AS BIT) "
                                 + "ELSE CAST (0 AS BIT) END";
-
                 PreparedStatement sCHECK = connection.prepareStatement(output);
                 sCHECK.setString(1, name);
                 rs = sCHECK.executeQuery();
@@ -256,7 +241,6 @@ public class DatabaseManager {
 
             // flip the bool
             return !rs.getBoolean(1);
-
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -270,14 +254,12 @@ public class DatabaseManager {
                             + " WHERE id = ?) "
                             + "THEN CAST (1 AS BIT) "
                             + "ELSE CAST (0 AS BIT) END";
-
             PreparedStatement statement = connection.prepareStatement(delete);
             statement.setLong(1, id);
             ResultSet rs = statement.executeQuery();
             rs.next();
 
             return rs.getBoolean(1);
-
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -289,19 +271,17 @@ public class DatabaseManager {
      * @param user
      * @return
      */
-    static boolean updateUser(User user) {
+    public static boolean updateUser(User user) {
         if (!findUser(user.getName())) {
             System.out.println("DB MANAGER: User does not exist, can't update records.");
-            return false;
-        }
-
+            return false; }
         boolean score       = updateUserScore(user.getId(), user.getUserScore());
         boolean settings    = updateUserSettings(user.getId(), user.getUserSettings());
 
         return score && settings;
     }
 
-    static boolean updateUserName(long id, String name, String newName) {
+    public static boolean updateUserName(long id, String name, String newName) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             if (findUser(newName)) {
                 System.out.println("DB MANAGER: Username already taken");
@@ -334,7 +314,7 @@ public class DatabaseManager {
         }
     }
 
-    static boolean updatePassword(long id, String password, String newPassword) {
+    public static boolean updatePassword(long id, String password, String newPassword) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             // TODO the hashing stuff
             // TODO validate old password?
@@ -352,8 +332,8 @@ public class DatabaseManager {
                             + "THEN CAST (1 AS BIT) "
                             + "ELSE CAST (0 AS BIT) END";
             statement = connection.prepareStatement(output);
-//            statement.setString(1, newPassword);
-//            statement.setLong(2, id);
+            statement.setString(1, newPassword);
+            statement.setLong(2, id);
             ResultSet rs = statement.executeQuery();
             rs.next();
 

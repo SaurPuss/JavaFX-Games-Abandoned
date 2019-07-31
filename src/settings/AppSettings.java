@@ -1,14 +1,14 @@
 package settings;
 
+import database.DatabaseManager;
 import game.Game;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
-import settings.user.DatabaseManager;
+import settings.user.*;
 import settings.user.user.User;
-import settings.user.UserManager;
 
 import java.io.*;
 import java.util.Set;
@@ -78,17 +78,10 @@ public class AppSettings {
         pane.setCenter(game);
     }
 
-    public static void printSessionUser() {
+    public static void printUser() {
         System.out.println("-------------------------------------");
         System.out.println("--- PRINTING CURRENT SESSION USER ---");
         System.out.println(user.toString());
-        System.out.println("-------------------------------------");
-    }
-
-    public static void printSavedUser() {
-        System.out.println("-------------------------------------");
-        System.out.println("---- PRINTING SAVED SESSION USER ----");
-        System.out.println(UserManager.getCurrentUser().toString());
         System.out.println("-------------------------------------");
     }
 }

@@ -1,12 +1,10 @@
 package game.hangman.GUI;
 
-import game.hangman.Hangman;
+import game.hangman.logic.GameSession;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.geometry.*;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 
 public class GameFields extends VBox implements GuessButton {
@@ -41,7 +39,7 @@ public class GameFields extends VBox implements GuessButton {
         getChildren().addAll(wordBox, tryBox, guessBox);
 
         // Add some functionality
-        tHiddenWord.setText(Hangman.getGameWord().getHiddenWordString());
+        tHiddenWord.setText(GameSession.gameWord.getHiddenWordString());
         Platform.runLater(() -> tfGuess.requestFocus());
     }
 }

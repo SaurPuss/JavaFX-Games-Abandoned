@@ -3,9 +3,9 @@ package settings.GUI.buttons;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import settings.GUI.panes.SaveAnonymousPane;
+import settings.GUI.panes.SignUpPane;
 import settings.GUI.panes.UserSettingsPane;
-import settings.AppSettings;
+import static settings.AppSettings.*;
 
 public interface UserSettingsButton {
 
@@ -20,10 +20,10 @@ public interface UserSettingsButton {
         // TODO stop it from making infinite "new" panes
         // TODO if default user make this a sign up pane
         button.setOnAction(e -> {
-            if (!AppSettings.user.isDefaultUser())
-                AppSettings.pane.setCenter(new UserSettingsPane());
+            if (!user.isDefaultUser())
+                pane.setCenter(new UserSettingsPane());
             else
-                AppSettings.pane.setCenter(new SaveAnonymousPane());
+                pane.setCenter(new SignUpPane("", "", false));
         });
 
         return button;

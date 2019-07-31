@@ -45,12 +45,11 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton, Contin
     public LoginPane() {
         welcome = new Text("Welcome " + user.getName());
         getChildren().add(welcome);
-        if (User.isDefaultUser()) {
-            Text chooseAction = new Text("Unless you want to remain anonymous" +
-                    "\nyou should log in or sign up.");
-            chooseAction.setTextAlignment(TextAlignment.CENTER);
-            // TODO add continue as default button
-        }
+//        if (User.isDefaultUser()) {
+//            Text chooseAction = new Text("Unless you want to remain anonymous" +
+//                    "\nyou should log in or sign up.");
+//            chooseAction.setTextAlignment(TextAlignment.CENTER);
+//        }
         welcome.setFont(Font.font(18));
         cbRememberUser.setSelected(user.getUserSettings().isRememberUser());
         setSpacing(5);
@@ -90,38 +89,36 @@ public class LoginPane extends VBox implements LoginButton, SignUpButton, Contin
             // Login mismatch
             case "UserDoesNotExist": fields.add(errUser, 0, 1, 3, 1);
                 errUser.setText("* Username does not exist.");
-                tfUserName.selectAll();
-//                System.out.println("LOGIN PANE: User does not exist in database.");
-                break;
+                tfUserName.selectAll(); break;
             case "PasswordNoMatch": fields.add(errPassword, 0, 3, 3, 1);
                 errPassword.setText("* Password does not match.");
                 tfUserPassword.selectAll();
                 System.out.println("LOGIN PANE: Password does not match username."); break;
             // Username errors
-            case "UsernameEmpty": fields.add(errUser, 0, 1, 3, 1);
-                errUser.setText("* Username is missing.");
-                System.out.println("LOGIN PANE: Username Textfield is empty."); break;
-            case "DefaultUsername": fields.add(errUser, 0, 1, 3, 1);
-                errUser.setText("* You're using a default Username. \nPlease choose something else.");
-                System.out.println("LOGIN PANE: Username is default."); break;
-            case "UsernameTooShort": fields.add(errUser, 0, 1, 3, 1);
-                errUser.setText("* A Username must have more than 6 characters. \nPlease choose something else.");
-                System.out.println("LOGIN PANE: Username is too short."); break;
-            case "UsernameAlreadyExists": fields.add(errUser, 0, 1, 3, 1);
-                errUser.setText("* This username is already taken. \nPlease choose something else.");
-                System.out.println("LOGIN PANE: Username already exists."); break;
-            case "ProtectedUsername": fields.add(errUser, 0, 1, 3, 1);
-                errUser.setText("* This username is already taken. \nPlease choose something else.");
-                System.out.println("LOGIN PANE: Protected Username."); break;
-            // Password errors
-            case "PasswordEmpty": fields.add(errPassword, 0, 3, 3, 1);
-                errPassword.setText("* Please create a password.");
-                System.out.println("LOGIN PANE: Password Textfield is empty."); break;
-            case "PasswordTooShort": fields.add(errPassword, 0, 3, 3, 1);
-                errPassword.setText("* A Password must have more than 6 characters. \nPlease choose something else.");
-                System.out.println("LOGIN PANE: Password is too short."); break;
-            default: fields.add(errPassword, 0, 3, 3, 1);
-                errPassword.setText("* Username or Password can't be found.");
+//            case "UsernameEmpty": fields.add(errUser, 0, 1, 3, 1);
+//                errUser.setText("* Username is missing.");
+//                System.out.println("LOGIN PANE: Username Textfield is empty."); break;
+//            case "DefaultUsername": fields.add(errUser, 0, 1, 3, 1);
+//                errUser.setText("* You're using a default Username. \nPlease choose something else.");
+//                System.out.println("LOGIN PANE: Username is default."); break;
+//            case "UsernameTooShort": fields.add(errUser, 0, 1, 3, 1);
+//                errUser.setText("* A Username must have more than 6 characters. \nPlease choose something else.");
+//                System.out.println("LOGIN PANE: Username is too short."); break;
+//            case "UsernameAlreadyExists": fields.add(errUser, 0, 1, 3, 1);
+//                errUser.setText("* This username is already taken. \nPlease choose something else.");
+//                System.out.println("LOGIN PANE: Username already exists."); break;
+//            case "ProtectedUsername": fields.add(errUser, 0, 1, 3, 1);
+//                errUser.setText("* This username is already taken. \nPlease choose something else.");
+//                System.out.println("LOGIN PANE: Protected Username."); break;
+//            // Password errors
+//            case "PasswordEmpty": fields.add(errPassword, 0, 3, 3, 1);
+//                errPassword.setText("* Please create a password.");
+//                System.out.println("LOGIN PANE: Password Textfield is empty."); break;
+//            case "PasswordTooShort": fields.add(errPassword, 0, 3, 3, 1);
+//                errPassword.setText("* A Password must have more than 6 characters. \nPlease choose something else.");
+//                System.out.println("LOGIN PANE: Password is too short."); break;
+//            default: fields.add(errPassword, 0, 3, 3, 1);
+//                errPassword.setText("* Username or Password can't be found.");
         }
     }
 }

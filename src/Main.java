@@ -11,21 +11,16 @@
 
 // You know what this is, why are you reading this comment?
 
-import settings.AppSettings;
-import settings.GUI.panes.GameSelectionPane;
-import javafx.application.Application;
-import javafx.stage.Stage;
-
-import settings.GUI.panes.TopBarPane;
-import settings.GUI.panes.LoginPane;
+import settings.GUI.panes.*;
 import settings.user.user.User;
 import settings.user.UserManager;
+import settings.AppSettings;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
 /**
  * Welcome to a set of games made in javafx to entertain you for a hot minute.
  */
-// TODO make real and functional and most of all useful Javadoc
-// TODO Make user of OpenCSV I guess
 public class Main extends Application {
     /**
      * Start the application with javafx.
@@ -70,19 +65,6 @@ public class Main extends Application {
 
         primaryStage.setResizable(false); // No resize for you!
     }
-
-    /*@Override
-    public void stop() {
-        System.out.println("MAIN: Stopping application");
-        // TODO Save session user updates to db
-
-        if (!AppSettings.user.getUserSettings().isRememberUser()) {
-            System.out.println("MAIN: Saving default user to currentUser.dat");
-            UserManager.saveCurrentUser(new User());
-        }
-        AppSettings.printSessionUser();
-        AppSettings.printSavedUser();
-    }*/
 
     /**
      * Adding a main, because technically you're supposed to do that

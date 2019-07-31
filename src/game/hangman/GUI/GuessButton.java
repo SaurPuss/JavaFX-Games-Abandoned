@@ -1,6 +1,5 @@
 package game.hangman.GUI;
 
-import game.hangman.Hangman;
 import game.hangman.logic.GameSession;
 import javafx.scene.control.Button;
 
@@ -30,9 +29,9 @@ public interface GuessButton {
             if (tfGuess.getText().charAt(0) == ' ')
                 tfGuess.setText("");
             else {
-                Hangman.getGameWord().guessLetter(tfGuess.getText().charAt(0));
-                tHiddenWord.setText(Hangman.getGameWord().getHiddenWordString());
-                tGuesses.setText(Hangman.getGameWord().getGuessesString());
+                GameSession.gameWord.guessLetter(tfGuess.getText().charAt(0));
+                tHiddenWord.setText(GameSession.gameWord.getHiddenWordString());
+                tGuesses.setText(GameSession.gameWord.getGuessesString());
                 tfGuess.setText("");
             }
         }
