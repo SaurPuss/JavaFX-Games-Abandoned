@@ -4,6 +4,8 @@ import game.hangman.Hangman;
 import settings.AppSettings;
 import settings.user.settings.GameDifficulty;
 
+import static game.hangman.logic.GameSession.*;
+
 public class GameScores {
 
     /**
@@ -11,9 +13,9 @@ public class GameScores {
      */
     private int calculateScore() {
         int total;
-        int score = GameSession.getGameScore();
-        int correct = GameSession.getCorrectGuesses();
-        int wrong = GameSession.getWrongGuesses();
+        int score = getGameScore();
+        int correct = getCorrectGuesses();
+        int wrong = getWrongGuesses();
         GameDifficulty difficulty = Hangman.getGameDifficulty();
 
         // Calculate points

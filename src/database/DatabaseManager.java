@@ -76,7 +76,7 @@ public class DatabaseManager {
             sIN.setString(1, name);
             sIN.setString(2, password);
             sIN.setString(3, String.valueOf(rememberUser));
-            sIN.executeUpdate(input);
+            sIN.executeUpdate();
 
             // retrieve user ID
             String output = "SELECT (id) FROM " + tUsers + " WHERE name = ?;";
@@ -85,7 +85,37 @@ public class DatabaseManager {
             ResultSet rs = sOUT.executeQuery();
             rs.next();
 
-            return new User(rs.getLong(1), name, password, rememberUser);
+            return retrieveUser(rs.getLong(1));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static User saveUser(String name, String password, boolean rememberUser, boolean rememberPassword) {
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+            // Insert new user into database
+            String input    = "INSERT INTO " + tUsers + " (name,password)"
+                    + " VALUES (?,?);"
+                    + "INSERT INTO " + tUserSettings + " (id,remember_User,remember_Password)"
+                    + " VALUES (LAST_INSERT_ID(),?,?);"
+                    + "INSERT INTO " + tUserScore + " (id)"
+                    + " VALUES (LAST_INSERT_ID());";
+            PreparedStatement sIN = connection.prepareStatement(input);
+            sIN.setString(1, name);
+            sIN.setString(2, password);
+            sIN.setString(3, String.valueOf(rememberUser));
+            sIN.setString(4, String.valueOf(rememberPassword));
+            sIN.executeUpdate();
+
+            // retrieve user ID
+            String output = "SELECT (id) FROM " + tUsers + " WHERE name = ?;";
+            PreparedStatement sOUT = connection.prepareStatement(output);
+            sOUT.setString(1, name);
+            ResultSet rs = sOUT.executeQuery();
+            rs.next();
+
+            return retrieveUser(rs.getLong(1));
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -127,14 +157,18 @@ public class DatabaseManager {
 
     public static User retrieveUser(String name, String password) {
         long id = retrieveID(name, password);
+        return retrieveUser(id);
+    }
+
+    private static User retrieveUser(long id) {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             // retrieve user profile based on ID
             String getData  = "SELECT * FROM " + tUsers + "\n"
-                            + "INNER JOIN " + tUserSettings
-                            + " ON " + tUserSettings + ".id = " + tUsers + ".id\n"
-                            + "INNER JOIN " + tUserScore
-                            + " ON " + tUserScore + ".id = " + tUsers + ".id\n"
-                            + "WHERE " + tUsers + ".id = ?;";
+                    + "INNER JOIN " + tUserSettings
+                    + " ON " + tUserSettings + ".id = " + tUsers + ".id\n"
+                    + "INNER JOIN " + tUserScore
+                    + " ON " + tUserScore + ".id = " + tUsers + ".id\n"
+                    + "WHERE " + tUsers + ".id = ?;";
             PreparedStatement sDATA = connection.prepareStatement(getData);
             sDATA.setLong(1, id);
             ResultSet rs = sDATA.executeQuery();
@@ -144,6 +178,7 @@ public class DatabaseManager {
             UserSettings userSettings = new UserSettings(
                     rs.getBoolean("REMEMBER_USER"),
                     rs.getBoolean("REMEMBER_PASSWORD"),
+                    rs.getString("COLOR_MODE"),
                     rs.getString("GAME_DIFFICULTY"));
 
             UserScore userScore = new UserScore(
@@ -152,17 +187,17 @@ public class DatabaseManager {
                     rs.getString("STREAK_GAME"),
                     GameDifficulty.fromString(rs.getString("STREAK_DIFFICULTY")),
                     new int[] { rs.getInt("HANGMAN_EASY"),
-                                rs.getInt("HANGMAN_NORMAL"),
-                                rs.getInt("HANGMAN_HARD")},
+                            rs.getInt("HANGMAN_NORMAL"),
+                            rs.getInt("HANGMAN_HARD")},
                     new int[] { rs.getInt("MASTERMIND_EASY"),
-                                rs.getInt("MASTERMIND_NORMAL"),
-                                rs.getInt("MASTERMIND_HARD")},
+                            rs.getInt("MASTERMIND_NORMAL"),
+                            rs.getInt("MASTERMIND_HARD")},
                     new int[] { rs.getInt("MINESWEEPER_EASY"),
-                                rs.getInt("MINESWEEPER_NORMAL"),
-                                rs.getInt("MINESWEEPER_HARD")},
+                            rs.getInt("MINESWEEPER_NORMAL"),
+                            rs.getInt("MINESWEEPER_HARD")},
                     new int[] { rs.getInt("SNAKE_EASY"),
-                                rs.getInt("SNAKE_NORMAL"),
-                                rs.getInt("SNAKE_HARD")});
+                            rs.getInt("SNAKE_NORMAL"),
+                            rs.getInt("SNAKE_HARD")});
 
             return new User(
                     rs.getLong(1),
@@ -281,36 +316,42 @@ public class DatabaseManager {
         return score && settings;
     }
 
-    public static boolean updateUserName(long id, String name, String newName) {
-        try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-            if (findUser(newName)) {
-                System.out.println("DB MANAGER: Username already taken");
+    public static boolean updateUserName(long id, String name, String password, String newName) {
+        if (findUser(newName)) {
+            System.out.println("DB MANAGER: Username already exists");
+            return false;
+        } else if (!getUserPassword(name).equals(password)) {
+            System.out.println("DB MANAGER: Password does not match,"
+                    + "new username will not be accepted");
+            return false;
+        } else {
+            try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+
+
+                String input = "UPDATE " + tUsers + " SET name = ?"
+                        + " WHERE id = ? AND name = ?";
+                PreparedStatement statement = connection.prepareStatement(input);
+                statement.setString(1, newName);
+                statement.setLong(2, id);
+                statement.setString(3, name);
+                statement.executeQuery();
+
+                String output = "SELECT CASE WHEN EXISTS ("
+                        + " SELECT TOP 1 * FROM " + tUsers
+                        + " WHERE name = ? AND id = ?) "
+                        + "THEN CAST (1 AS BIT) "
+                        + "ELSE CAST (0 AS BIT) END";
+                statement = connection.prepareStatement(output);
+                statement.setString(1, newName);
+                statement.setLong(2, id);
+                ResultSet rs = statement.executeQuery();
+                rs.next();
+
+                return rs.getBoolean(1);
+            } catch (SQLException e) {
+                e.printStackTrace();
                 return false;
             }
-
-            String input    = "UPDATE " + tUsers + " SET name = ?"
-                            + " WHERE id = ? AND name = ?";
-            PreparedStatement statement = connection.prepareStatement(input);
-            statement.setString(1, newName);
-            statement.setLong(2, id);
-            statement.setString(3, name);
-            statement.executeQuery();
-
-            String output   = "SELECT CASE WHEN EXISTS ("
-                            + " SELECT TOP 1 * FROM " + tUsers
-                            + " WHERE name = ? AND id = ?) "
-                            + "THEN CAST (1 AS BIT) "
-                            + "ELSE CAST (0 AS BIT) END";
-            statement = connection.prepareStatement(output);
-            statement.setString(1, newName);
-            statement.setLong(2, id);
-            ResultSet rs = statement.executeQuery();
-            rs.next();
-
-            return rs.getBoolean(1);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
         }
     }
 
@@ -447,7 +488,7 @@ public class DatabaseManager {
                         + " PRIMARY KEY (id),"
                         + " FOREIGN KEY (id) REFERENCES " + tUsers + "(id) ON DELETE CASCADE"
                         + ");\n"
-                    // TODO check if seperate tables are necessary?
+                    // TODO check if separate tables are necessary?
                         + "CREATE TABLE IF NOT EXISTS " + tHangmanScores + " ("
                         + " name varchar(50) DEFAULT 'Anonymous',"
                         + " mode varchar(16) DEFAULT 'Normal',"

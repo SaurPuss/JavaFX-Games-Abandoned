@@ -22,7 +22,7 @@ public class SignUpPane extends VBox implements CreateUserButton {
     private static Label lPassword = new Label("Password: ");
     private static Label lConfirm = new Label("Confirm Password: ");
     private static Label lUser = new Label("Remember Username", cUser);
-    private static Label lPass = new Label("Rememeber Password", cPass);
+    private static Label lPass = new Label("Remember Password", cPass);
 
     // Fields
     private static GridPane fields = new GridPane();
@@ -104,7 +104,7 @@ public class SignUpPane extends VBox implements CreateUserButton {
             case "PasswordNoMatch": fields.add(errPassword, 0, 5, 3, 1);
                 errPassword.setText("* Password does not match.");
                 tfPassword.selectAll();
-                System.out.println("SIGN UP PANE: Password does not match username."); break;
+                System.out.println("SIGN UP PANE: Password does not match the confirmation field."); break;
             // Username errors
             case "UsernameEmpty": fields.add(errUser, 0, 1, 3, 1);
                 errUser.setText("* Username is missing.");

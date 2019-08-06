@@ -123,9 +123,9 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return    "ID: " + this.id
-                + "Name: " + this.name
-                + this.userSettings.toString()
-                + this.userScore.toString();
+                + "\nName: " + this.name
+                + "\n" + this.userSettings.toString()
+                + "\n" + this.userScore.toString();
     }
 
     /**

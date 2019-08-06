@@ -1,8 +1,7 @@
 package settings.GUI.buttons;
 
 import javafx.scene.control.Button;
-import settings.GUI.panes.GameSelectionPane;
-import settings.GUI.panes.TopBarPane;
+import settings.GUI.panes.*;
 import settings.user.UserManager;
 
 import static settings.GUI.panes.LoginPane.*;

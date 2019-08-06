@@ -123,10 +123,10 @@ public class UserScore implements Serializable {
                 + "\nCurrent Streak: " + this.streak
                 + "\nStreak Game: " + this.streakGame
                 + "\nStreak Difficulty: " + this.streakDifficulty.toString()
-                + "\nHangman: " + hangman[0] + " | " + hangman[1] + " | " + hangman[2]
-                + "\nMasterMind: " + mastermind[0] + " | " + mastermind[1] + " | " + mastermind[2]
+                + "\nHangman:     " + hangman[0] + " | " + hangman[1] + " | " + hangman[2]
+                + "\nMasterMind:  " + mastermind[0] + " | " + mastermind[1] + " | " + mastermind[2]
                 + "\nMineSweeper: " + minesweeper[0] + " | " + minesweeper[1] + " | " + minesweeper[2]
-                + "\nSnake: " + snake[0] + " | " + snake[1] + " | " + snake[2];
+                + "\nSnake:       " + snake[0] + " | " + snake[1] + " | " + snake[2];
     }
 
     /**

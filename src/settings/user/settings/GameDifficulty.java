@@ -1,5 +1,7 @@
 package settings.user.settings;
 
+import javafx.scene.control.ToggleButton;
+
 public enum GameDifficulty {
     EASY("Easy"), NORMAL("Normal"), HARD("Hard");
 

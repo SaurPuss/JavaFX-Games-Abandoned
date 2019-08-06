@@ -10,7 +10,7 @@ public enum ColorMode {
     }
 
     @Override
-    public String toString() { return this.name; }
+    public String toString() { return name; }
 
     public static ColorMode fromString(String value) {
         for (ColorMode b : ColorMode.values()) {

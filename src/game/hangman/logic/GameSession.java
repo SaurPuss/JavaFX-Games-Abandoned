@@ -8,6 +8,7 @@ public class GameSession {
     static final File DICTIONARY_EASY = new File("src/game/hangman/assets/dictionaryEASY.txt");
     // TODO replace normal dictionary
     static final File DICTIONARY_NORMAL = new File("src/game/hangman/assets/dictionaryEASY.txt");
+    
     public static int mistakes = 0;
     public static GameWord gameWord;
 
@@ -37,5 +38,5 @@ public class GameSession {
 
     static int getGameScore() { return gameWord.gameWordLength(); }
 
-    static String getGameWord() { return gameWord.toString(); }
+    public static String getGameWord() { return gameWord.toString(); }
 }

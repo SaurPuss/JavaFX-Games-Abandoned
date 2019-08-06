@@ -21,6 +21,7 @@ public interface UpdateSettingsButton {
             System.out.println("UPDATE SETTINGS BUTTON: This doesn't save to the db, so it only works this session");
             // TODO Save to database too, if not anonymous anyway
             printUser();
+            UserManager.updateUser(user);
         });
 
         return button;

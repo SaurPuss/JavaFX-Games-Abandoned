@@ -53,11 +53,9 @@ public class UserManager implements Serializable {
         }
     }
 
-    public static User saveUser(String name, String password,
-                                boolean rememberUser, boolean rememberPassword) {
-        System.out.println("USER MANAGER: PLS MAKE THIS METHOD saveUser(4xStuff)");
-
-        return new User();
+    public static User saveUser(String name, String password, boolean rememberUser,
+                                boolean rememberPassword) {
+        return DatabaseManager.saveUser(name, password, rememberUser, rememberPassword);
     }
 
     public static boolean updateUser(User user) {

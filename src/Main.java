@@ -11,6 +11,7 @@
 
 // You know what this is, why are you reading this comment?
 
+import javafx.scene.Scene;
 import settings.GUI.panes.*;
 import settings.user.user.User;
 import settings.user.UserManager;
@@ -28,11 +29,10 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
-        // Make sure all things are working on launch
         try {
             AppSettings.initSession();
         } catch (Exception e) {
-            System.out.println("MAIN: Exception caught in session initialization.");
+            e.printStackTrace();
         }
 
         // Check if user is default profile
@@ -59,8 +59,9 @@ public class Main extends Application {
         }
 
         // Put it all together in a neat little package
+        Scene scene = new Scene(AppSettings.pane, 500, 800);
         primaryStage.setTitle("Let's Play a Game");
-        primaryStage.setScene(AppSettings.scene);
+        primaryStage.setScene(scene);
         primaryStage.show();
 
         primaryStage.setResizable(false); // No resize for you!

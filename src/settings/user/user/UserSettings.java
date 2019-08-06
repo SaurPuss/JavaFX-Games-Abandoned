@@ -32,9 +32,10 @@ public class UserSettings implements Serializable {
         gameDifficulty      = GameDifficulty.NORMAL;
     }
 
-    public UserSettings(boolean rememberUser, boolean rememberPassword, String gameDifficulty) {
+    public UserSettings(boolean rememberUser, boolean rememberPassword, String colorMode, String gameDifficulty) {
         this.rememberUser       = rememberUser;
         this.rememberPassword   = rememberPassword;
+        this.colorMode          = ColorMode.fromString(colorMode);
         this.gameDifficulty     = GameDifficulty.fromString(gameDifficulty);
     }
 
@@ -53,7 +54,7 @@ public class UserSettings implements Serializable {
     public String toString() {
         return    "Remember User: " + this.rememberUser
                 + "\nRemember Password: " + this.rememberPassword
-                + "\nColor Mode: " + this.colorMode.toString()
+                + "\nColor Mode: " + colorMode.toString()
                 + "\nGame Difficulty: " + this.gameDifficulty.toString();
     }
 

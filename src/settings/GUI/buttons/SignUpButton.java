@@ -17,14 +17,17 @@ public interface SignUpButton {
 
         btnSignUp.setOnAction(e -> {
             // TODO switch case instead?
-            if (pane.getCenter().getClass().isInstance(LoginPane.class)) {
+            // TODO is there a way to shorten the package bits?
+            if (pane.getCenter().getClass().equals(settings.GUI.panes.LoginPane.class)) {
                 // LOGIN PANE
+                System.out.println("SIGN UP BUTTON: Swapping from LoginPane to SignUpPane");
                 pane.setCenter(new SignUpPane(
                         LoginPane.tfUserName.getText(),
                         LoginPane.tfUserPassword.getText(),
                         LoginPane.cbRememberUser.isSelected()));
-            } else if (pane.getCenter().getClass().isInstance(UserSettingsPane.class)) {
+            } else if (pane.getCenter().getClass().equals(settings.GUI.panes.UserSettingsPane.class)) {
                 // USER SETTINGS PANE
+                System.out.println("SIGN UP BUTTON: Swapping from UserSettingsPane to SignUpPane");
                 pane.setCenter(new SignUpPane(
                         UserSettingsPane.tfName.getText(),
                         UserSettingsPane.tfPassword.getText(),
@@ -32,16 +35,25 @@ public interface SignUpButton {
                         UserSettingsPane.togglePassword.isSelected()));
             } else {
                 // SIGN UP PANE
+                System.out.println(pane.getCenter().getClass());
+                System.out.println("SIGN UP BUTTON: Saving from SignUpPane, probably");
                 if (UserManager.findUserName(SignUpPane.tfName.getText())) {
-                    // user name is taken
-
-                } else if (SignUpPane.samePassword()) {
-                    // password does not match in the fields
-
+                    SignUpPane.signUpError("UsernameAlreadyExists");
+                } else if (!SignUpPane.samePassword()) {
+                    SignUpPane.signUpError("PasswordNoMatch");
                 } else {
-                    // TODO set user up in current user
-                    // TODO save user info from pane to DB
+                    // TODO if this is a anonymous user save, and a game is active, will the game remain?
+                    // Save user to database and return it to the Session user
+                    user = UserManager.saveUser(
+                            SignUpPane.tfName.getText(),
+                            SignUpPane.tfPassword.getText(),
+                            SignUpPane.cUser.isSelected(),
+                            SignUpPane.cPass.isSelected());
+                    // Set user as current
+                    UserManager.saveCurrentUser(user);
+                    // Continue to game selection screen
                     pane.setCenter(new GameSelectionPane());
+                    pane.setTop(new TopBarPane());
                 }
             }
         });
